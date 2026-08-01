@@ -1,212 +1,177 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
-    [Header("Stats")]
-    public int maxHp = 10;
-    public int currentHp = 10;
+    [Header("Cấu hình Chỉ số")]
+    public float speed = 3f;
+    public int maxHp = 20;
+    private int hp;
     public int damage = 2;
-    public float attackRate = 1f;
-    public float attackRange = 1.2f; // Tầm đánh để dừng lại đánh lính
-    public float speed = 2f;
+    public float attackCooldown = 1f;
+    private float lastAttackTime;
 
-    [Header("Waypoint Path")]
-    private List<Transform> waypoints = new List<Transform>();
-    private int currentWaypointIndex = 0;
+    [Header("Phạm vi phát hiện và chặn lính")]
+    public float checkRadius = 0.8f; // Tăng nhẹ tầm quét để quái dễ bắt mục tiêu hơn
 
-    [Header("UI Health Bar")]
-    public Slider enemyHealthSlider;
+    private Transform targetWaypoint;
+    private int waypointIndex = 0;
 
-    private float attackCountdown = 0f;
-    private Transform targetPlayer; // Lính đang chặn đường
-    private Animator animator;
-    private SpriteRenderer spriteRenderer;
+    private bool isEngaged = false;
+    private MonoBehaviour currentTargetSoldier;
+
+    [Header("Thanh máu (UI Slider)")]
+    public Slider healthSlider;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        currentHp = maxHp;
-        UpdateHealthBarUI();
-
-        // Tự động tìm đường đi (Waypoints) trong Scene
-        GameObject waypointObj = GameObject.Find("Waypoints");
-        if (waypointObj != null)
-        {
-            foreach (Transform child in waypointObj.transform)
-            {
-                waypoints.Add(child);
-            }
-        }
+        hp = maxHp;
+        UpdateHealthUI();
+        GetNextWaypoint();
     }
 
     void Update()
     {
-        // 1. Kiểm tra xem có lính nào đứng gần trong tầm chặn đường không
-        FindBlockingPlayer();
-
-        // 2. Nếu có lính đứng chặn -> Dừng lại đứng đánh lính
-        if (targetPlayer != null && targetPlayer.gameObject.activeInHierarchy)
+        // Nếu đang đánh nhau với lính, tuyệt đối KHÔNG di chuyển, chỉ đứng lại đánh cho đến khi lính chết
+        if (isEngaged)
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.position);
-
-            if (distanceToPlayer <= attackRange)
-            {
-                if (animator != null) animator.SetBool("isRunning", false);
-
-                if (spriteRenderer != null)
-                {
-                    spriteRenderer.flipX = targetPlayer.position.x < transform.position.x;
-                }
-
-                if (attackCountdown <= 0f)
-                {
-                    AttackPlayer();
-                    attackCountdown = 1f / attackRate;
-                }
-            }
-            else
-            {
-                transform.position = Vector3.MoveTowards(transform.position, targetPlayer.position, speed * Time.deltaTime);
-                if (animator != null) animator.SetBool("isRunning", true);
-                if (spriteRenderer != null)
-                {
-                    spriteRenderer.flipX = targetPlayer.position.x < transform.position.x;
-                }
-            }
-        }
-        else // 3. Không có lính chặn -> Đi theo Waypoints
-        {
-            targetPlayer = null;
-            MoveAlongWaypoints();
-        }
-
-        if (attackCountdown > 0f)
-        {
-            attackCountdown -= Time.deltaTime;
-        }
-    }
-
-    void MoveAlongWaypoints()
-    {
-        if (waypoints.Count == 0 || currentWaypointIndex >= waypoints.Count)
-        {
-            if (animator != null) animator.SetBool("isRunning", false);
+            CheckSoldierAlive();
             return;
         }
 
-        Transform targetWaypoint = waypoints[currentWaypointIndex];
-        transform.position = Vector3.MoveTowards(transform.position, targetWaypoint.position, speed * Time.deltaTime);
+        // Nếu chưa vướng lính, liên tục quét xem có lính nào trong tầm chặn đường không
+        CheckForSoldiersAhead();
 
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.flipX = targetWaypoint.position.x < transform.position.x;
-        }
-
-        if (animator != null) animator.SetBool("isRunning", true);
-
-        if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.1f)
-        {
-            currentWaypointIndex++;
-        }
+        // Nếu vẫn không vướng lính thì mới di chuyển theo đường Waypoints
+        MoveTowardsWaypoint();
     }
 
-    void FindBlockingPlayer()
+    void CheckForSoldiersAhead()
     {
-        if (targetPlayer != null && targetPlayer.gameObject.activeInHierarchy)
-        {
-            float dist = Vector3.Distance(transform.position, targetPlayer.position);
-            if (dist <= 2.5f) return;
-        }
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, checkRadius);
 
-        Transform closest = null;
-        float shortestDistance = 2.5f;
-
-        // Tìm kiếm Pháp sư (MageSoldier)
-        MageSoldier[] mages = Object.FindObjectsByType<MageSoldier>(FindObjectsSortMode.None);
-        foreach (MageSoldier mage in mages)
+        foreach (var hit in hits)
         {
-            if (mage == null || !mage.gameObject.activeInHierarchy) continue;
-            float dist = Vector3.Distance(transform.position, mage.transform.position);
-            if (dist < shortestDistance)
+            PlayerSoldier warrior = hit.GetComponent<PlayerSoldier>();
+            MageSoldier mage = hit.GetComponent<MageSoldier>();
+            ArcherSoldier archer = hit.GetComponent<ArcherSoldier>();
+
+            if (warrior != null)
             {
-                shortestDistance = dist;
-                closest = mage.transform;
+                isEngaged = true;
+                currentTargetSoldier = warrior;
+                break;
             }
-        }
-
-        // Tìm kiếm Đấu sĩ (PlayerSoldier)
-        PlayerSoldier[] playerSoldiers = Object.FindObjectsByType<PlayerSoldier>(FindObjectsSortMode.None);
-        foreach (PlayerSoldier soldier in playerSoldiers)
-        {
-            if (soldier == null || !soldier.gameObject.activeInHierarchy) continue;
-            float dist = Vector3.Distance(transform.position, soldier.transform.position);
-            if (dist < shortestDistance)
+            else if (mage != null)
             {
-                shortestDistance = dist;
-                closest = soldier.transform;
+                isEngaged = true;
+                currentTargetSoldier = mage;
+                break;
             }
-        }
-
-        targetPlayer = closest;
-    }
-
-    void AttackPlayer()
-    {
-        if (animator != null)
-        {
-            animator.SetTrigger("AttackTrigger"); // Khớp với Parameter sẵn có trong Animator của quái
-        }
-
-        if (targetPlayer != null)
-        {
-            MageSoldier mage = targetPlayer.GetComponent<MageSoldier>();
-            if (mage != null)
+            else if (archer != null)
             {
-                mage.TakeDamage(damage);
-                return;
-            }
-
-            PlayerSoldier soldier = targetPlayer.GetComponent<PlayerSoldier>();
-            if (soldier != null)
-            {
-                soldier.TakeDamage(damage);
+                isEngaged = true;
+                currentTargetSoldier = archer;
+                break;
             }
         }
     }
 
-    public void TakeDamage(int damageAmount)
+    void GetNextWaypoint()
     {
-        currentHp -= damageAmount;
-        Debug.Log("Quái nhận " + damageAmount + " sát thương. Máu quái còn: " + currentHp);
+        if (Waypoints.points == null || Waypoints.points.Length == 0) return;
 
-        if (animator != null)
+        if (waypointIndex >= Waypoints.points.Length)
         {
-            animator.SetTrigger("HurtTrigger");
+            ReachDestination();
+            return;
         }
 
-        UpdateHealthBarUI();
+        targetWaypoint = Waypoints.points[waypointIndex];
+        waypointIndex++;
+    }
 
-        if (currentHp <= 0)
+    void MoveTowardsWaypoint()
+    {
+        if (targetWaypoint == null) return;
+
+        Vector3 dir = targetWaypoint.position - transform.position;
+        transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
+
+        if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.2f)
+        {
+            GetNextWaypoint();
+        }
+    }
+
+    void ReachDestination()
+    {
+        Destroy(gameObject);
+    }
+
+    public void TakeDamage(int amt)
+    {
+        hp -= amt;
+        UpdateHealthUI();
+
+        if (hp <= 0)
         {
             Die();
         }
     }
 
-    void UpdateHealthBarUI()
+    void UpdateHealthUI()
     {
-        if (enemyHealthSlider != null)
+        if (healthSlider != null)
         {
-            enemyHealthSlider.maxValue = maxHp;
-            enemyHealthSlider.value = currentHp;
+            healthSlider.maxValue = maxHp;
+            healthSlider.value = hp;
         }
     }
 
     void Die()
     {
-        if (animator != null) animator.SetTrigger("DieTrigger");
-        Destroy(gameObject, 0.2f);
+        Destroy(gameObject);
+    }
+
+    void CheckSoldierAlive()
+    {
+        // Kiểm tra xem lính còn tồn tại không (nếu lính đã bị tiêu diệt và biến mất)
+        if (currentTargetSoldier == null)
+        {
+            isEngaged = false; // Lính đã chết hoàn toàn, mở khóa cho quái đi tiếp
+            return;
+        }
+
+        // Tiến hành đấm/bắn lính theo nhịp thời gian
+        if (Time.time >= lastAttackTime + attackCooldown)
+        {
+            AttackSoldier();
+            lastAttackTime = Time.time;
+        }
+    }
+
+    void AttackSoldier()
+    {
+        if (currentTargetSoldier == null) return;
+
+        if (currentTargetSoldier is PlayerSoldier w)
+        {
+            w.TakeDamage(damage);
+        }
+        else if (currentTargetSoldier is MageSoldier m)
+        {
+            m.TakeDamage(damage);
+        }
+        else if (currentTargetSoldier is ArcherSoldier a)
+        {
+            a.TakeDamage(damage);
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, checkRadius);
     }
 }

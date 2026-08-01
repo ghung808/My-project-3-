@@ -12,7 +12,6 @@ public class BuildingSpot2D : MonoBehaviour
 
     void OnMouseDown()
     {
-        // Nếu ô đã có tháp -> Click vào để mở bảng nâng cấp/gỡ bỏ
         if (currentTower != null)
         {
             SpawnTower towerScript = currentTower.GetComponent<SpawnTower>();
@@ -23,39 +22,42 @@ public class BuildingSpot2D : MonoBehaviour
             return;
         }
 
-        // Nếu ô chưa có tháp -> Mở shop xây dựng
         if (BuildShopUI.instance != null)
         {
             BuildShopUI.instance.ShowShop(this);
         }
     }
 
-    // Hàm xây tháp được gọi từ BuildShopUI
     public void BuildTower(GameObject towerPrefab)
     {
         if (towerPrefab == null) return;
 
-        // Lấy thông tin giá từ script SpawnTower của tháp
         SpawnTower towerScript = towerPrefab.GetComponent<SpawnTower>();
         int cost = towerScript != null ? towerScript.cost : 50;
 
-        // Kiểm tra tiền của người chơi
         if (PlayerStats.Money >= cost)
         {
             PlayerStats.Money -= cost;
 
-            // Khởi tạo (sinh ra) tháp chính xác tại vị trí của ô đất này
+            // Khởi tạo tháp tại vị trí ô đất
             currentTower = Instantiate(towerPrefab, transform.position, Quaternion.identity);
 
-            // Liên kết tháp vừa tạo với ô đất hiện tại
+            // Đảm bảo tháp mới sinh ra luôn hiện hình ảnh (Sprite) và nằm đè lên trên nền cỏ
+            SpriteRenderer towerSprite = currentTower.GetComponent<SpriteRenderer>();
+            if (towerSprite != null)
+            {
+                towerSprite.enabled = true;
+                towerSprite.sortingOrder = 5; // Số lớn hơn nền cỏ để hiển thị rõ
+            }
+
+            // Liên kết ô đất với tháp
             SpawnTower installedTower = currentTower.GetComponent<SpawnTower>();
             if (installedTower != null)
             {
-                // Nếu SpawnTower của bạn cần lưu ô đất, ta có thể dùng hàm hoặc biến tương thích
-                // Hoặc đơn giản là không cần gọi targetSpot nếu SpawnTower tự tìm waypoint.
+                installedTower.SetAssignedSpot(this);
             }
 
-            // Tắt hiệu ứng màu xanh của ô đất đi khi đã có tháp đứng lên trên
+            // Tắt hiệu ứng màu xanh của ô đất đi
             if (spotRenderer != null) spotRenderer.enabled = false;
         }
         else
@@ -68,7 +70,6 @@ public class BuildingSpot2D : MonoBehaviour
     {
         if (currentTower != null)
         {
-            Destroy(currentTower);
             currentTower = null;
         }
 

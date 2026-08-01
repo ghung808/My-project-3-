@@ -19,6 +19,7 @@ public class SpawnTower : MonoBehaviour
 
     private Vector3 rallyPoint;
     private List<MonoBehaviour> activeSoldiers = new List<MonoBehaviour>();
+    private BuildingSpot2D assignedSpot;
 
     void Start()
     {
@@ -26,9 +27,17 @@ public class SpawnTower : MonoBehaviour
         SpawnInitialSoldiers();
     }
 
-    void OnDestroy()
+    void Update()
     {
-        // Đã lược bỏ phần đăng ký event wave cũ để tránh lỗi xung đột hệ thống
+        if (activeSoldiers.Count == 0)
+        {
+            DestroyTowerAndResetSpot();
+        }
+    }
+
+    public void SetAssignedSpot(BuildingSpot2D spot)
+    {
+        assignedSpot = spot;
     }
 
     Vector3 GetNearestRoadPoint()
@@ -72,10 +81,22 @@ public class SpawnTower : MonoBehaviour
 
         PlayerSoldier warrior = soldierObj.GetComponent<PlayerSoldier>();
         MageSoldier mage = soldierObj.GetComponent<MageSoldier>();
+        ArcherSoldier archer = soldierObj.GetComponent<ArcherSoldier>();
 
-        float spacing = 0.5f;
-        float startOffset = -((maxSoldiers - 1) * spacing) / 2f;
-        Vector3 targetPos = rallyPoint + new Vector3(startOffset + (index * spacing), 0f, 0f);
+        Vector3 targetPos = rallyPoint;
+
+        if (archer != null)
+        {
+            float spacing = 0.6f;
+            float startOffset = -((maxSoldiers - 1) * spacing) / 2f;
+            targetPos = rallyPoint + new Vector3(startOffset + (index * spacing), -0.8f, 0f);
+        }
+        else
+        {
+            float spacing = 0.5f;
+            float startOffset = -((maxSoldiers - 1) * spacing) / 2f;
+            targetPos = rallyPoint + new Vector3(startOffset + (index * spacing), 0f, 0f);
+        }
 
         if (warrior != null)
         {
@@ -89,15 +110,29 @@ public class SpawnTower : MonoBehaviour
             mage.SetRallyPosition(targetPos);
             activeSoldiers.Add(mage);
         }
+        else if (archer != null)
+        {
+            archer.InitializeStats(soldierHp, soldierDmg, this);
+            archer.SetRallyPosition(targetPos);
+            activeSoldiers.Add(archer);
+        }
     }
 
-    // Lính chết sẽ bị xóa khỏi danh sách vĩnh viễn, KHÔNG HỒI SINH NỮA
     public void OnSoldierDied(MonoBehaviour deadSoldier)
     {
         if (activeSoldiers.Contains(deadSoldier))
         {
             activeSoldiers.Remove(deadSoldier);
         }
+    }
+
+    void DestroyTowerAndResetSpot()
+    {
+        if (assignedSpot != null)
+        {
+            assignedSpot.ClearSpot();
+        }
+        Destroy(gameObject);
     }
 
     public void UpgradeTower()
@@ -112,16 +147,9 @@ public class SpawnTower : MonoBehaviour
             {
                 if (soldier != null)
                 {
-                    if (soldier is PlayerSoldier w)
-                    {
-                        w.InitializeStats(soldierHp, soldierDmg, this);
-                        w.FullHeal();
-                    }
-                    else if (soldier is MageSoldier m)
-                    {
-                        m.InitializeStats(soldierHp, soldierDmg, this);
-                        m.FullHeal();
-                    }
+                    if (soldier is PlayerSoldier w) { w.InitializeStats(soldierHp, soldierDmg, this); w.FullHeal(); }
+                    else if (soldier is MageSoldier m) { m.InitializeStats(soldierHp, soldierDmg, this); m.FullHeal(); }
+                    else if (soldier is ArcherSoldier a) { a.InitializeStats(soldierHp, soldierDmg, this); a.FullHeal(); }
                 }
             }
             Debug.Log("Đã nâng cấp tháp thành công!");
@@ -136,12 +164,18 @@ public class SpawnTower : MonoBehaviour
     {
         PlayerStats.Money += sellValue;
 
+        if (assignedSpot != null)
+        {
+            assignedSpot.ClearSpot();
+        }
+
         foreach (var soldier in activeSoldiers)
         {
             if (soldier != null)
             {
                 if (soldier is PlayerSoldier w) Destroy(w.gameObject);
                 if (soldier is MageSoldier m) Destroy(m.gameObject);
+                if (soldier is ArcherSoldier a) Destroy(a.gameObject);
             }
         }
 
@@ -150,7 +184,7 @@ public class SpawnTower : MonoBehaviour
 
     void OnMouseDown()
     {
-        BuildingSpot2D spot = GetComponentInParent<BuildingSpot2D>();
+        BuildingSpot2D spot = assignedSpot != null ? assignedSpot : GetComponentInParent<BuildingSpot2D>();
         if (spot != null && BuildManager.instance != null)
         {
             BuildManager.instance.SelectSpotToUpgrade(spot);

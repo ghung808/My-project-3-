@@ -9,16 +9,15 @@ public class WaveSpawner : MonoBehaviour
         public string waveName;
         public GameObject enemyPrefab;
         public int count;
-        public float rate; // Tốc độ spawn giữa các con quái trong cùng 1 wave
+        public float rate; // Giữ lại để không lỗi giao diện Inspector
     }
 
     [Header("Cấu hình Wave quái")]
     public Wave[] waves;
-    public Transform spawnPoint; // Vị trí quái xuất hiện (nếu để trống sẽ lấy vị trí GameObject này)
-    public float timeBetweenWaves = 5f; // Thời gian nghỉ giữa các wave
+    public Transform spawnPoint; // Vị trí quái xuất hiện
+    public float timeBetweenWaves = 3f; // Thời gian nghỉ giữa các wave
 
     private int currentWaveIndex = 0;
-    private bool isSpawning = false;
     private float waveCountdown;
     private enum SpawnState { SPAWNING, WAITING, COUNTING };
     private SpawnState state = SpawnState.COUNTING;
@@ -40,7 +39,6 @@ public class WaveSpawner : MonoBehaviour
             // Kiểm tra xem quái đã chết hết chưa
             if (!EnemyIsAlive())
             {
-                // Bắt đầu chuyển sang wave tiếp theo
                 WaveCompleted();
                 return;
             }
@@ -54,7 +52,6 @@ public class WaveSpawner : MonoBehaviour
         {
             if (state != SpawnState.SPAWNING)
             {
-                // Bắt đầu spawn wave tiếp theo
                 StartCoroutine(SpawnWave(waves[currentWaveIndex]));
             }
         }
@@ -74,16 +71,14 @@ public class WaveSpawner : MonoBehaviour
         currentWaveIndex++;
         if (currentWaveIndex > waves.Length - 1)
         {
-            // Đã qua hết tất cả các wave
             currentWaveIndex = waves.Length - 1;
-            Debug.Log("Đã qua tất cả các wave! Chiến thắng!");
-            // Bạn có thể thêm logic hiển thị màn hình chiến thắng ở đây nếu muốn
+            Debug.Log("Đã qua tất cả các wave!");
         }
     }
 
     bool EnemyIsAlive()
     {
-        // Kiểm tra trong Scene còn đối tượng nào mang component Enemy đang sống không
+        // Kiểm tra trong Scene còn con quái nào đang sống không
         Enemy[] enemies = Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
         return enemies.Length > 0;
     }
@@ -92,21 +87,19 @@ public class WaveSpawner : MonoBehaviour
     {
         state = SpawnState.SPAWNING;
 
+        float spacing = 0.8f; // Khoảng cách giữa các con quái để không bị dính vào nhau
+
+        // Spawn toàn bộ số lượng quái trong wave CÙNG MỘT LÚC
         for (int i = 0; i < _wave.count; i++)
         {
-            SpawnEnemy(_wave.enemyPrefab);
-            yield return new WaitForSeconds(1f / _wave.rate);
+            Vector3 spawnPos = spawnPoint.position + new Vector3(i * spacing, 0f, 0f);
+            if (_wave.enemyPrefab != null)
+            {
+                Instantiate(_wave.enemyPrefab, spawnPos, spawnPoint.rotation);
+            }
         }
 
         state = SpawnState.WAITING;
         yield break;
-    }
-
-    void SpawnEnemy(GameObject _enemy)
-    {
-        if (_enemy != null && spawnPoint != null)
-        {
-            Instantiate(_enemy, spawnPoint.position, spawnPoint.rotation);
-        }
     }
 }
