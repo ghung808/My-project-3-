@@ -234,8 +234,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5.76, y: 0}
-  m_SizeDelta: {x: -11.9, y: 0}
+  m_AnchoredPosition: {x: -5.1881, y: 0}
+  m_SizeDelta: {x: -10.3762, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &843026472277096301
 CanvasRenderer:
@@ -305,7 +305,7 @@ Transform:
   m_GameObject: {fileID: 2961228660896816668}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.445, y: -2.431, z: 0}
+  m_LocalPosition: {x: 5.408, y: -2.516, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -405,13 +405,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3183b7539890c5e439a217d5b7e000c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  speed: 2
-  maxHp: 1
-  damage: 5
-  attackCooldown: 1
-  checkRadius: 0.8
+  speed: 1.5
+  maxHp: 20
+  enemyDamage: 2
+  detectionRadius: 1
   healthSlider: {fileID: 7173908394848523693}
-  coinPrefab: {fileID: 7488405833570370396, guid: a5d70f4dd405f2741936afb7df660559, type: 3}
 --- !u!58 &6068724911350315131
 CircleCollider2D:
   m_ObjectHideFlags: 0

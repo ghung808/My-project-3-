@@ -127,12 +127,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f26f8847587c3a4591679aa99a9d117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnTower
+  towerType: 0
+  soldierPrefab: {fileID: 0}
   cost: 50
+  baseHp: 15
+  baseDamage: 2
   upgradeCost: 60
-  sellValue: 50
-  soldierHp: 20
-  soldierDmg: 2
-  maxSoldiers: 3
-  soldierPrefab: {fileID: 3247862385546391496, guid: c40db8d4ebe8b514aa853415be28d36c, type: 3}
-  spawnPoint: {fileID: 0}
   targetSpot: {fileID: 0}
