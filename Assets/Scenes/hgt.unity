@@ -17447,7 +17447,6 @@ GameObject:
   - component: {fileID: 1017842236}
   - component: {fileID: 1017842238}
   - component: {fileID: 1017842239}
-  - component: {fileID: 1017842240}
   m_Layer: 0
   m_Name: GameMaster
   m_TagString: Untagged
@@ -17547,18 +17546,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   startLives: 20
   startMoney: 200
---- !u!114 &1017842240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1017842235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3033046f429c0b478ee41c61a33aad2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameManager
 --- !u!1001 &1071963454
 PrefabInstance:
   m_ObjectHideFlags: 0

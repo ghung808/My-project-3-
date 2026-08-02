@@ -3,8 +3,7 @@ using UnityEngine.UI;
 
 public class MageSoldier : MonoBehaviour
 {
-    [Header("Movement & Attack Settings")]
-    public float speed = 2.5f;
+    [Header("Attack Settings")]
     public float attackRate = 1f;
     public float detectRadius = 5f;
     public float attackRange = 3.5f;
@@ -19,7 +18,7 @@ public class MageSoldier : MonoBehaviour
     public Transform firePoint;
 
     [Header("UI Health Bar")]
-    public Slider healthBarSlider; // Kéo Slider vào đây
+    public Slider healthBarSlider;
 
     [Header("Positioning")]
     public Vector3 rallyPosition;
@@ -30,7 +29,6 @@ public class MageSoldier : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Animator animator;
 
-    // Các hàm tương thích với SpawnTower.cs
     public void InitializeStats(int hp, int dmg, SpawnTower tower)
     {
         maxHp = hp;
@@ -42,8 +40,8 @@ public class MageSoldier : MonoBehaviour
 
     public void SetRallyPosition(Vector3 newPos)
     {
-        rallyPosition = newPos;
-        targetEnemy = null;
+        rallyPosition = GetNearestRoadPoint(newPos);
+        transform.position = rallyPosition; // Cố định vị trí luôn
     }
 
     public void FullHeal()
@@ -64,17 +62,48 @@ public class MageSoldier : MonoBehaviour
             rallyPosition = transform.position;
         }
 
-        InvokeRepeating("FindEnemy", 0.5f, 0.2f);
+        // Đưa pháp sư ra đường lớn và KHÓA CỨNG TỌA ĐỘ TẠI ĐÓ, không bao giờ dịch chuyển nữa
+        rallyPosition = GetNearestRoadPoint(rallyPosition);
+        transform.position = rallyPosition;
+
+        InvokeRepeating("FindEnemy", 0f, 0.2f);
+    }
+
+    Vector3 GetNearestRoadPoint(Vector3 fromPosition)
+    {
+        if (Waypoints.points == null || Waypoints.points.Length == 0)
+        {
+            return fromPosition;
+        }
+
+        float minDistance = Mathf.Infinity;
+        Vector3 nearestPoint = fromPosition;
+
+        foreach (Transform wp in Waypoints.points)
+        {
+            if (wp == null) continue;
+            float dist = Vector3.Distance(fromPosition, wp.position);
+            if (dist < minDistance)
+            {
+                minDistance = dist;
+                nearestPoint = wp.position;
+            }
+        }
+
+        return nearestPoint;
     }
 
     void FindEnemy()
     {
-        if (Vector3.Distance(transform.position, rallyPosition) > 0.1f) return;
-        if (targetEnemy != null && targetEnemy.gameObject.activeInHierarchy) return;
+        if (targetEnemy != null && targetEnemy.gameObject.activeInHierarchy)
+        {
+            float distToTarget = Vector3.Distance(transform.position, targetEnemy.position);
+            if (distToTarget <= detectRadius * 1.5f) return;
+        }
 
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         float shortestDistance = Mathf.Infinity;
-        GameObject nearestEnemy = null;
+        Transform nearestEnemy = null;
 
         foreach (GameObject enemy in enemies)
         {
@@ -84,62 +113,40 @@ public class MageSoldier : MonoBehaviour
             if (distanceToEnemy <= detectRadius && distanceToEnemy < shortestDistance)
             {
                 shortestDistance = distanceToEnemy;
-                nearestEnemy = enemy;
+                nearestEnemy = enemy.transform;
             }
         }
 
-        targetEnemy = (nearestEnemy != null) ? nearestEnemy.transform : null;
+        targetEnemy = nearestEnemy;
     }
 
     void Update()
     {
-        float distanceToRally = Vector3.Distance(transform.position, rallyPosition);
-        if (distanceToRally > 0.05f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, rallyPosition, speed * Time.deltaTime);
-            Vector3 moveDir = (rallyPosition - transform.position).normalized;
-            if (moveDir != Vector3.zero) FlipSprite(moveDir.x);
-            SetMovingAnimation(true);
-            return;
-        }
-        else
-        {
-            transform.position = rallyPosition;
-        }
-
-        if (targetEnemy == null)
-        {
-            SetMovingAnimation(false);
-            return;
-        }
-
-        if (!targetEnemy.gameObject.activeInHierarchy)
+        if (targetEnemy != null && !targetEnemy.gameObject.activeInHierarchy)
         {
             targetEnemy = null;
-            SetMovingAnimation(false);
-            return;
         }
 
-        float distanceToEnemy = Vector3.Distance(transform.position, targetEnemy.position);
+        // Pháp sư đứng yên một chỗ, KHÔNG DÙNG MoveTowards nữa nên hoàn toàn không thể bị giật
+        SetMovingAnimation(false);
 
-        if (distanceToEnemy > attackRange)
+        // --- XỬ LÝ TẤN CÔNG BẮN ĐẠN KHI QUÁI VÀO TẦM ---
+        if (targetEnemy != null)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetEnemy.position, speed * Time.deltaTime);
-            Vector3 moveDir = (targetEnemy.position - transform.position).normalized;
-            if (moveDir != Vector3.zero) FlipSprite(moveDir.x);
-            SetMovingAnimation(true);
-        }
-        else
-        {
-            SetMovingAnimation(false);
+            float distanceToEnemy = Vector3.Distance(transform.position, targetEnemy.position);
+
+            // Quay mặt về phía quái đang bắn
             Vector3 dirToEnemy = targetEnemy.position - transform.position;
             if (dirToEnemy != Vector3.zero) FlipSprite(dirToEnemy.x);
 
-            if (attackCountdown <= 0f)
+            if (distanceToEnemy <= attackRange)
             {
-                TriggerAttackAnimation();
-                ShootMagicBullet();
-                attackCountdown = 1f / attackRate;
+                if (attackCountdown <= 0f)
+                {
+                    TriggerAttackAnimation();
+                    ShootMagicBullet();
+                    attackCountdown = 1f / attackRate;
+                }
             }
         }
 
@@ -151,7 +158,7 @@ public class MageSoldier : MonoBehaviour
 
     void SetMovingAnimation(bool isMoving)
     {
-        if (animator != null) animator.SetBool("isMoving", isMoving);
+        if (animator != null) animator.SetBool("isMoving", false);
     }
 
     void TriggerAttackAnimation()
@@ -184,8 +191,6 @@ public class MageSoldier : MonoBehaviour
     public void TakeDamage(int damageAmount)
     {
         currentHp -= damageAmount;
-        Debug.Log(gameObject.name + " nhận " + damageAmount + " sát thương. Máu còn: " + currentHp);
-
         if (animator != null) animator.SetTrigger("HurtTrigger");
         UpdateHealthBarUI();
 

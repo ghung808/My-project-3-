@@ -407,9 +407,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   speed: 1.5
   maxHp: 20
-  enemyDamage: 2
-  detectionRadius: 1
+  damage: 2
+  attackCooldown: 1
+  checkRadius: 0.8
   healthSlider: {fileID: 7173908394848523693}
+  coinPrefab: {fileID: 7488405833570370396, guid: a5d70f4dd405f2741936afb7df660559, type: 3}
 --- !u!58 &6068724911350315131
 CircleCollider2D:
   m_ObjectHideFlags: 0

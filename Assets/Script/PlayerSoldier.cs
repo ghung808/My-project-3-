@@ -15,7 +15,7 @@ public class PlayerSoldier : MonoBehaviour
     public int damage = 2;
 
     [Header("UI Health Bar")]
-    public Slider healthBarSlider; // Kéo Slider thanh máu của đấu sĩ vào đây trong Inspector
+    public Slider healthBarSlider;
 
     [Header("Positioning")]
     public Vector3 rallyPosition;
@@ -25,6 +25,7 @@ public class PlayerSoldier : MonoBehaviour
     private Transform targetEnemy;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+    private bool hasMovedFromRally = false; // Đánh dấu xem lính đã rời vị trí tập kết để đi đánh quái chưa
 
     public void InitializeStats(int hp, int dmg, SpawnTower tower)
     {
@@ -38,7 +39,8 @@ public class PlayerSoldier : MonoBehaviour
     public void SetRallyPosition(Vector3 newPos)
     {
         rallyPosition = newPos;
-        targetEnemy = null;
+        transform.position = rallyPosition;
+        hasMovedFromRally = false;
     }
 
     public void FullHeal()
@@ -55,9 +57,9 @@ public class PlayerSoldier : MonoBehaviour
         currentHp = maxHp;
         UpdateHealthBarUI();
 
-        if (rallyPosition == Vector3.zero)
+        if (rallyPosition != Vector3.zero)
         {
-            rallyPosition = transform.position;
+            transform.position = rallyPosition;
         }
 
         InvokeRepeating("FindEnemy", 0f, 0.2f);
@@ -65,11 +67,15 @@ public class PlayerSoldier : MonoBehaviour
 
     void FindEnemy()
     {
-        if (targetEnemy != null && targetEnemy.gameObject.activeInHierarchy) return;
+        if (targetEnemy != null && targetEnemy.gameObject.activeInHierarchy)
+        {
+            float distToTarget = Vector3.Distance(transform.position, targetEnemy.position);
+            if (distToTarget <= detectRadius * 1.5f) return;
+        }
 
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         float shortestDistance = Mathf.Infinity;
-        GameObject nearestEnemy = null;
+        Transform nearestEnemy = null;
 
         foreach (GameObject enemy in enemies)
         {
@@ -80,71 +86,70 @@ public class PlayerSoldier : MonoBehaviour
             if (distanceToEnemy <= detectRadius && distanceToEnemy < shortestDistance)
             {
                 shortestDistance = distanceToEnemy;
-                nearestEnemy = enemy;
+                nearestEnemy = enemy.transform;
             }
         }
 
-        if (nearestEnemy != null)
-        {
-            targetEnemy = nearestEnemy.transform;
-        }
-        else
-        {
-            targetEnemy = null;
-        }
+        targetEnemy = nearestEnemy;
     }
 
     void Update()
     {
-        if (targetEnemy == null)
+        if (targetEnemy != null && !targetEnemy.gameObject.activeInHierarchy)
         {
-            float distanceToRally = Vector3.Distance(transform.position, rallyPosition);
+            targetEnemy = null;
+        }
 
-            if (distanceToRally > 0.15f)
+        if (targetEnemy != null)
+        {
+            float distanceToEnemy = Vector3.Distance(transform.position, targetEnemy.position);
+
+            if (distanceToEnemy > attackRange)
             {
-                Vector3 moveDir = (rallyPosition - transform.position).normalized;
-                transform.Translate(moveDir * speed * Time.deltaTime, Space.World);
-
-                FlipSprite(moveDir.x);
+                // Lao vào quái mượt mà
+                transform.position = Vector3.MoveTowards(transform.position, targetEnemy.position, speed * Time.deltaTime);
+                Vector3 moveDir = (targetEnemy.position - transform.position).normalized;
+                if (moveDir != Vector3.zero) FlipSprite(moveDir.x);
                 SetMovingAnimation(true);
+                hasMovedFromRally = true; // Đánh dấu đã rời vị trí
             }
             else
             {
-                transform.position = rallyPosition;
+                // Đã áp sát tầm đánh -> Đứng im đánh quái
                 SetMovingAnimation(false);
             }
-            return;
-        }
-
-        if (!targetEnemy.gameObject.activeInHierarchy)
-        {
-            targetEnemy = null;
-            SetMovingAnimation(false);
-            return;
-        }
-
-        float distanceToEnemy = Vector3.Distance(transform.position, targetEnemy.position);
-
-        if (distanceToEnemy > attackRange)
-        {
-            Vector3 moveDir = (targetEnemy.position - transform.position).normalized;
-            transform.Translate(moveDir * speed * Time.deltaTime, Space.World);
-
-            FlipSprite(moveDir.x);
-            SetMovingAnimation(true);
         }
         else
         {
-            SetMovingAnimation(false);
-
-            Vector3 dirToEnemy = targetEnemy.position - transform.position;
-            FlipSprite(dirToEnemy.x);
-
-            if (attackCountdown <= 0f)
+            // KHÔNG CÓ QUÁI:
+            if (!hasMovedFromRally)
             {
-                TriggerAttackAnimation();
-                OnAttackHit();
-                attackCountdown = 1f / attackRate;
+                // Nếu chưa từng rời vị trí (vừa spawn), đứng yên tại điểm tập kết
+                transform.position = rallyPosition;
+            }
+            else
+            {
+                // Nếu đã từng lao ra đánh quái rồi, khi hết quái lính sẽ ĐỨNG YÊN TẠI CHỖ ĐÓ, không bao giờ bị kéo giật về tháp nữa
+                // (hoặc bạn có thể tự tìm kiếm quái mới quanh đây)
+            }
+            SetMovingAnimation(false);
+        }
+
+        // --- XỬ LÝ TẤN CÔNG CẬN CHIẾN ---
+        if (targetEnemy != null)
+        {
+            float distanceToEnemy = Vector3.Distance(transform.position, targetEnemy.position);
+            if (distanceToEnemy <= attackRange)
+            {
+                Vector3 dirToEnemy = targetEnemy.position - transform.position;
+                if (dirToEnemy != Vector3.zero) FlipSprite(dirToEnemy.x);
+
+                if (attackCountdown <= 0f)
+                {
+                    TriggerAttackAnimation();
+                    OnAttackHit();
+                    attackCountdown = 1f / attackRate;
+                }
             }
         }
 
@@ -192,14 +197,12 @@ public class PlayerSoldier : MonoBehaviour
     public void TakeDamage(int damageAmount)
     {
         currentHp -= damageAmount;
-        Debug.Log(gameObject.name + " (Đấu sĩ) nhận " + damageAmount + " sát thương. Máu còn: " + currentHp);
-
         if (animator != null)
         {
             animator.SetTrigger("HurtTrigger");
         }
 
-        UpdateHealthBarUI(); // Cập nhật thanh máu trực quan khi nhận sát thương
+        UpdateHealthBarUI();
 
         if (currentHp <= 0)
         {
@@ -229,15 +232,5 @@ public class PlayerSoldier : MonoBehaviour
         }
 
         Destroy(gameObject, 0.3f);
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(rallyPosition, 0.3f);
-        Gizmos.DrawLine(transform.position, rallyPosition);
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, detectRadius);
     }
 }
