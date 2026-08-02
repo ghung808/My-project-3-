@@ -133,6 +133,6 @@ MonoBehaviour:
   soldierHp: 20
   soldierDmg: 2
   maxSoldiers: 3
-  respawnTime: 5
   soldierPrefab: {fileID: 3247862385546391496, guid: c40db8d4ebe8b514aa853415be28d36c, type: 3}
   spawnPoint: {fileID: 0}
+  targetSpot: {fileID: 0}

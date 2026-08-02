@@ -2,30 +2,39 @@ using UnityEngine;
 
 public class BuildingSpot2D : MonoBehaviour
 {
+    [Header("Hiệu ứng Visual")]
+    public SpriteRenderer spotRenderer;
+    public Color hoverColor = Color.green;
+
+    private Color originalColor;
     private GameObject currentTower;
-    private SpriteRenderer spotRenderer;
 
     void Start()
     {
-        spotRenderer = GetComponent<SpriteRenderer>();
+        if (spotRenderer == null) spotRenderer = GetComponent<SpriteRenderer>();
+        if (spotRenderer != null) originalColor = spotRenderer.color;
+    }
+
+    void OnMouseEnter()
+    {
+        if (spotRenderer == null || currentTower != null) return;
+        spotRenderer.color = hoverColor;
+    }
+
+    void OnMouseExit()
+    {
+        if (spotRenderer != null) spotRenderer.color = originalColor;
     }
 
     void OnMouseDown()
     {
         if (currentTower != null)
         {
-            SpawnTower towerScript = currentTower.GetComponent<SpawnTower>();
-            if (towerScript != null && BuildManager.instance != null)
-            {
-                BuildManager.instance.SelectSpotToUpgrade(this);
-            }
+            BuildManager.instance.SelectSpotToUpgrade(this);
             return;
         }
 
-        if (BuildShopUI.instance != null)
-        {
-            BuildShopUI.instance.ShowShop(this);
-        }
+        BuildShopUI.instance.ShowShop(this);
     }
 
     public void BuildTower(GameObject towerPrefab)
@@ -39,25 +48,14 @@ public class BuildingSpot2D : MonoBehaviour
         {
             PlayerStats.Money -= cost;
 
-            // Khởi tạo tháp tại vị trí ô đất
             currentTower = Instantiate(towerPrefab, transform.position, Quaternion.identity);
 
-            // Đảm bảo tháp mới sinh ra luôn hiện hình ảnh (Sprite) và nằm đè lên trên nền cỏ
-            SpriteRenderer towerSprite = currentTower.GetComponent<SpriteRenderer>();
-            if (towerSprite != null)
-            {
-                towerSprite.enabled = true;
-                towerSprite.sortingOrder = 5; // Số lớn hơn nền cỏ để hiển thị rõ
-            }
-
-            // Liên kết ô đất với tháp
             SpawnTower installedTower = currentTower.GetComponent<SpawnTower>();
             if (installedTower != null)
             {
-                installedTower.SetAssignedSpot(this);
+                installedTower.targetSpot = this;
             }
 
-            // Tắt hiệu ứng màu xanh của ô đất đi
             if (spotRenderer != null) spotRenderer.enabled = false;
         }
         else
@@ -70,17 +68,16 @@ public class BuildingSpot2D : MonoBehaviour
     {
         if (currentTower != null)
         {
+            Destroy(currentTower);
             currentTower = null;
         }
 
         if (spotRenderer != null)
         {
             spotRenderer.enabled = true;
+            spotRenderer.color = originalColor;
         }
     }
 
-    public GameObject GetCurrentTower()
-    {
-        return currentTower;
-    }
+    public GameObject GetCurrentTower() => currentTower;
 }

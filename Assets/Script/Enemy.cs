@@ -23,6 +23,9 @@ public class Enemy : MonoBehaviour
     [Header("Thanh máu (UI Slider)")]
     public Slider healthSlider;
 
+    [Header("Cấu hình Rơi Xu")]
+    public GameObject coinPrefab; // Kéo Prefab đồng xu vào đây trong Inspector
+
     void Start()
     {
         hp = maxHp;
@@ -131,6 +134,12 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
+        // Khi quái chết, nếu đã gắn Prefab xu thì sinh ra đồng xu tại vị trí đó
+        if (coinPrefab != null)
+        {
+            Instantiate(coinPrefab, transform.position, Quaternion.identity);
+        }
+
         Destroy(gameObject);
     }
 

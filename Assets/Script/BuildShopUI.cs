@@ -21,9 +21,35 @@ public class BuildShopUI : MonoBehaviour
     public void ShowShop(BuildingSpot2D spot)
     {
         selectedSpot = spot;
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(spot.transform.position);
-        shopPanel.transform.position = screenPos + new Vector3(0, 40f, 0);
-        shopPanel.SetActive(true);
+
+        if (shopPanel != null && Camera.main != null)
+        {
+            // Lấy Canvas chứa shopPanel để kiểm tra RenderMode
+            Canvas canvas = shopPanel.GetComponentInParent<Canvas>();
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(spot.transform.position);
+
+            if (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceCamera)
+            {
+                // Nếu Canvas dùng chế độ Screen Space - Camera, cần dùng RectTransformUtility để chuyển đổi chuẩn xác
+                Vector2 localPoint;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    canvas.transform as RectTransform,
+                    screenPos,
+                    canvas.worldCamera,
+                    out localPoint
+                );
+
+                // Đặt vị trí cục bộ của shopPanel theo điểm đã tính + đẩy lên một chút (ví dụ 50 đơn vị)
+                shopPanel.transform.localPosition = (Vector3)localPoint + new Vector3(0, 50f, 0);
+            }
+            else
+            {
+                // Nếu Canvas dùng chế độ Screen Space - Overlay thông thường
+                shopPanel.transform.position = screenPos + new Vector3(0, 50f, 0);
+            }
+
+            shopPanel.SetActive(true);
+        }
     }
 
     public void HideShop()

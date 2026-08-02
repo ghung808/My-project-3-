@@ -135,3 +135,4 @@ MonoBehaviour:
   maxSoldiers: 3
   soldierPrefab: {fileID: 8107112667070253389, guid: dbbf6c2ecaf6dfa4e9c4cdb2e3838d0a, type: 3}
   spawnPoint: {fileID: 0}
+  targetSpot: {fileID: 0}

@@ -161,13 +161,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpawnTower
   cost: 50
   upgradeCost: 60
-  level: 1
+  sellValue: 50
+  soldierHp: 20
+  soldierDmg: 2
+  maxSoldiers: 3
   soldierPrefab: {fileID: 7689405629313997713, guid: c777b550fba1ac24196ebd02f613c3d9, type: 3}
   spawnPoint: {fileID: 7724348872909265394}
-  maxSoldiers: 3
-  respawnTime: 10
-  soldierHp: 20
-  soldierDamage: 2
-  rallyPoint: {x: 0, y: 0, z: 0}
-  rallyRadius: 0.5
   targetSpot: {fileID: 0}
