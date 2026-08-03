@@ -130,7 +130,7 @@ MonoBehaviour:
   cost: 50
   upgradeCost: 60
   level: 1
-  soldierPrefab: {fileID: 3247862385546391496, guid: c40db8d4ebe8b514aa853415be28d36c, type: 3}
+  soldierPrefab: {fileID: 4188367626865652825, guid: b3d1d6800d3f24647ad915644e8981e7, type: 3}
   spawnPoint: {fileID: 0}
   maxSoldiers: 3
   respawnTime: 10
