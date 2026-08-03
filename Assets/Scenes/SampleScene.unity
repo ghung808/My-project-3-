@@ -21433,7 +21433,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000030517578}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0.000061035}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &834281916
@@ -21531,7 +21531,8 @@ MonoBehaviour:
     enemyPrefab: {fileID: 0}
     count: 0
     rate: 0
-  timeBetweenWaves: 30
+  spawnPoint: {fileID: 1392674606}
+  timeBetweenWaves: 5
 --- !u!4 &1017842237
 Transform:
   m_ObjectHideFlags: 0
@@ -21574,8 +21575,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5265f4d20c1f6348bff3bfaf5477c46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  startMoney: 200
   startLives: 20
+  startMoney: 200
 --- !u!1001 &1071963454
 PrefabInstance:
   m_ObjectHideFlags: 0
