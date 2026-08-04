@@ -1,0 +1,1755 @@
+fileFormatVersion: 2
+guid: 7b26e4489054db54ab0eb8dd3937acfa
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6925737670778634449
+    second: Aged Book Asset Sheet_0
+  - first:
+      213: -470890378382066774
+    second: Aged Book Asset Sheet_1
+  - first:
+      213: 2846058543619770861
+    second: Aged Book Asset Sheet_2
+  - first:
+      213: -5752488988975814484
+    second: Aged Book Asset Sheet_3
+  - first:
+      213: 4422105029142107172
+    second: Aged Book Asset Sheet_4
+  - first:
+      213: -6193688750390795136
+    second: Aged Book Asset Sheet_5
+  - first:
+      213: 8612062272380750756
+    second: Aged Book Asset Sheet_6
+  - first:
+      213: -877739003385447252
+    second: Aged Book Asset Sheet_7
+  - first:
+      213: -5140533635272052705
+    second: Aged Book Asset Sheet_8
+  - first:
+      213: -5045765730490930749
+    second: Aged Book Asset Sheet_9
+  - first:
+      213: -6274505955594955309
+    second: Aged Book Asset Sheet_10
+  - first:
+      213: 8687608873738289958
+    second: Aged Book Asset Sheet_11
+  - first:
+      213: 4780139210293224934
+    second: Aged Book Asset Sheet_12
+  - first:
+      213: 5933882511069265173
+    second: Aged Book Asset Sheet_13
+  - first:
+      213: -637862958841513644
+    second: Aged Book Asset Sheet_14
+  - first:
+      213: -3868421252819481093
+    second: Aged Book Asset Sheet_15
+  - first:
+      213: -6274663618573985269
+    second: Aged Book Asset Sheet_16
+  - first:
+      213: 3982982049880912806
+    second: Aged Book Asset Sheet_17
+  - first:
+      213: -8409397278484520773
+    second: Aged Book Asset Sheet_18
+  - first:
+      213: -5195750950160684648
+    second: Aged Book Asset Sheet_19
+  - first:
+      213: 4806958394008400430
+    second: Aged Book Asset Sheet_20
+  - first:
+      213: -1418741268734268583
+    second: Aged Book Asset Sheet_21
+  - first:
+      213: -2368262083344033978
+    second: Aged Book Asset Sheet_22
+  - first:
+      213: -79012337226723846
+    second: Aged Book Asset Sheet_23
+  - first:
+      213: 1340165699545293687
+    second: Aged Book Asset Sheet_24
+  - first:
+      213: -6417197694475321384
+    second: Aged Book Asset Sheet_25
+  - first:
+      213: 8520034991544662339
+    second: Aged Book Asset Sheet_26
+  - first:
+      213: 8792295804977353572
+    second: Aged Book Asset Sheet_27
+  - first:
+      213: 7438017070102773951
+    second: Aged Book Asset Sheet_28
+  - first:
+      213: -2139063768364110708
+    second: Aged Book Asset Sheet_29
+  - first:
+      213: 2476239679103510371
+    second: Aged Book Asset Sheet_30
+  - first:
+      213: 8504776639706299993
+    second: Aged Book Asset Sheet_31
+  - first:
+      213: -5763139685267861157
+    second: Aged Book Asset Sheet_32
+  - first:
+      213: 5430913216291402828
+    second: Aged Book Asset Sheet_33
+  - first:
+      213: 2891705056237661761
+    second: Aged Book Asset Sheet_34
+  - first:
+      213: -8381870500949297616
+    second: Aged Book Asset Sheet_35
+  - first:
+      213: 6998155771574481161
+    second: Aged Book Asset Sheet_36
+  - first:
+      213: -954182173684722499
+    second: Aged Book Asset Sheet_37
+  - first:
+      213: -1729997186628333781
+    second: Aged Book Asset Sheet_38
+  - first:
+      213: -1965203911255615187
+    second: Aged Book Asset Sheet_39
+  - first:
+      213: 7769041783862980652
+    second: Aged Book Asset Sheet_40
+  - first:
+      213: -1335026464153249060
+    second: Aged Book Asset Sheet_41
+  - first:
+      213: 3435906867230046110
+    second: Aged Book Asset Sheet_42
+  - first:
+      213: -1208410868556407339
+    second: Aged Book Asset Sheet_43
+  - first:
+      213: -2756511387814460842
+    second: Aged Book Asset Sheet_44
+  - first:
+      213: 9059811215343328824
+    second: Aged Book Asset Sheet_45
+  - first:
+      213: -8492812063412317001
+    second: Aged Book Asset Sheet_46
+  - first:
+      213: -8093328024447737453
+    second: Aged Book Asset Sheet_47
+  - first:
+      213: -3733907082756991124
+    second: Aged Book Asset Sheet_48
+  - first:
+      213: 3692894498510087041
+    second: Aged Book Asset Sheet_49
+  - first:
+      213: 2249701381570908006
+    second: Aged Book Asset Sheet_50
+  - first:
+      213: 125975694084759352
+    second: Aged Book Asset Sheet_51
+  - first:
+      213: 1045275868610879821
+    second: Aged Book Asset Sheet_52
+  - first:
+      213: 4267269575148149988
+    second: Aged Book Asset Sheet_53
+  - first:
+      213: -686513092160499785
+    second: Aged Book Asset Sheet_54
+  - first:
+      213: -7332164040126520184
+    second: Aged Book Asset Sheet_55
+  - first:
+      213: 4296131842150284273
+    second: Aged Book Asset Sheet_56
+  - first:
+      213: 5272042554987526488
+    second: Aged Book Asset Sheet_57
+  - first:
+      213: 5766950091394080499
+    second: Aged Book Asset Sheet_58
+  - first:
+      213: 3798360619029281343
+    second: Aged Book Asset Sheet_59
+  - first:
+      213: 8993887655194498929
+    second: Aged Book Asset Sheet_60
+  - first:
+      213: -3773696952752311534
+    second: Aged Book Asset Sheet_61
+  - first:
+      213: 7682248162063980735
+    second: Aged Book Asset Sheet_62
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 10929
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d04d4aa7b92d1060800000000000000
+      internalID: 6925737670778634449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 1659
+        y: 10929
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aab336c12bf0779f0800000000000000
+      internalID: -470890378382066774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 2939
+        y: 10929
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de90c669a2b3f7720800000000000000
+      internalID: 2846058543619770861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 4219
+        y: 10929
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca820c51ebd0b20b0800000000000000
+      internalID: -5752488988975814484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 5499
+        y: 10929
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 424db7d38197e5d30800000000000000
+      internalID: 4422105029142107172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 6779
+        y: 10929
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 084af97a5e89b0aa0800000000000000
+      internalID: -6193688750390795136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 8059
+        y: 10929
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ab4cc01201348770800000000000000
+      internalID: 8612062272380750756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 9649
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cac74b1e605a1d3f0800000000000000
+      internalID: -877739003385447252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 1659
+        y: 9649
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1079a9f4e729a8b0800000000000000
+      internalID: -5140533635272052705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 2939
+        y: 9649
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c9af3e3dc6d9f9b0800000000000000
+      internalID: -5045765730490930749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 4219
+        y: 9649
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d590bfb31a7ce8a0800000000000000
+      internalID: -6274505955594955309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 5499
+        y: 9649
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 623c3b2ed36909870800000000000000
+      internalID: 8687608873738289958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 6779
+        y: 9649
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e5a1761947765240800000000000000
+      internalID: 4780139210293224934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 8059
+        y: 9649
+        width: 512
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51dbf2b64b2695250800000000000000
+      internalID: 5933882511069265173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 589
+        y: 8279
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4593fdab40bd527f0800000000000000
+      internalID: -637862958841513644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 1869
+        y: 8279
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfd8f18cd5b905ac0800000000000000
+      internalID: -3868421252819481093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 3139
+        y: 8279
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0a94d9feaaebe8a0800000000000000
+      internalID: -6274663618573985269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 4419
+        y: 8279
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a3b8e55215664730800000000000000
+      internalID: 3982982049880912806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 5709
+        y: 8279
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb02bc8eab1db4b80800000000000000
+      internalID: -8409397278484520773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 6989
+        y: 8279
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89926420a0cf4e7b0800000000000000
+      internalID: -5195750950160684648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 8269
+        y: 8279
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e22f3f4e03fb5b240800000000000000
+      internalID: 4806958394008400430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 589
+        y: 6839
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95b28e8355e9f4ce0800000000000000
+      internalID: -1418741268734268583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 1869
+        y: 6839
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 647904bce2e322fd0800000000000000
+      internalID: -2368262083344033978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 3149
+        y: 6839
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afd4abaa2ba47eef0800000000000000
+      internalID: -79012337226723846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 4429
+        y: 6839
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7736f8d6a99399210800000000000000
+      internalID: 1340165699545293687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 5709
+        y: 6839
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dfb75752b881f6a0800000000000000
+      internalID: -6417197694475321384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 6989
+        y: 6839
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 349fae80fae3d3670800000000000000
+      internalID: 8520034991544662339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_27
+      rect:
+        serializedVersion: 2
+        x: 8269
+        y: 6839
+        width: 112
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46315d77372840a70800000000000000
+      internalID: 8792295804977353572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_28
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 5859
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb084c0fd15293760800000000000000
+      internalID: 7438017070102773951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_29
+      rect:
+        serializedVersion: 2
+        x: 1649
+        y: 5859
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8cafbef5d48052e0800000000000000
+      internalID: -2139063768364110708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_30
+      rect:
+        serializedVersion: 2
+        x: 2929
+        y: 5859
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36721b35ede5d5220800000000000000
+      internalID: 2476239679103510371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_31
+      rect:
+        serializedVersion: 2
+        x: 4209
+        y: 5859
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95efbb72b49070670800000000000000
+      internalID: 8504776639706299993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_32
+      rect:
+        serializedVersion: 2
+        x: 5489
+        y: 5859
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5117ac9df63500b0800000000000000
+      internalID: -5763139685267861157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_33
+      rect:
+        serializedVersion: 2
+        x: 6769
+        y: 5859
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c44f507cbca7e5b40800000000000000
+      internalID: 5430913216291402828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_34
+      rect:
+        serializedVersion: 2
+        x: 8049
+        y: 5859
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14e2f308d66612820800000000000000
+      internalID: 2891705056237661761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_35
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 4739
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 036779d303d9dab80800000000000000
+      internalID: -8381870500949297616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_36
+      rect:
+        serializedVersion: 2
+        x: 1649
+        y: 4739
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 901fb8fa8917e1160800000000000000
+      internalID: 6998155771574481161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_37
+      rect:
+        serializedVersion: 2
+        x: 2929
+        y: 4739
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db413865e5012c2f0800000000000000
+      internalID: -954182173684722499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_38
+      rect:
+        serializedVersion: 2
+        x: 4209
+        y: 4739
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2fc79489b0ddf7e0800000000000000
+      internalID: -1729997186628333781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_39
+      rect:
+        serializedVersion: 2
+        x: 5489
+        y: 4739
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d29966e64713ab4e0800000000000000
+      internalID: -1965203911255615187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_40
+      rect:
+        serializedVersion: 2
+        x: 6769
+        y: 4739
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c20f15c175e21db60800000000000000
+      internalID: 7769041783862980652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_41
+      rect:
+        serializedVersion: 2
+        x: 8049
+        y: 4739
+        width: 522
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cda566e0188097de0800000000000000
+      internalID: -1335026464153249060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_42
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 3249
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e97729e671bceaf20800000000000000
+      internalID: 3435906867230046110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_43
+      rect:
+        serializedVersion: 2
+        x: 1409
+        y: 3249
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5dd59fca7bcda3fe0800000000000000
+      internalID: -1208410868556407339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_44
+      rect:
+        serializedVersion: 2
+        x: 2689
+        y: 3249
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65200065f77eeb9d0800000000000000
+      internalID: -2756511387814460842
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_45
+      rect:
+        serializedVersion: 2
+        x: 3969
+        y: 3249
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83e93a6ac4aeabd70800000000000000
+      internalID: 9059811215343328824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_46
+      rect:
+        serializedVersion: 2
+        x: 5249
+        y: 3249
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b41828dc68732a80800000000000000
+      internalID: -8492812063412317001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_47
+      rect:
+        serializedVersion: 2
+        x: 6539
+        y: 3249
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3912414ca09beaf80800000000000000
+      internalID: -8093328024447737453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_48
+      rect:
+        serializedVersion: 2
+        x: 7819
+        y: 3249
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6754f39a4f7e2cc0800000000000000
+      internalID: -3733907082756991124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_49
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 1809
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18320b80bfbcf3330800000000000000
+      internalID: 3692894498510087041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_50
+      rect:
+        serializedVersion: 2
+        x: 1409
+        y: 1809
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66f4d33bc7b883f10800000000000000
+      internalID: 2249701381570908006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_51
+      rect:
+        serializedVersion: 2
+        x: 2689
+        y: 1809
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83f5140f93e8fb100800000000000000
+      internalID: 125975694084759352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_52
+      rect:
+        serializedVersion: 2
+        x: 3969
+        y: 1809
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d41e6d84dd0918e00800000000000000
+      internalID: 1045275868610879821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_53
+      rect:
+        serializedVersion: 2
+        x: 5249
+        y: 1809
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ec9983d113683b30800000000000000
+      internalID: 4267269575148149988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_54
+      rect:
+        serializedVersion: 2
+        x: 6539
+        y: 1809
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bf4e10eaf30976f0800000000000000
+      internalID: -686513092160499785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_55
+      rect:
+        serializedVersion: 2
+        x: 7819
+        y: 1809
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 884ad5927abee3a90800000000000000
+      internalID: -7332164040126520184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_56
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 369
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fbbc97062dee9b30800000000000000
+      internalID: 4296131842150284273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_57
+      rect:
+        serializedVersion: 2
+        x: 1409
+        y: 369
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85936c275ce0a2940800000000000000
+      internalID: 5272042554987526488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_58
+      rect:
+        serializedVersion: 2
+        x: 2689
+        y: 369
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fe53f2bd82580050800000000000000
+      internalID: 5766950091394080499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_59
+      rect:
+        serializedVersion: 2
+        x: 3969
+        y: 369
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3ab212cbdc76b430800000000000000
+      internalID: 3798360619029281343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_60
+      rect:
+        serializedVersion: 2
+        x: 5249
+        y: 369
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17793a5bb25b0dc70800000000000000
+      internalID: 8993887655194498929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_61
+      rect:
+        serializedVersion: 2
+        x: 6539
+        y: 369
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21379398d9221abc0800000000000000
+      internalID: -3773696952752311534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aged Book Asset Sheet_62
+      rect:
+        serializedVersion: 2
+        x: 7819
+        y: 369
+        width: 1012
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb898384004dc9a60800000000000000
+      internalID: 7682248162063980735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Aged Book Asset Sheet_0: 6925737670778634449
+      Aged Book Asset Sheet_1: -470890378382066774
+      Aged Book Asset Sheet_10: -6274505955594955309
+      Aged Book Asset Sheet_11: 8687608873738289958
+      Aged Book Asset Sheet_12: 4780139210293224934
+      Aged Book Asset Sheet_13: 5933882511069265173
+      Aged Book Asset Sheet_14: -637862958841513644
+      Aged Book Asset Sheet_15: -3868421252819481093
+      Aged Book Asset Sheet_16: -6274663618573985269
+      Aged Book Asset Sheet_17: 3982982049880912806
+      Aged Book Asset Sheet_18: -8409397278484520773
+      Aged Book Asset Sheet_19: -5195750950160684648
+      Aged Book Asset Sheet_2: 2846058543619770861
+      Aged Book Asset Sheet_20: 4806958394008400430
+      Aged Book Asset Sheet_21: -1418741268734268583
+      Aged Book Asset Sheet_22: -2368262083344033978
+      Aged Book Asset Sheet_23: -79012337226723846
+      Aged Book Asset Sheet_24: 1340165699545293687
+      Aged Book Asset Sheet_25: -6417197694475321384
+      Aged Book Asset Sheet_26: 8520034991544662339
+      Aged Book Asset Sheet_27: 8792295804977353572
+      Aged Book Asset Sheet_28: 7438017070102773951
+      Aged Book Asset Sheet_29: -2139063768364110708
+      Aged Book Asset Sheet_3: -5752488988975814484
+      Aged Book Asset Sheet_30: 2476239679103510371
+      Aged Book Asset Sheet_31: 8504776639706299993
+      Aged Book Asset Sheet_32: -5763139685267861157
+      Aged Book Asset Sheet_33: 5430913216291402828
+      Aged Book Asset Sheet_34: 2891705056237661761
+      Aged Book Asset Sheet_35: -8381870500949297616
+      Aged Book Asset Sheet_36: 6998155771574481161
+      Aged Book Asset Sheet_37: -954182173684722499
+      Aged Book Asset Sheet_38: -1729997186628333781
+      Aged Book Asset Sheet_39: -1965203911255615187
+      Aged Book Asset Sheet_4: 4422105029142107172
+      Aged Book Asset Sheet_40: 7769041783862980652
+      Aged Book Asset Sheet_41: -1335026464153249060
+      Aged Book Asset Sheet_42: 3435906867230046110
+      Aged Book Asset Sheet_43: -1208410868556407339
+      Aged Book Asset Sheet_44: -2756511387814460842
+      Aged Book Asset Sheet_45: 9059811215343328824
+      Aged Book Asset Sheet_46: -8492812063412317001
+      Aged Book Asset Sheet_47: -8093328024447737453
+      Aged Book Asset Sheet_48: -3733907082756991124
+      Aged Book Asset Sheet_49: 3692894498510087041
+      Aged Book Asset Sheet_5: -6193688750390795136
+      Aged Book Asset Sheet_50: 2249701381570908006
+      Aged Book Asset Sheet_51: 125975694084759352
+      Aged Book Asset Sheet_52: 1045275868610879821
+      Aged Book Asset Sheet_53: 4267269575148149988
+      Aged Book Asset Sheet_54: -686513092160499785
+      Aged Book Asset Sheet_55: -7332164040126520184
+      Aged Book Asset Sheet_56: 4296131842150284273
+      Aged Book Asset Sheet_57: 5272042554987526488
+      Aged Book Asset Sheet_58: 5766950091394080499
+      Aged Book Asset Sheet_59: 3798360619029281343
+      Aged Book Asset Sheet_6: 8612062272380750756
+      Aged Book Asset Sheet_60: 8993887655194498929
+      Aged Book Asset Sheet_61: -3773696952752311534
+      Aged Book Asset Sheet_62: 7682248162063980735
+      Aged Book Asset Sheet_7: -877739003385447252
+      Aged Book Asset Sheet_8: -5140533635272052705
+      Aged Book Asset Sheet_9: -5045765730490930749
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
