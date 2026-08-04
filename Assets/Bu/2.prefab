@@ -36,7 +36,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5157661515944440527
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -93,6 +93,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!95 &3129899193932504806
 Animator:
   serializedVersion: 7
@@ -127,10 +128,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f26f8847587c3a4591679aa99a9d117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnTower
-  towerType: 0
-  soldierPrefab: {fileID: 0}
   cost: 50
-  baseHp: 15
-  baseDamage: 2
   upgradeCost: 60
+  level: 1
+  soldierPrefab: {fileID: 8107112667070253389, guid: dbbf6c2ecaf6dfa4e9c4cdb2e3838d0a, type: 3}
+  spawnPoint: {fileID: 0}
+  maxSoldiers: 3
+  soldierHp: 20
+  soldierDamage: 2
+  rallyPoint: {x: 0, y: 0, z: 0}
+  rallyRadius: 0.5
   targetSpot: {fileID: 0}
