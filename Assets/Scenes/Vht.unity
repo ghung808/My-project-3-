@@ -21748,7 +21748,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightningSkillController
   lightningPrefab: {fileID: 5251691961546886910, guid: cc1417bae568a754ca2661fe49d4137d, type: 3}
-  cooldownTime: 30
+  cooldownTime: 1
   skillButton: {fileID: 1527803101}
   cooldownOverlay: {fileID: 1642695948}
 --- !u!1001 &1071963454
