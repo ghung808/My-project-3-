@@ -36,7 +36,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3992459269525795985
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -93,6 +93,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!95 &2694949275891517489
 Animator:
   serializedVersion: 7
@@ -130,10 +131,9 @@ MonoBehaviour:
   cost: 50
   upgradeCost: 60
   level: 1
-  soldierPrefab: {fileID: 4188367626865652825, guid: b3d1d6800d3f24647ad915644e8981e7, type: 3}
+  soldierPrefab: {fileID: 3247862385546391496, guid: c40db8d4ebe8b514aa853415be28d36c, type: 3}
   spawnPoint: {fileID: 0}
   maxSoldiers: 3
-  respawnTime: 10
   soldierHp: 20
   soldierDamage: 2
   rallyPoint: {x: 0, y: 0, z: 0}

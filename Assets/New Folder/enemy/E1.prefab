@@ -314,7 +314,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8269603436947868871
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -371,6 +371,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!95 &1498814170886023559
 Animator:
   serializedVersion: 7
@@ -406,10 +407,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   speed: 1.5
-  maxHp: 20
-  enemyDamage: 2
-  detectionRadius: 1
+  maxHp: 1
+  damage: 2
+  attackCooldown: 1
+  checkRadius: 0.8
   healthSlider: {fileID: 7173908394848523693}
+  coinPrefab: {fileID: 0}
 --- !u!58 &6068724911350315131
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -530,6 +533,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
