@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
@@ -18,6 +20,7 @@ public class Enemy : MonoBehaviour
     private int waypointIndex = 0;
 
     private bool isEngaged = false;
+    private bool isDead = false;
     private MonoBehaviour currentTargetSoldier;
 
     [Header("Thanh máu (UI Slider)")]
@@ -26,36 +29,30 @@ public class Enemy : MonoBehaviour
     [Header("Cấu hình Rơi Xu")]
     public GameObject coinPrefab;
 
-    private SpriteRenderer spriteRenderer; // Biến quản lý lật mặt sprite
+    private Animator animator;
+    private Collider2D col;
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
         hp = maxHp;
         UpdateHealthUI();
         GetNextWaypoint();
+
+        animator = GetComponent<Animator>();
+        col = GetComponent<Collider2D>();
     }
 
     void Update()
     {
-        // Nếu đang đánh nhau với lính
+        if (isDead) return;
+
         if (isEngaged)
         {
-            // Quay mặt nhìn thẳng về phía con lính đang đánh nhau
-            if (currentTargetSoldier != null)
-            {
-                float dirX = currentTargetSoldier.transform.position.x - transform.position.x;
-                FlipSprite(dirX);
-            }
-
             CheckSoldierAlive();
             return;
         }
 
-        // Nếu chưa vướng lính, quét tìm lính
         CheckForSoldiersAhead();
-
-        // Di chuyển theo Waypoints và lật mặt theo hướng di chuyển
         MoveTowardsWaypoint();
     }
 
@@ -69,22 +66,12 @@ public class Enemy : MonoBehaviour
             MageSoldier mage = hit.GetComponent<MageSoldier>();
             ArcherSoldier archer = hit.GetComponent<ArcherSoldier>();
 
-            if (warrior != null)
+            if (warrior != null || mage != null || archer != null)
             {
                 isEngaged = true;
-                currentTargetSoldier = warrior;
-                break;
-            }
-            else if (mage != null)
-            {
-                isEngaged = true;
-                currentTargetSoldier = mage;
-                break;
-            }
-            else if (archer != null)
-            {
-                isEngaged = true;
-                currentTargetSoldier = archer;
+                currentTargetSoldier = hit.GetComponent<MonoBehaviour>();
+
+                if (animator != null) animator.SetBool("isRunning", false);
                 break;
             }
         }
@@ -108,33 +95,14 @@ public class Enemy : MonoBehaviour
     {
         if (targetWaypoint == null) return;
 
-        Vector3 currentPos = transform.position;
-        Vector3 targetPos = targetWaypoint.position;
+        Vector3 dir = targetWaypoint.position - transform.position;
+        transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
 
-        // Tính hướng di chuyển ngang (để lật mặt trái/phải)
-        float moveDirX = targetPos.x - currentPos.x;
-        if (Mathf.Abs(moveDirX) > 0.01f)
-        {
-            FlipSprite(moveDirX);
-        }
+        if (animator != null) animator.SetBool("isRunning", true);
 
-        // Di chuyển quái
-        transform.position = Vector3.MoveTowards(currentPos, targetPos, speed * Time.deltaTime);
-
-        if (Vector3.Distance(transform.position, targetPos) < 0.2f)
+        if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.2f)
         {
             GetNextWaypoint();
-        }
-    }
-
-    // Hàm lật mặt Sprite (Nếu đi/nhìn sang trái thì lật, sang phải thì giữ nguyên hoặc ngược lại tùy asset gốc)
-    void FlipSprite(float directionX)
-    {
-        if (spriteRenderer != null && Mathf.Abs(directionX) > 0.01f)
-        {
-            // Nếu asset gốc của bạn mặc định quay mặt sang TRÁI, hãy đổi thành: directionX > 0
-            // Nếu asset gốc mặc định quay mặt sang PHẢI, giữ nguyên: directionX < 0
-            spriteRenderer.flipX = directionX < 0;
         }
     }
 
@@ -145,8 +113,15 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int amt)
     {
+        if (isDead) return;
+
         hp -= amt;
         UpdateHealthUI();
+
+        if (animator != null && hp > 0)
+        {
+            animator.SetTrigger("Hurt");
+        }
 
         if (hp <= 0)
         {
@@ -165,12 +140,26 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
+        isDead = true;
+
+        if (col != null) col.enabled = false;
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+        }
+
+        if (healthSlider != null)
+        {
+            healthSlider.gameObject.SetActive(false);
+        }
+
         if (coinPrefab != null)
         {
             Instantiate(coinPrefab, transform.position, Quaternion.identity);
         }
 
-        Destroy(gameObject);
+        Destroy(gameObject, 1.0f);
     }
 
     void CheckSoldierAlive()
@@ -192,18 +181,14 @@ public class Enemy : MonoBehaviour
     {
         if (currentTargetSoldier == null) return;
 
-        if (currentTargetSoldier is PlayerSoldier w)
+        if (animator != null)
         {
-            w.TakeDamage(damage);
+            animator.SetTrigger("Attack");
         }
-        else if (currentTargetSoldier is MageSoldier m)
-        {
-            m.TakeDamage(damage);
-        }
-        else if (currentTargetSoldier is ArcherSoldier a)
-        {
-            a.TakeDamage(damage);
-        }
+
+        if (currentTargetSoldier is PlayerSoldier w) w.TakeDamage(damage);
+        else if (currentTargetSoldier is MageSoldier m) m.TakeDamage(damage);
+        else if (currentTargetSoldier is ArcherSoldier a) a.TakeDamage(damage);
     }
 
     void OnDrawGizmosSelected()
