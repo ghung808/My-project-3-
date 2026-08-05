@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   speed: 1.5
-  maxHp: 100
+  maxHp: 10
   damage: 2
   attackCooldown: 1
   checkRadius: 0.8

@@ -118,27 +118,8 @@ public class PlayerSoldier : MonoBehaviour
                 // Đã áp sát tầm đánh -> Đứng im đánh quái
                 SetMovingAnimation(false);
             }
-        }
-        else
-        {
-            // KHÔNG CÓ QUÁI:
-            if (!hasMovedFromRally)
-            {
-                // Nếu chưa từng rời vị trí (vừa spawn), đứng yên tại điểm tập kết
-                transform.position = rallyPosition;
-            }
-            else
-            {
-                // Nếu đã từng lao ra đánh quái rồi, khi hết quái lính sẽ ĐỨNG YÊN TẠI CHỖ ĐÓ, không bao giờ bị kéo giật về tháp nữa
-                // (hoặc bạn có thể tự tìm kiếm quái mới quanh đây)
-            }
-            SetMovingAnimation(false);
-        }
 
-        // --- XỬ LÝ TẤN CÔNG CẬN CHIẾN ---
-        if (targetEnemy != null)
-        {
-            float distanceToEnemy = Vector3.Distance(transform.position, targetEnemy.position);
+            // --- XỬ LÝ TẤN CÔNG CẬN CHIẾN ---
             if (distanceToEnemy <= attackRange)
             {
                 Vector3 dirToEnemy = targetEnemy.position - transform.position;
@@ -150,6 +131,38 @@ public class PlayerSoldier : MonoBehaviour
                     OnAttackHit();
                     attackCountdown = 1f / attackRate;
                 }
+            }
+        }
+        else
+        {
+            // --- KHI HẾT QUÁI (QUÁI ĐÃ CHẾT HẾT) ---
+            attackCountdown = 0f; // Reset thời gian tấn công để không bị treo trạng thái
+            SetMovingAnimation(false);
+
+            if (hasMovedFromRally)
+            {
+                // Nếu đã từng rời tháp đi đánh, bây giờ hết quái sẽ tự động quay trở về tháp
+                float distToRally = Vector3.Distance(transform.position, rallyPosition);
+                if (distToRally > 0.1f)
+                {
+                    transform.position = Vector3.MoveTowards(transform.position, rallyPosition, speed * Time.deltaTime);
+                    Vector3 moveBackDir = (rallyPosition - transform.position).normalized;
+                    if (moveBackDir != Vector3.zero) FlipSprite(moveBackDir.x);
+                    SetMovingAnimation(true); // Bật animation chạy về
+                }
+                else
+                {
+                    // Đã về tới vị trí tháp -> Đứng yên (idle) và reset trạng thái
+                    transform.position = rallyPosition;
+                    SetMovingAnimation(false);
+                    hasMovedFromRally = false;
+                }
+            }
+            else
+            {
+                // Đang ở sẵn tháp thì đứng yên tại chỗ
+                transform.position = rallyPosition;
+                SetMovingAnimation(false);
             }
         }
 

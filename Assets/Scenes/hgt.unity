@@ -17550,12 +17550,12 @@ MonoBehaviour:
     count: 3
     rate: 0.3
   - waveName: 2
-    enemyPrefab: {fileID: 2961228660896816668, guid: 0f095848a6c29014fad2b065562d4b16, type: 3}
+    enemyPrefab: {fileID: 8031329591404873414, guid: d002414a9f03d2c419440f00442358e2, type: 3}
     count: 4
     rate: 0.6
   - waveName: 3
-    enemyPrefab: {fileID: 8031329591404873414, guid: d002414a9f03d2c419440f00442358e2, type: 3}
-    count: 5
+    enemyPrefab: {fileID: 4608548196022933149, guid: f01a02648f58398478841a8e98be9923, type: 3}
+    count: 3
     rate: 0.9
   - waveName: 
     enemyPrefab: {fileID: 0}

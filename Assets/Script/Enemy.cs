@@ -31,6 +31,7 @@ public class Enemy : MonoBehaviour
 
     private Animator animator;
     private Collider2D col;
+    private SpriteRenderer spriteRenderer; // Biến quản lý lật mặt sprite
 
     void Start()
     {
@@ -40,6 +41,7 @@ public class Enemy : MonoBehaviour
 
         animator = GetComponent<Animator>();
         col = GetComponent<Collider2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Lấy component SpriteRenderer
     }
 
     void Update()
@@ -48,6 +50,13 @@ public class Enemy : MonoBehaviour
 
         if (isEngaged)
         {
+            // Khi đang đứng đánh lính, tự động quay mặt về phía con lính đó
+            if (currentTargetSoldier != null)
+            {
+                float directionX = currentTargetSoldier.transform.position.x - transform.position.x;
+                FlipSprite(directionX);
+            }
+
             CheckSoldierAlive();
             return;
         }
@@ -98,6 +107,12 @@ public class Enemy : MonoBehaviour
 
         Vector3 dir = targetWaypoint.position - transform.position;
         transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
+
+        // Quay mặt theo hướng di chuyển trên đường đi
+        if (dir.x != 0)
+        {
+            FlipSprite(dir.x);
+        }
 
         // Chuyển sang trạng thái đi bộ (ewalk)
         SetAnimatorBool("isRunning", true);
@@ -186,6 +201,17 @@ public class Enemy : MonoBehaviour
         if (currentTargetSoldier is PlayerSoldier w) w.TakeDamage(damage);
         else if (currentTargetSoldier is MageSoldier m) m.TakeDamage(damage);
         else if (currentTargetSoldier is ArcherSoldier a) a.TakeDamage(damage);
+    }
+
+    // --- HÀM LẬT HƯỚNG SPRITE ---
+    void FlipSprite(float directionX)
+    {
+        if (spriteRenderer != null && Mathf.Abs(directionX) > 0.01f)
+        {
+            // Nếu lính/hướng di chuyển nằm bên trái -> lật ảnh (flipX = true)
+            // Nếu nằm bên phải -> giữ nguyên (flipX = false)
+            spriteRenderer.flipX = directionX < 0;
+        }
     }
 
     // --- HÀM HỖ TRỢ AN TOÀN TRÁNH LỖI ANIMATOR ---
