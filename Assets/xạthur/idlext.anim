@@ -7,7 +7,7 @@ AnimationClip:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: idlext
-  serializedVersion: 7
+  serializedVersion: 8
   m_Legacy: 0
   m_Compressed: 0
   m_UseHighQualityCurve: 1
@@ -51,6 +51,7 @@ AnimationClip:
       isPPtrCurve: 1
       isIntCurve: 0
       isSerializeReferenceCurve: 0
+      metaData: 0
     pptrCurveMapping:
     - {fileID: 9199909171267170567, guid: 6ab04058a0a3da64fa63a9cea66cede9, type: 3}
     - {fileID: -5861497341411066109, guid: 02dd08f0a680cbc489b8c128e2ac99fa, type: 3}

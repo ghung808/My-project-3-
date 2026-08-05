@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
@@ -12,40 +14,54 @@ public class Enemy : MonoBehaviour
     private float lastAttackTime;
 
     [Header("Phạm vi phát hiện và chặn lính")]
-    public float checkRadius = 0.8f; // Tăng nhẹ tầm quét để quái dễ bắt mục tiêu hơn
+    public float checkRadius = 0.8f;
 
     private Transform targetWaypoint;
     private int waypointIndex = 0;
 
     private bool isEngaged = false;
+    private bool isDead = false;
     private MonoBehaviour currentTargetSoldier;
 
     [Header("Thanh máu (UI Slider)")]
     public Slider healthSlider;
 
     [Header("Cấu hình Rơi Xu")]
-    public GameObject coinPrefab; // Kéo Prefab đồng xu vào đây trong Inspector
+    public GameObject coinPrefab;
+
+    private Animator animator;
+    private Collider2D col;
+    private SpriteRenderer spriteRenderer; // Biến quản lý lật mặt sprite
 
     void Start()
     {
         hp = maxHp;
         UpdateHealthUI();
         GetNextWaypoint();
+
+        animator = GetComponent<Animator>();
+        col = GetComponent<Collider2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Lấy component SpriteRenderer
     }
 
     void Update()
     {
-        // Nếu đang đánh nhau với lính, tuyệt đối KHÔNG di chuyển, chỉ đứng lại đánh cho đến khi lính chết
+        if (isDead) return;
+
         if (isEngaged)
         {
+            // Khi đang đứng đánh lính, tự động quay mặt về phía con lính đó
+            if (currentTargetSoldier != null)
+            {
+                float directionX = currentTargetSoldier.transform.position.x - transform.position.x;
+                FlipSprite(directionX);
+            }
+
             CheckSoldierAlive();
             return;
         }
 
-        // Nếu chưa vướng lính, liên tục quét xem có lính nào trong tầm chặn đường không
         CheckForSoldiersAhead();
-
-        // Nếu vẫn không vướng lính thì mới di chuyển theo đường Waypoints
         MoveTowardsWaypoint();
     }
 
@@ -59,22 +75,13 @@ public class Enemy : MonoBehaviour
             MageSoldier mage = hit.GetComponent<MageSoldier>();
             ArcherSoldier archer = hit.GetComponent<ArcherSoldier>();
 
-            if (warrior != null)
+            if (warrior != null || mage != null || archer != null)
             {
                 isEngaged = true;
-                currentTargetSoldier = warrior;
-                break;
-            }
-            else if (mage != null)
-            {
-                isEngaged = true;
-                currentTargetSoldier = mage;
-                break;
-            }
-            else if (archer != null)
-            {
-                isEngaged = true;
-                currentTargetSoldier = archer;
+                currentTargetSoldier = hit.GetComponent<MonoBehaviour>();
+
+                // Chuyển sang trạng thái đứng yên (eidle) khi gặp lính
+                SetAnimatorBool("isRunning", false);
                 break;
             }
         }
@@ -101,6 +108,15 @@ public class Enemy : MonoBehaviour
         Vector3 dir = targetWaypoint.position - transform.position;
         transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
 
+        // Quay mặt theo hướng di chuyển trên đường đi
+        if (dir.x != 0)
+        {
+            FlipSprite(dir.x);
+        }
+
+        // Chuyển sang trạng thái đi bộ (ewalk)
+        SetAnimatorBool("isRunning", true);
+
         if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.2f)
         {
             GetNextWaypoint();
@@ -114,10 +130,16 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int amt)
     {
+        if (isDead) return;
+
         hp -= amt;
         UpdateHealthUI();
-
-        if (hp <= 0)
+        if (hp > 0)
+        {
+            // Kích hoạt animation bị thương (ehurt)
+            SetAnimatorTrigger("Hurt");
+        }
+        else
         {
             Die();
         }
@@ -134,25 +156,34 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
-        // Khi quái chết, nếu đã gắn Prefab xu thì sinh ra đồng xu tại vị trí đó
+        isDead = true;
+
+        if (col != null) col.enabled = false;
+
+        // Kích hoạt animation chết (edealth)
+        SetAnimatorTrigger("Die");
+
+        if (healthSlider != null)
+        {
+            healthSlider.gameObject.SetActive(false);
+        }
+
         if (coinPrefab != null)
         {
             Instantiate(coinPrefab, transform.position, Quaternion.identity);
         }
 
-        Destroy(gameObject);
+        Destroy(gameObject, 1.0f);
     }
 
     void CheckSoldierAlive()
     {
-        // Kiểm tra xem lính còn tồn tại không (nếu lính đã bị tiêu diệt và biến mất)
         if (currentTargetSoldier == null)
         {
-            isEngaged = false; // Lính đã chết hoàn toàn, mở khóa cho quái đi tiếp
+            isEngaged = false;
             return;
         }
 
-        // Tiến hành đấm/bắn lính theo nhịp thời gian
         if (Time.time >= lastAttackTime + attackCooldown)
         {
             AttackSoldier();
@@ -164,17 +195,53 @@ public class Enemy : MonoBehaviour
     {
         if (currentTargetSoldier == null) return;
 
-        if (currentTargetSoldier is PlayerSoldier w)
+        // Kích hoạt animation tấn công (eattack)
+        SetAnimatorTrigger("Attack");
+
+        if (currentTargetSoldier is PlayerSoldier w) w.TakeDamage(damage);
+        else if (currentTargetSoldier is MageSoldier m) m.TakeDamage(damage);
+        else if (currentTargetSoldier is ArcherSoldier a) a.TakeDamage(damage);
+    }
+
+    // --- HÀM LẬT HƯỚNG SPRITE ---
+    void FlipSprite(float directionX)
+    {
+        if (spriteRenderer != null && Mathf.Abs(directionX) > 0.01f)
         {
-            w.TakeDamage(damage);
+            // Nếu lính/hướng di chuyển nằm bên trái -> lật ảnh (flipX = true)
+            // Nếu nằm bên phải -> giữ nguyên (flipX = false)
+            spriteRenderer.flipX = directionX < 0;
         }
-        else if (currentTargetSoldier is MageSoldier m)
+    }
+
+    // --- HÀM HỖ TRỢ AN TOÀN TRÁNH LỖI ANIMATOR ---
+    void SetAnimatorTrigger(string triggerName)
+    {
+        if (animator != null && animator.runtimeAnimatorController != null)
         {
-            m.TakeDamage(damage);
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                if (param.name == triggerName && param.type == AnimatorControllerParameterType.Trigger)
+                {
+                    animator.SetTrigger(triggerName);
+                    return;
+                }
+            }
         }
-        else if (currentTargetSoldier is ArcherSoldier a)
+    }
+
+    void SetAnimatorBool(string boolName, bool value)
+    {
+        if (animator != null && animator.runtimeAnimatorController != null)
         {
-            a.TakeDamage(damage);
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                if (param.name == boolName && param.type == AnimatorControllerParameterType.Bool)
+                {
+                    animator.SetBool(boolName, value);
+                    return;
+                }
+            }
         }
     }
 
