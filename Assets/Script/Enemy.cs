@@ -71,7 +71,8 @@ public class Enemy : MonoBehaviour
                 isEngaged = true;
                 currentTargetSoldier = hit.GetComponent<MonoBehaviour>();
 
-                if (animator != null) animator.SetBool("isRunning", false);
+                // Chuyển sang trạng thái đứng yên (eidle) khi gặp lính
+                SetAnimatorBool("isRunning", false);
                 break;
             }
         }
@@ -98,7 +99,8 @@ public class Enemy : MonoBehaviour
         Vector3 dir = targetWaypoint.position - transform.position;
         transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
 
-        if (animator != null) animator.SetBool("isRunning", true);
+        // Chuyển sang trạng thái đi bộ (ewalk)
+        SetAnimatorBool("isRunning", true);
 
         if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.2f)
         {
@@ -117,13 +119,12 @@ public class Enemy : MonoBehaviour
 
         hp -= amt;
         UpdateHealthUI();
-
-        if (animator != null && hp > 0)
+        if (hp > 0)
         {
-            animator.SetTrigger("Hurt");
+            // Kích hoạt animation bị thương (ehurt)
+            SetAnimatorTrigger("Hurt");
         }
-
-        if (hp <= 0)
+        else
         {
             Die();
         }
@@ -144,10 +145,8 @@ public class Enemy : MonoBehaviour
 
         if (col != null) col.enabled = false;
 
-        if (animator != null)
-        {
-            animator.SetTrigger("Die");
-        }
+        // Kích hoạt animation chết (edealth)
+        SetAnimatorTrigger("Die");
 
         if (healthSlider != null)
         {
@@ -181,14 +180,43 @@ public class Enemy : MonoBehaviour
     {
         if (currentTargetSoldier == null) return;
 
-        if (animator != null)
-        {
-            animator.SetTrigger("Attack");
-        }
+        // Kích hoạt animation tấn công (eattack)
+        SetAnimatorTrigger("Attack");
 
         if (currentTargetSoldier is PlayerSoldier w) w.TakeDamage(damage);
         else if (currentTargetSoldier is MageSoldier m) m.TakeDamage(damage);
         else if (currentTargetSoldier is ArcherSoldier a) a.TakeDamage(damage);
+    }
+
+    // --- HÀM HỖ TRỢ AN TOÀN TRÁNH LỖI ANIMATOR ---
+    void SetAnimatorTrigger(string triggerName)
+    {
+        if (animator != null && animator.runtimeAnimatorController != null)
+        {
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                if (param.name == triggerName && param.type == AnimatorControllerParameterType.Trigger)
+                {
+                    animator.SetTrigger(triggerName);
+                    return;
+                }
+            }
+        }
+    }
+
+    void SetAnimatorBool(string boolName, bool value)
+    {
+        if (animator != null && animator.runtimeAnimatorController != null)
+        {
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                if (param.name == boolName && param.type == AnimatorControllerParameterType.Bool)
+                {
+                    animator.SetBool(boolName, value);
+                    return;
+                }
+            }
+        }
     }
 
     void OnDrawGizmosSelected()
