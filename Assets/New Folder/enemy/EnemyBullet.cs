@@ -36,13 +36,21 @@ public class EnemyBullet : MonoBehaviour
     {
         if (target != null)
         {
-            PlayerSoldier w = target.GetComponent<PlayerSoldier>();
-            MageSoldier m = target.GetComponent<MageSoldier>();
-            ArcherSoldier a = target.GetComponent<ArcherSoldier>();
+            // Cách tổng quát: Tự động tìm tất cả các component trên mục tiêu và gọi hàm TakeDamage nếu có
+            // Giúp tránh việc lính dùng tên script khác mà đạn không nhận diện được
 
-            if (w != null) w.TakeDamage(damage);
-            else if (m != null) m.TakeDamage(damage);
-            else if (a != null) a.TakeDamage(damage);
+            PlayerSoldier w = target.GetComponent<PlayerSoldier>();
+            if (w != null) { w.TakeDamage(damage); Destroy(gameObject); return; }
+
+            MageSoldier m = target.GetComponent<MageSoldier>();
+            if (m != null) { m.TakeDamage(damage); Destroy(gameObject); return; }
+
+            ArcherSoldier a = target.GetComponent<ArcherSoldier>();
+            if (a != null) { a.TakeDamage(damage); Destroy(gameObject); return; }
+
+            // Dự phòng trường hợp lính của bạn dùng một script chung khác có chứa hàm TakeDamage
+            // Bạn có thể gắn một interface hoặc gọiSendMessage nếu cần thiết
+            target.SendMessage("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
         }
 
         Destroy(gameObject);

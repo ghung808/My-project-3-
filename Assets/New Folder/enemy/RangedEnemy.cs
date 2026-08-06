@@ -13,8 +13,9 @@ public class RangedEnemy : MonoBehaviour
     public float attackCooldown = 1f;
     private float lastAttackTime;
 
-    [Header("Phạm vi phát hiện và chặn lính")]
-    public float checkRadius = 1.2f;
+    [Header("Phạm vi & Tầm đánh xa")]
+    public float detectRadius = 6f;    // Tầm phát hiện lính từ xa
+    public float attackRange = 4.5f;   // Tầm đứng bắn xa để quái dừng lại
 
     [Header("Cấu hình Tấn công Tầm xa (Bắn đạn)")]
     public bool isRangedEnemy = true;
@@ -24,9 +25,8 @@ public class RangedEnemy : MonoBehaviour
     private Transform targetWaypoint;
     private int waypointIndex = 0;
 
-    private bool isEngaged = false;
     private bool isDead = false;
-    private MonoBehaviour currentTargetSoldier;
+    private Transform currentTargetTransform; // Quản lý mục tiêu bất kỳ loại lính nào
 
     [Header("Thanh máu (UI Slider)")]
     public Slider healthSlider;
@@ -61,69 +61,93 @@ public class RangedEnemy : MonoBehaviour
     {
         if (isDead) return;
 
-        if (isEngaged)
+        // Kiểm tra xem mục tiêu hiện tại còn tồn tại trên bản đồ không
+        if (currentTargetTransform != null)
         {
-            if (currentTargetSoldier != null)
+            if (!currentTargetTransform.gameObject.activeInHierarchy)
             {
-                float directionX = currentTargetSoldier.transform.position.x - transform.position.x;
-                FlipSprite(directionX);
+                currentTargetTransform = null;
+            }
+        }
+
+        // Nếu chưa có mục tiêu, tiến hành quét tìm tất cả các loại lính
+        if (currentTargetTransform == null)
+        {
+            FindClosestSoldier();
+        }
+
+        // Xử lý hành động di chuyển hoặc đứng bắn
+        if (currentTargetTransform != null)
+        {
+            float distanceToTarget = Vector3.Distance(transform.position, currentTargetTransform.position);
+
+            // Quay mặt về phía mục tiêu
+            float directionX = currentTargetTransform.position.x - transform.position.x;
+            FlipSprite(directionX);
+
+            if (distanceToTarget > attackRange)
+            {
+                // Nếu lính ở ngoài tầm bắn -> Di chuyển tiến lại gần mục tiêu
+                MoveTowardsTarget(currentTargetTransform.position);
             }
             else
             {
-                isEngaged = false;
-            }
-
-            CheckSoldierAlive();
-            return;
-        }
-
-        CheckForSoldiersAhead();
-    }
-
-    void FixedUpdate()
-    {
-        if (isDead || isEngaged)
-        {
-            if (rb != null) rb.linearVelocity = Vector2.zero;
-            return;
-        }
-
-        MoveTowardsWaypoint();
-    }
-
-    void CheckForSoldiersAhead()
-    {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, checkRadius);
-
-        foreach (var hit in hits)
-        {
-            PlayerSoldier warrior = hit.GetComponent<PlayerSoldier>();
-            MageSoldier mage = hit.GetComponent<MageSoldier>();
-            ArcherSoldier archer = hit.GetComponent<ArcherSoldier>();
-
-            if (warrior != null || mage != null || archer != null)
-            {
-                isEngaged = true;
-                currentTargetSoldier = hit.GetComponent<MonoBehaviour>();
-                SetAnimatorBool("isRunning", false);
+                // Đã nằm trong tầm bắn -> Dừng lại và thực hiện bắn
                 if (rb != null) rb.linearVelocity = Vector2.zero;
-                break;
+                SetAnimatorBool("isRunning", false);
+
+                CheckTargetAlive();
             }
+        }
+        else
+        {
+            // Không thấy lính -> Tiếp tục di chuyển theo hệ thống Waypoint ban đầu
+            MoveTowardsWaypoint();
         }
     }
 
-    void GetNextWaypoint()
+    void FindClosestSoldier()
     {
-        if (Waypoints.points == null || Waypoints.points.Length == 0) return;
+        float shortestDistance = Mathf.Infinity;
+        Transform nearestTarget = null;
 
-        if (waypointIndex >= Waypoints.points.Length)
+        // 1. Quét tìm PlayerSoldier (Đấu sĩ)
+        foreach (var w in FindObjectsByType<PlayerSoldier>(FindObjectsSortMode.None))
         {
-            ReachDestination();
-            return;
+            if (w == null || !w.gameObject.activeInHierarchy) continue;
+            float dist = Vector3.Distance(transform.position, w.transform.position);
+            if (dist <= detectRadius && dist < shortestDistance)
+            {
+                shortestDistance = dist;
+                nearestTarget = w.transform;
+            }
         }
 
-        targetWaypoint = Waypoints.points[waypointIndex];
-        waypointIndex++;
+        // 2. Quét tìm MageSoldier (Pháp sư)
+        foreach (var m in FindObjectsByType<MageSoldier>(FindObjectsSortMode.None))
+        {
+            if (m == null || !m.gameObject.activeInHierarchy) continue;
+            float dist = Vector3.Distance(transform.position, m.transform.position);
+            if (dist <= detectRadius && dist < shortestDistance)
+            {
+                shortestDistance = dist;
+                nearestTarget = m.transform;
+            }
+        }
+
+        // 3. Quét tìm ArcherSoldier (Xạ thủ)
+        foreach (var a in FindObjectsByType<ArcherSoldier>(FindObjectsSortMode.None))
+        {
+            if (a == null || !a.gameObject.activeInHierarchy) continue;
+            float dist = Vector3.Distance(transform.position, a.transform.position);
+            if (dist <= detectRadius && dist < shortestDistance)
+            {
+                shortestDistance = dist;
+                nearestTarget = a.transform;
+            }
+        }
+
+        currentTargetTransform = nearestTarget;
     }
 
     void MoveTowardsWaypoint()
@@ -150,17 +174,50 @@ public class RangedEnemy : MonoBehaviour
         }
     }
 
+    void MoveTowardsTarget(Vector3 targetPos)
+    {
+        Vector3 dir = (targetPos - transform.position).normalized;
+
+        if (rb != null)
+        {
+            rb.MovePosition(transform.position + dir * speed * Time.fixedDeltaTime);
+        }
+
+        if (dir.x != 0)
+        {
+            FlipSprite(dir.x);
+        }
+
+        SetAnimatorBool("isRunning", true);
+    }
+
+    void GetNextWaypoint()
+    {
+        if (Waypoints.points == null || Waypoints.points.Length == 0) return;
+
+        if (waypointIndex >= Waypoints.points.Length)
+        {
+            ReachDestination();
+            return;
+        }
+
+        targetWaypoint = Waypoints.points[waypointIndex];
+        waypointIndex++;
+    }
+
     void ReachDestination()
     {
         Destroy(gameObject);
     }
 
+    // --- HÀM NHẬN SÁT THƯƠNG KHI PLAYER ĐÁNH QUÁI ---
     public void TakeDamage(int amt)
     {
         if (isDead) return;
 
         hp -= amt;
         UpdateHealthUI();
+
         if (hp > 0)
         {
             SetAnimatorTrigger("Hurt");
@@ -202,24 +259,20 @@ public class RangedEnemy : MonoBehaviour
         Destroy(gameObject, 1.0f);
     }
 
-    void CheckSoldierAlive()
+    void CheckTargetAlive()
     {
-        if (currentTargetSoldier == null)
-        {
-            isEngaged = false;
-            return;
-        }
+        if (currentTargetTransform == null) return;
 
         if (Time.time >= lastAttackTime + attackCooldown)
         {
-            AttackSoldier();
+            AttackTarget();
             lastAttackTime = Time.time;
         }
     }
 
-    void AttackSoldier()
+    void AttackTarget()
     {
-        if (currentTargetSoldier == null) return;
+        if (currentTargetTransform == null) return;
 
         SetAnimatorTrigger("Attack");
 
@@ -227,17 +280,11 @@ public class RangedEnemy : MonoBehaviour
         {
             ShootBullet();
         }
-        else
-        {
-            if (currentTargetSoldier is PlayerSoldier w) w.TakeDamage(damage);
-            else if (currentTargetSoldier is MageSoldier m) m.TakeDamage(damage);
-            else if (currentTargetSoldier is ArcherSoldier a) a.TakeDamage(damage);
-        }
     }
 
     void ShootBullet()
     {
-        if (bulletPrefab == null) return;
+        if (bulletPrefab == null || currentTargetTransform == null) return;
 
         Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position;
         GameObject bulletObj = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
@@ -245,7 +292,7 @@ public class RangedEnemy : MonoBehaviour
         EnemyBullet bullet = bulletObj.GetComponent<EnemyBullet>();
         if (bullet != null)
         {
-            bullet.Seek(currentTargetSoldier.transform, damage);
+            bullet.Seek(currentTargetTransform, damage);
         }
     }
 
@@ -290,6 +337,9 @@ public class RangedEnemy : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, checkRadius);
+        Gizmos.DrawWireSphere(transform.position, detectRadius);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }
