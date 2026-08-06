@@ -31,7 +31,7 @@ public class BossProjectile : MonoBehaviour
             return;
         }
 
-        Vector3 dir = target.position - transform.position;
+        Vector2 dir = target.position - transform.position;
         float distanceThisFrame = speed * Time.deltaTime;
 
         if (dir.magnitude <= distanceThisFrame)
@@ -74,8 +74,11 @@ public class BossProjectile : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Soldier"))
+        if (other.GetComponent<PlayerSoldier>() != null ||
+            other.GetComponent<ArcherSoldier>() != null ||
+            other.GetComponent<MageSoldier>() != null)
         {
+            target = other.transform;
             HitTarget();
         }
     }

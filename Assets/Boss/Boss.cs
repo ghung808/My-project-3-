@@ -4,16 +4,18 @@ using UnityEngine.UI;
 public class Boss : MonoBehaviour
 {
     [Header("Boss Stats")]
-    public int maxHp = 500;
+    public int maxHp = 2000;
     private int currentHp;
 
     public float moveSpeed = 2f;
+    public int armor = 5;
 
-    public int attackDamage = 15;
+    public int attackDamage = 50;
     public float attackCooldown = 2f;
 
     [Header("Detection")]
-    public float detectRadius = 1.5f;
+    public float detectRadius = 4f;
+    public float attackRange = 1.5f;
 
     [Header("UI")]
     public Slider healthBar;
@@ -61,19 +63,44 @@ public class Boss : MonoBehaviour
             SearchSoldier();
         }
 
+        if (targetSoldier != null && !targetSoldier.gameObject.activeInHierarchy)
+        {
+            targetSoldier = null;
+        }
+
         if (targetSoldier != null)
         {
+            if (Vector2.Distance(transform.position, targetSoldier.transform.position) > detectRadius * 2)
+            {
+                targetSoldier = null;
+                return;
+            }
+
             FaceTarget();
 
-            float dis = Vector2.Distance(transform.position, targetSoldier.transform.position);
+            float dis = Vector2.Distance(
+                transform.position,
+                targetSoldier.transform.position
+            );
 
-            if (dis <= detectRadius)
+            if (dis > attackRange)
             {
-                AttackBehaviour();
+                transform.position = Vector3.MoveTowards(
+                    transform.position,
+                    targetSoldier.transform.position,
+                    moveSpeed * Time.deltaTime
+                );
+
+                Flip(targetSoldier.transform.position.x - transform.position.x);
+
+                if (animator != null)
+                {
+                    animator.SetBool("isWalking", true);
+                }
             }
             else
             {
-                targetSoldier = null;
+                AttackBehaviour();
             }
 
             return;
@@ -113,7 +140,6 @@ public class Boss : MonoBehaviour
 
         if (waypointIndex >= Waypoints.points.Length)
         {
-            Destroy(gameObject);
             return;
         }
 
@@ -211,7 +237,7 @@ public class Boss : MonoBehaviour
 
         float randomSkill = Random.Range(0f, 100f);
 
-        if (randomSkill < 35f)
+        if (randomSkill < 100f)
         {
             FireballAttack();
         }
@@ -231,17 +257,17 @@ public class Boss : MonoBehaviour
         if (targetSoldier == null)
             return;
 
-        if (targetSoldier is PlayerSoldier player)
-        {
-            player.TakeDamage(attackDamage);
-        }
-        else if (targetSoldier is ArcherSoldier archer)
+        if (targetSoldier is ArcherSoldier archer)
         {
             archer.TakeDamage(attackDamage);
         }
         else if (targetSoldier is MageSoldier mage)
         {
             mage.TakeDamage(attackDamage);
+        }
+        else if (targetSoldier is PlayerSoldier player)
+        {
+            player.TakeDamage(attackDamage);
         }
     }
 
@@ -275,6 +301,11 @@ public class Boss : MonoBehaviour
     {
         if (isDead)
             return;
+
+        damage -= armor;
+
+        if (damage < 1)
+            damage = 1;
 
         currentHp -= damage;
 
@@ -319,5 +350,8 @@ public class Boss : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectRadius);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

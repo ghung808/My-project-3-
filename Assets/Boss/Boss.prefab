@@ -30,8 +30,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2771402158694480443}
+  m_Children: []
   m_Father: {fileID: 5161584353870347157}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -163,18 +162,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3836832597753205059}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6530472, y: 0.6179568, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6110182194458191954}
   - {fileID: 2009516383261309198}
-  m_Father: {fileID: 6172538182602547381}
+  m_Father: {fileID: 1996446550922247892}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -26.9, y: 0}
+  m_AnchoredPosition: {x: 611.9705, y: 335.98312}
   m_SizeDelta: {x: 300, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2456763578099237500
@@ -457,7 +456,7 @@ GameObject:
   - component: {fileID: 4004645700228552991}
   m_Layer: 0
   m_Name: Boss
-  m_TagString: Untagged
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -471,12 +470,13 @@ Transform:
   m_GameObject: {fileID: 6303194602915891048}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4, y: -3.7, z: 0}
-  m_LocalScale: {x: 1.5312829, y: 1.6182358, z: 1}
+  m_LocalPosition: {x: -6.09, y: -4.8486, z: 0}
+  m_LocalScale: {x: 0.71484315, y: 0.72085744, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1106801603292703145}
   - {fileID: 5161584353870347157}
+  - {fileID: 2771402158694480443}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7220231616813526223
@@ -615,7 +615,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6303194602915891048}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -648,9 +648,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Boss
   maxHp: 500
   moveSpeed: 2
+  armor: 5
   attackDamage: 15
   attackCooldown: 2
   detectRadius: 1.5
+  attackRange: 1.5
   healthBar: {fileID: 2456763578099237500}
-  fireballPrefab: {fileID: 0}
+  fireballPrefab: {fileID: 5265079689753710369, guid: 972c76f345fb8054b986c8cef988211f, type: 3}
   firePoint: {fileID: 1106801603292703145}
