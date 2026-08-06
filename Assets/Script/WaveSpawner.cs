@@ -17,8 +17,13 @@ public class WaveSpawner : MonoBehaviour
     public Transform spawnPoint; // Vị trí quái xuất hiện
     public float timeBetweenWaves = 3f; // Thời gian nghỉ giữa các wave
 
+    [Header("Boss")]
+    public GameObject bossPrefab;
+    public bool spawnBossAfterLastWave = true;
+
     private int currentWaveIndex = 0;
     private float waveCountdown;
+    private bool bossSpawned = false;
     private enum SpawnState { SPAWNING, WAITING, COUNTING };
     private SpawnState state = SpawnState.COUNTING;
 
@@ -50,7 +55,7 @@ public class WaveSpawner : MonoBehaviour
 
         if (waveCountdown <= 0)
         {
-            if (state != SpawnState.SPAWNING)
+            if (state != SpawnState.SPAWNING && currentWaveIndex < waves.Length)
             {
                 StartCoroutine(SpawnWave(waves[currentWaveIndex]));
             }
@@ -69,10 +74,25 @@ public class WaveSpawner : MonoBehaviour
         waveCountdown = timeBetweenWaves;
 
         currentWaveIndex++;
-        if (currentWaveIndex > waves.Length - 1)
+
+        if (currentWaveIndex >= waves.Length)
         {
-            currentWaveIndex = waves.Length - 1;
-            Debug.Log("Đã qua tất cả các wave!");
+            if (spawnBossAfterLastWave && !bossSpawned && bossPrefab != null)
+            {
+                bossSpawned = true;
+
+                Instantiate(
+                    bossPrefab,
+                    spawnPoint.position,
+                    spawnPoint.rotation
+                );
+
+                state = SpawnState.WAITING;
+
+                Debug.Log("Boss xuất hiện!");
+            }
+
+            return;
         }
     }
 
@@ -80,7 +100,10 @@ public class WaveSpawner : MonoBehaviour
     {
         // Kiểm tra trong Scene còn con quái nào đang sống không
         Enemy[] enemies = Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
-        return enemies.Length > 0;
+
+        Boss[] bosses = Object.FindObjectsByType<Boss>(FindObjectsSortMode.None);
+
+        return enemies.Length > 0 || bosses.Length > 0;
     }
 
     IEnumerator SpawnWave(Wave _wave)

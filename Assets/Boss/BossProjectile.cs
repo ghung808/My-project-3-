@@ -8,7 +8,6 @@ public class BossProjectile : MonoBehaviour
     public float lifeTime = 5f;
 
     [Header("Effects")]
-    public GameObject hitEffect;
     public GameObject explosionPrefab;
 
     private Transform target;
@@ -63,11 +62,6 @@ public class BossProjectile : MonoBehaviour
 
             if (archer != null)
                 archer.TakeDamage(damage);
-        }
-
-        if (hitEffect != null)
-        {
-            Instantiate(hitEffect, transform.position, Quaternion.identity);
         }
 
         if (explosionPrefab != null)
