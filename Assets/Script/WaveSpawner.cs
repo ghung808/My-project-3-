@@ -37,6 +37,7 @@ public class WaveSpawner : MonoBehaviour
         }
 
         waveCountdown = timeBetweenWaves;
+        GameUI.instance.maxWave = waves.Length; // Set total waves in GameUI
     }
 
     void Update()
@@ -82,6 +83,7 @@ public class WaveSpawner : MonoBehaviour
         waveCountdown = timeBetweenWaves;
 
         currentWaveIndex++;
+        GameUI.instance.currentWave = currentWaveIndex + 1; // Update current wave in GameUI
 
         if (currentWaveIndex >= waves.Length)
         {

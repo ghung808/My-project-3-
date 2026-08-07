@@ -125,6 +125,13 @@ public class Enemy : MonoBehaviour
 
     void ReachDestination()
     {
+        GameUI ui = FindFirstObjectByType<GameUI>();
+
+        if (ui != null)
+        {
+            ui.TakeCastleDamage(1); // Mỗi quái trừ 1 máu thành
+        }
+
         Destroy(gameObject);
     }
 
