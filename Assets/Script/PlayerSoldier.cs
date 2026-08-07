@@ -73,9 +73,11 @@ public class PlayerSoldier : MonoBehaviour
             if (distToTarget <= detectRadius * 1.5f) return;
         }
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         float shortestDistance = Mathf.Infinity;
         Transform nearestEnemy = null;
+
+        // Tìm Enemy thường
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
         foreach (GameObject enemy in enemies)
         {
@@ -87,6 +89,20 @@ public class PlayerSoldier : MonoBehaviour
             {
                 shortestDistance = distanceToEnemy;
                 nearestEnemy = enemy.transform;
+            }
+        }
+
+        // Tìm Boss
+        GameObject boss = GameObject.FindGameObjectWithTag("Boss");
+
+        if (boss != null && boss.activeInHierarchy)
+        {
+            float distanceToBoss = Vector3.Distance(transform.position, boss.transform.position);
+
+            if (distanceToBoss <= detectRadius && distanceToBoss < shortestDistance)
+            {
+                shortestDistance = distanceToBoss;
+                nearestEnemy = boss.transform;
             }
         }
 
@@ -193,9 +209,18 @@ public class PlayerSoldier : MonoBehaviour
         if (targetEnemy == null) return;
 
         Enemy enemy = targetEnemy.GetComponent<Enemy>();
+
         if (enemy != null)
         {
             enemy.TakeDamage(damage);
+            return;
+        }
+
+        Boss boss = targetEnemy.GetComponent<Boss>();
+
+        if (boss != null)
+        {
+            boss.TakeDamage(damage);
         }
     }
 

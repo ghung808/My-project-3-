@@ -1,5 +1,6 @@
 using UnityEngine;
-using TMPro; // Sử dụng nếu dùng TextMeshPro
+using System.Collections;
+using TMPro; // Add this line for TextMeshPro support
 
 public class GoldManager : MonoBehaviour
 {

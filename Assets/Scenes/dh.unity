@@ -2462,7 +2462,11 @@ MonoBehaviour:
         m_SelectedSource:
           rid: -2
         m_Provider2DCache:
-          rid: -2
+          rid: 7900307856878469336
+    - rid: 7900307856878469336
+      type: {class: 'Provider2DCache`1[[UnityEngine.Rendering.Universal.Light2DProvider, Unity.RenderPipelines.Universal.2D.Runtime]]', ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
+      data:
+        m_Cache: []
 --- !u!4 &619394802
 Transform:
   m_ObjectHideFlags: 0
@@ -2767,16 +2771,16 @@ MonoBehaviour:
   waves:
   - waveName: 1
     enemyPrefab: {fileID: 2961228660896816668, guid: 0f095848a6c29014fad2b065562d4b16, type: 3}
-    count: 10
+    count: 1
     rate: 0.3
   - waveName: 
     enemyPrefab: {fileID: 8031329591404873414, guid: d002414a9f03d2c419440f00442358e2, type: 3}
-    count: 20
+    count: 1
     rate: 0.58
   - waveName: 
-    enemyPrefab: {fileID: 0}
-    count: 0
-    rate: 0
+    enemyPrefab: {fileID: 4608548196022933149, guid: f01a02648f58398478841a8e98be9923, type: 3}
+    count: 1
+    rate: 1
   - waveName: 
     enemyPrefab: {fileID: 0}
     count: 0
@@ -2799,6 +2803,8 @@ MonoBehaviour:
     rate: 0
   spawnPoint: {fileID: 1392674606}
   timeBetweenWaves: 5
+  bossPrefab: {fileID: 6303194602915891048, guid: e3bcaedab3ca38c479e5597fcdeaa5c7, type: 3}
+  spawnBossAfterLastWave: 1
 --- !u!4 &1017842237
 Transform:
   m_ObjectHideFlags: 0
