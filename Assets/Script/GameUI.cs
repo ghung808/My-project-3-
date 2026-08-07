@@ -26,6 +26,11 @@ public class GameUI : MonoBehaviour
     public GameObject winPanel;
     public GameObject losePanel;
 
+    [Header("Win Statistics")]
+    public TextMeshProUGUI enemyKilledText;
+    public TextMeshProUGUI goldEarnedText;
+    public TextMeshProUGUI timeText;
+
     void Awake()
     {
         instance = this;
@@ -68,6 +73,8 @@ public class GameUI : MonoBehaviour
         {
             castleHP = 0;
 
+            UpdateBattleStatistics();
+
             if (losePanel != null)
                 losePanel.SetActive(true);
 
@@ -77,6 +84,8 @@ public class GameUI : MonoBehaviour
 
     public void WinGame()
     {
+        UpdateBattleStatistics();
+
         if (winPanel != null)
             winPanel.SetActive(true);
 
@@ -86,5 +95,25 @@ public class GameUI : MonoBehaviour
     public void AddKill()
     {
         enemiesKilled++;
+    }
+
+    void UpdateBattleStatistics()
+    {
+        if (enemyKilledText != null)
+            enemyKilledText.text = "Quái đã tiêu diệt : " + enemiesKilled;
+
+        if (goldEarnedText != null)
+            goldEarnedText.text = "Vàng đã nhận : " + totalGoldEarned;
+
+        if (timeText != null)
+        {
+            int minutes = Mathf.FloorToInt(playTime / 60f);
+            int seconds = Mathf.FloorToInt(playTime % 60f);
+
+            timeText.text = "Thời gian : " +
+                            minutes.ToString("00") +
+                            ":" +
+                            seconds.ToString("00");
+        }
     }
 }

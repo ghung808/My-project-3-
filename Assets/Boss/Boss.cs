@@ -135,16 +135,32 @@ public class Boss : MonoBehaviour
 
     void GetNextWaypoint()
     {
-        if (Waypoints.points == null)
+        if (Waypoints.points == null || Waypoints.points.Length == 0)
             return;
 
         if (waypointIndex >= Waypoints.points.Length)
         {
+            ReachDestination();
             return;
         }
 
         currentWaypoint = Waypoints.points[waypointIndex];
         waypointIndex++;
+    }
+
+    void ReachDestination()
+    {
+        if (isDead)
+            return;
+
+        isDead = true;
+
+        if (GameUI.instance != null)
+        {
+            GameUI.instance.TakeCastleDamage(GameUI.instance.maxCastleHP);
+        }
+
+        Destroy(gameObject);
     }
 
     void Flip(float x)
@@ -343,7 +359,24 @@ public class Boss : MonoBehaviour
             healthBar.gameObject.SetActive(false);
         }
 
-        Destroy(gameObject, 2f);
+        // Cộng số Boss đã giết và vàng
+        if (GameUI.instance != null)
+        {
+            GameUI.instance.AddKill();
+            GameUI.instance.AddGold(100);
+        }
+
+        Invoke(nameof(WinBattle), 2f);
+    }
+
+    void WinBattle()
+    {
+        if (GameUI.instance != null)
+        {
+            GameUI.instance.WinGame();
+        }
+
+        Destroy(gameObject);
     }
 
     void OnDrawGizmosSelected()
