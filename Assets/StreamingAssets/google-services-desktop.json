@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "533734789572",
+    "project_id": "my-project-3-2ccbd",
+    "storage_bucket": "my-project-3-2ccbd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533734789572:android:b0a14598226560cb1f9491",
+        "android_client_info": {
+          "package_name": "com.Hung.LoginGame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtK4Jc_AUP30B-P7hcu7Cl1HzXWPKj0ow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
