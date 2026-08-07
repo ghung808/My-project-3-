@@ -20,6 +20,8 @@ public class BuildShopUI : MonoBehaviour
 
     public void ShowShop(BuildingSpot2D spot)
     {
+        Debug.Log("ShowShop"); // Added debug log to check if method is called
+
         selectedSpot = spot;
 
         if (shopPanel != null && Camera.main != null)
