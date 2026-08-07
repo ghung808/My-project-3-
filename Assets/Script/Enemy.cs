@@ -163,6 +163,12 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
+        // Tăng số quái đã giết trong GameUI
+        if (GameUI.instance != null)
+        {
+            GameUI.instance.enemiesKilled++;
+        }
+
         isDead = true;
 
         if (col != null) col.enabled = false;
@@ -178,6 +184,12 @@ public class Enemy : MonoBehaviour
         if (coinPrefab != null)
         {
             Instantiate(coinPrefab, transform.position, Quaternion.identity);
+        }
+
+        // Cộng vàng vào GameUI khi quái chết
+        if (GameUI.instance != null)
+        {
+            GameUI.instance.AddGold(10);
         }
 
         Destroy(gameObject, 1.0f);
