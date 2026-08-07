@@ -2,7 +2,7 @@ using Firebase.Auth;
 using Firebase.Extensions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement; // Dùng để chuyển Scene sau khi đăng nhập thành công
+using UnityEngine.SceneManagement;
 
 public class LoginController : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class LoginController : MonoBehaviour
     public TMP_Text messageText;
 
     [Header("Scene Settings")]
-    public string mainGameSceneName = "GameScene"; // Tên scene màn hình chính sau khi đăng nhập
+    public string mainGameSceneName = "Sảnh"; // Đổi thành "Sảnh" hoặc tên scene sảnh của bạn
 
     public void OnLoginButtonClicked()
     {
@@ -44,12 +44,8 @@ public class LoginController : MonoBehaviour
         {
             if (task.IsCanceled || task.IsFaulted)
             {
-                // Xử lý bắt lỗi thân thiện khi đăng nhập sai
-                string errorMessage = "Đăng nhập thất bại. Sai email hoặc mật khẩu.";
-                if (task.Exception != null)
-                {
-                    errorMessage = task.Exception.GetBaseException().Message;
-                }
+                // Dùng FirebaseErrorHelper để dịch lỗi sang tiếng Việt dễ hiểu
+                string errorMessage = FirebaseErrorHelper.GetErrorMessage(task.Exception);
                 ShowMessage(errorMessage);
                 return;
             }
@@ -58,7 +54,7 @@ public class LoginController : MonoBehaviour
             FirebaseUser user = result.User;
             Debug.Log($"[Login] Đăng nhập thành công: {user.Email}");
 
-            ShowMessage("Đăng nhập thành công! Đang vào game...");
+            ShowMessage("Đăng nhập thành công! Đang vào sảnh...");
 
             // Gọi hàm chuyển sang màn hình chính sau 1.5 giây
             Invoke(nameof(GoToMainGame), 1.5f);
@@ -67,7 +63,7 @@ public class LoginController : MonoBehaviour
 
     private void GoToMainGame()
     {
-        // Chuyển sang Scene chính (Nhớ thêm Scene này vào Build Settings trước nhé)
+        // Chuyển sang Scene chính (Nhớ thêm Scene này vào Build Profiles / Build Settings)
         SceneManager.LoadScene(mainGameSceneName);
     }
 
