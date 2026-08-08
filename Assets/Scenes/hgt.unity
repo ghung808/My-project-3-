@@ -733,7 +733,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5.05
+  orthographic size: 15
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -17579,6 +17579,8 @@ MonoBehaviour:
     rate: 0
   spawnPoint: {fileID: 1569615033}
   timeBetweenWaves: 3
+  bossPrefab: {fileID: 0}
+  spawnBossAfterLastWave: 1
 --- !u!4 &1017842237
 Transform:
   m_ObjectHideFlags: 0
