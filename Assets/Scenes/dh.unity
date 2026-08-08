@@ -74690,6 +74690,10 @@ PrefabInstance:
       propertyPath: m_text
       value: "Th\xE0nh : "
       objectReference: {fileID: 0}
+    - target: {fileID: 816362350267974932, guid: b73f74d6e0b3fba48814bba66c2cd20f, type: 3}
+      propertyPath: m_fontStyle
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1039203268348889820, guid: b73f74d6e0b3fba48814bba66c2cd20f, type: 3}
       propertyPath: shopPanel
       value: 
@@ -74814,9 +74818,17 @@ PrefabInstance:
       propertyPath: m_text
       value: 'GOLD : '
       objectReference: {fileID: 0}
+    - target: {fileID: 4572853061816216548, guid: b73f74d6e0b3fba48814bba66c2cd20f, type: 3}
+      propertyPath: m_fontStyle
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5109556207450045686, guid: b73f74d6e0b3fba48814bba66c2cd20f, type: 3}
       propertyPath: m_text
       value: 'WAVE : '
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109556207450045686, guid: b73f74d6e0b3fba48814bba66c2cd20f, type: 3}
+      propertyPath: m_fontStyle
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8326933070897962427, guid: b73f74d6e0b3fba48814bba66c2cd20f, type: 3}
       propertyPath: m_Name
