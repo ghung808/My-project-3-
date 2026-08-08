@@ -9,6 +9,8 @@ public class BuildingSpot2D : MonoBehaviour
     private Color originalColor;
     private GameObject currentTower;
 
+    public static bool canBuild = false;  // Thêm biến này
+
     void Start()
     {
         if (spotRenderer == null) spotRenderer = GetComponent<SpriteRenderer>();
@@ -17,7 +19,8 @@ public class BuildingSpot2D : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (spotRenderer == null || currentTower != null) return;
+        // Thêm điều kiện !canBuild
+        if (spotRenderer == null || currentTower != null || !canBuild) return;
         spotRenderer.color = hoverColor;
     }
 
@@ -31,6 +34,13 @@ public class BuildingSpot2D : MonoBehaviour
         if (currentTower != null)
         {
             BuildManager.instance.SelectSpotToUpgrade(this);
+            return;
+        }
+
+        // Thêm kiểm tra canBuild
+        if (!canBuild)
+        {
+            Debug.Log("Chưa đến thời gian xây thành!");
             return;
         }
 

@@ -31,6 +31,7 @@ public class Enemy : MonoBehaviour
 
     private Animator animator;
     private Collider2D col;
+    private Rigidbody2D rb; // Thêm biến Rigidbody2D
     private SpriteRenderer spriteRenderer; // Biến quản lý lật mặt sprite
 
     void Start()
@@ -41,7 +42,15 @@ public class Enemy : MonoBehaviour
 
         animator = GetComponent<Animator>();
         col = GetComponent<Collider2D>();
+        rb = GetComponent<Rigidbody2D>(); // Lấy Rigidbody2D
         spriteRenderer = GetComponent<SpriteRenderer>(); // Lấy component SpriteRenderer
+
+        // Cấu hình Rigidbody2D
+        if (rb != null)
+        {
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.gravityScale = 0f;
+        }
     }
 
     void Update()
@@ -172,6 +181,9 @@ public class Enemy : MonoBehaviour
         isDead = true;
 
         if (col != null) col.enabled = false;
+
+        // Vô hiệu hóa Rigidbody2D khi chết để tránh va chạm
+        if (rb != null) rb.simulated = false;
 
         // Kích hoạt animation chết (edealth)
         SetAnimatorTrigger("Die");

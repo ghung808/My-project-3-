@@ -7,7 +7,7 @@ public class PlayerSoldier : MonoBehaviour
     public float speed = 3f;
     public float attackRate = 1f;
     public float detectRadius = 4f;
-    public float attackRange = 0.8f;
+    public float attackRange = 1.0f; // Đã tăng từ 0.8 lên 1.0
 
     [Header("Stats")]
     public int maxHp = 20;
@@ -122,12 +122,23 @@ public class PlayerSoldier : MonoBehaviour
 
             if (distanceToEnemy > attackRange)
             {
-                // Lao vào quái mượt mà
-                transform.position = Vector3.MoveTowards(transform.position, targetEnemy.position, speed * Time.deltaTime);
-                Vector3 moveDir = (targetEnemy.position - transform.position).normalized;
-                if (moveDir != Vector3.zero) FlipSprite(moveDir.x);
+                // ĐÃ SỬA: Chỉ chạy đến mép tầm đánh, không chui vào trong Enemy
+                Vector3 direction = (targetEnemy.position - transform.position).normalized;
+
+                // Chỉ chạy đến mép tầm đánh, không chui vào trong Enemy
+                Vector3 stopPosition = targetEnemy.position - direction * attackRange;
+
+                transform.position = Vector3.MoveTowards(
+                    transform.position,
+                    stopPosition,
+                    speed * Time.deltaTime
+                );
+
+                if (direction != Vector3.zero)
+                    FlipSprite(direction.x);
+
                 SetMovingAnimation(true);
-                hasMovedFromRally = true; // Đánh dấu đã rời vị trí
+                hasMovedFromRally = true;
             }
             else
             {
