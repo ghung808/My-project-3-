@@ -16,7 +16,10 @@ public class WaveSpawner : MonoBehaviour
     [Header("Cấu hình Wave quái")]
     public Wave[] waves;
     public Transform spawnPoint; // Vị trí quái xuất hiện
-    public float timeBetweenWaves = 3f; // Thời gian nghỉ giữa các wave
+    public float timeBetweenWaves = 5f; // Thời gian nghỉ giữa các wave
+
+    [Header("Thời gian xây")]
+    public float firstBuildTime = 10f; // Thời gian xây trước Wave 1
 
     [Header("Boss")]
     public GameObject bossPrefab;
@@ -35,7 +38,11 @@ public class WaveSpawner : MonoBehaviour
             spawnPoint = transform;
         }
 
-        waveCountdown = timeBetweenWaves;
+        waveCountdown = firstBuildTime; // Đếm ngược từ 10 giây
+
+        // Cho phép xây 10 giây trước Wave 1
+        BuildingSpot2D.canBuild = true;
+
         GameUI.instance.maxWave = waves.Length; // Set total waves in GameUI
     }
 
@@ -59,6 +66,9 @@ public class WaveSpawner : MonoBehaviour
         {
             if (state != SpawnState.SPAWNING && currentWaveIndex < waves.Length)
             {
+                // Bắt đầu Wave mới → khóa xây
+                BuildingSpot2D.canBuild = false;
+
                 StartCoroutine(SpawnWave(waves[currentWaveIndex]));
             }
         }
@@ -73,6 +83,10 @@ public class WaveSpawner : MonoBehaviour
         Debug.Log("Wave " + (currentWaveIndex + 1) + " đã hoàn thành!");
 
         state = SpawnState.COUNTING;
+
+        // Đã hết Wave → cho phép xây trong thời gian nghỉ
+        BuildingSpot2D.canBuild = true;
+
         waveCountdown = timeBetweenWaves;
 
         currentWaveIndex++;
@@ -80,6 +94,9 @@ public class WaveSpawner : MonoBehaviour
 
         if (currentWaveIndex >= waves.Length)
         {
+            // Đã hết tất cả Wave → không cho xây nữa
+            BuildingSpot2D.canBuild = false;
+
             if (spawnBossAfterLastWave && !bossSpawned && bossPrefab != null)
             {
                 bossSpawned = true;
