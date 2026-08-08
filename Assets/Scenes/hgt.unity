@@ -733,7 +733,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5.05
+  orthographic size: 5.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1000,7 +1000,6 @@ Transform:
   - {fileID: 1891895169}
   - {fileID: 273880558}
   - {fileID: 2000321175}
-  - {fileID: 1017842237}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &652192775
@@ -17546,7 +17545,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveSpawner
   waves:
   - waveName: 1
-    enemyPrefab: {fileID: 1177955169686482863, guid: 83f489fcfa9f0d94fb726412d51a3bc3, type: 3}
+    enemyPrefab: {fileID: 7906805953484417059, guid: 0b90a65a0c0c3e444939bff8c17dc2f9, type: 3}
     count: 3
     rate: 0.3
   - waveName: 2
@@ -17579,6 +17578,8 @@ MonoBehaviour:
     rate: 0
   spawnPoint: {fileID: 1569615033}
   timeBetweenWaves: 3
+  bossPrefab: {fileID: 0}
+  spawnBossAfterLastWave: 1
 --- !u!4 &1017842237
 Transform:
   m_ObjectHideFlags: 0
@@ -17588,12 +17589,12 @@ Transform:
   m_GameObject: {fileID: 1017842235}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.86, y: 3.17, z: 0}
+  m_LocalPosition: {x: 6.98059, y: -2.24856, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1569615033}
-  m_Father: {fileID: 652192774}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1017842238
 MonoBehaviour:
@@ -20821,3 +20822,4 @@ SceneRoots:
   - {fileID: 1305172356}
   - {fileID: 102962520}
   - {fileID: 519420032}
+  - {fileID: 1017842237}
