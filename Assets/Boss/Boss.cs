@@ -51,6 +51,9 @@ public class Boss : MonoBehaviour
         GetNextWaypoint();
     }
 
+    // ==========================================
+    // CHỈ THAY ĐỔI HÀM Update() NÀY
+    // ==========================================
     void Update()
     {
         if (isDead)
@@ -58,53 +61,46 @@ public class Boss : MonoBehaviour
 
         UpdateHealthBar();
 
+        // Tìm lính trong phạm vi phát hiện
         if (targetSoldier == null)
         {
             SearchSoldier();
         }
 
-        if (targetSoldier != null && !targetSoldier.gameObject.activeInHierarchy)
+        // Nếu lính đã chết thì bỏ mục tiêu
+        if (targetSoldier != null &&
+            !targetSoldier.gameObject.activeInHierarchy)
         {
             targetSoldier = null;
         }
 
+        // ==========================================
+        // BOSS CHỈ ĐÁNH - KHÔNG ĐUỔI THEO LÍNH
+        // ==========================================
+
         if (targetSoldier != null)
         {
-            if (Vector2.Distance(transform.position, targetSoldier.transform.position) > detectRadius * 2)
-            {
-                targetSoldier = null;
-                return;
-            }
-
-            FaceTarget();
-
             float dis = Vector2.Distance(
                 transform.position,
                 targetSoldier.transform.position
             );
 
-            if (dis > attackRange)
+            // Lính nằm trong tầm đánh
+            if (dis <= attackRange)
             {
-                transform.position = Vector3.MoveTowards(
-                    transform.position,
-                    targetSoldier.transform.position,
-                    moveSpeed * Time.deltaTime
-                );
-
-                Flip(targetSoldier.transform.position.x - transform.position.x);
-
-                if (animator != null)
-                {
-                    animator.SetBool("isWalking", true);
-                }
-            }
-            else
-            {
+                FaceTarget();
                 AttackBehaviour();
+                return;
             }
 
-            return;
+            // Lính ở ngoài tầm:
+            // KHÔNG đi theo lính.
+            // Cho Boss tiếp tục đi waypoint.
         }
+
+        // ==========================================
+        // BOSS LUÔN ĐI THEO WAYPOINT
+        // ==========================================
 
         MoveWaypoint();
     }
@@ -387,4 +383,4 @@ public class Boss : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
-}   
+}
