@@ -20,7 +20,6 @@ public class WaveSpawner : MonoBehaviour
 
     [Header("Boss")]
     public GameObject bossPrefab;
-    public TextMeshProUGUI waveText; // Added waveText here
     public bool spawnBossAfterLastWave = true;
 
     private int currentWaveIndex = 0;
@@ -42,12 +41,6 @@ public class WaveSpawner : MonoBehaviour
 
     void Update()
     {
-        // Update wave text display
-        if (waveText != null)
-        {
-            waveText.text = "WAVE: " + (currentWaveIndex + 1) + " / " + waves.Length;
-        }
-
         if (state == SpawnState.WAITING)
         {
             // Kiểm tra xem quái đã chết hết chưa
@@ -100,6 +93,10 @@ public class WaveSpawner : MonoBehaviour
                 state = SpawnState.WAITING;
 
                 Debug.Log("Boss xuất hiện!");
+            }
+            else if (bossSpawned && !EnemyIsAlive())
+            {
+                GameUI.instance.WinGame();
             }
 
             return;
