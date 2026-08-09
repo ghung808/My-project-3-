@@ -3,7 +3,11 @@ using UnityEngine;
 public class BuildManager : MonoBehaviour
 {
     public static BuildManager instance;
-    void Awake() { if (instance == null) instance = this; }
+
+    [Header("UI Nâng/Xóa Tháp")]
+    public GameObject towerActionPanel;
+    public UnityEngine.UI.Button upgradeButton;
+    public UnityEngine.UI.Button sellButton;
 
     [Header("Kéo 3 Prefab Tháp vào đây")]
     public GameObject archerTowerPrefab;
@@ -14,6 +18,15 @@ public class BuildManager : MonoBehaviour
     private BuildingSpot2D selectedSpot;
 
     public bool CanBuild => towerToBuild != null;
+
+    void Awake()
+    {
+        if (instance == null)
+            instance = this;
+
+        if (towerActionPanel != null)
+            towerActionPanel.SetActive(false);
+    }
 
     public void SelectArcherTower() { towerToBuild = archerTowerPrefab; selectedSpot = null; }
     public void SelectWarriorTower() { towerToBuild = warriorTowerPrefab; selectedSpot = null; }
@@ -32,7 +45,66 @@ public class BuildManager : MonoBehaviour
     public void SelectSpotToUpgrade(BuildingSpot2D spot)
     {
         selectedSpot = spot;
-        Debug.Log("Đã chọn ô thành! Nhấn 'U' để Nâng cấp ($60), Nhấn 'S' để Gỡ bỏ thành.");
+
+        if (towerActionPanel != null)
+        {
+            towerActionPanel.SetActive(true);
+
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(
+                spot.transform.position
+            );
+
+            towerActionPanel.transform.position =
+                screenPos + new Vector3(0, -100f, 0);
+        }
+    }
+
+    public void UpgradeSelectedTower()
+    {
+        if (selectedSpot == null)
+            return;
+
+        GameObject tower = selectedSpot.GetCurrentTower();
+
+        if (tower == null)
+            return;
+
+        SpawnTower spawnTower = tower.GetComponent<SpawnTower>();
+
+        if (spawnTower == null)
+            return;
+
+        spawnTower.UpgradeTower();
+
+        HideTowerActionPanel();
+    }
+
+    public void SellSelectedTower()
+    {
+        if (selectedSpot == null)
+            return;
+
+        GameObject tower = selectedSpot.GetCurrentTower();
+
+        if (tower == null)
+            return;
+
+        SpawnTower spawnTower = tower.GetComponent<SpawnTower>();
+
+        if (spawnTower == null)
+            return;
+
+        spawnTower.SellTower();
+
+        HideTowerActionPanel();
+    }
+
+    void HideTowerActionPanel()
+    {
+        selectedSpot = null;
+
+        if (towerActionPanel != null)
+            towerActionPanel.SetActive(false);
     }
 
     void Update()
