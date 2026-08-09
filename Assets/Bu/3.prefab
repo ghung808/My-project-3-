@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f26f8847587c3a4591679aa99a9d117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnTower
-  cost: 50
+  cost: 6
   upgradeCost: 60
   level: 1
   soldierPrefab: {fileID: 3247862385546391496, guid: c40db8d4ebe8b514aa853415be28d36c, type: 3}

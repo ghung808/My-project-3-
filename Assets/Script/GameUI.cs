@@ -9,7 +9,10 @@ public class GameUI : MonoBehaviour
     public int castleHP = 50;
     public int maxCastleHP = 50;
 
-    public int gold = 100;
+    private int gold
+    {
+        get { return PlayerStats.Money; }
+    }
 
     public int currentWave = 1;
     public int maxWave = 8;
@@ -85,7 +88,7 @@ public class GameUI : MonoBehaviour
 
     public void AddGold(int amount)
     {
-        gold += amount;
+        PlayerStats.Money += amount;
 
         // Tổng vàng kiếm được trong trận
         totalGoldEarned += amount;
