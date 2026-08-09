@@ -6,7 +6,7 @@ public class PlayerStats : MonoBehaviour
     public int startLives = 20;
 
     public static int Money;
-    public int startMoney = 6; // Số tiền khởi đầu
+    public int startMoney = 5; // Số tiền khởi đầu
 
     void Awake()
     {
