@@ -22120,6 +22120,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1392674606}
     - target: {fileID: 2013357399508206105, guid: baa2979e8293bcc4794ca23b8abc08db, type: 3}
+      propertyPath: firstBuildTime
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2013357399508206105, guid: baa2979e8293bcc4794ca23b8abc08db, type: 3}
+      propertyPath: timeBetweenWaves
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2013357399508206105, guid: baa2979e8293bcc4794ca23b8abc08db, type: 3}
       propertyPath: waves.Array.data[5].rate
       value: 1
       objectReference: {fileID: 0}
