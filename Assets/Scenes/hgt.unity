@@ -17443,6 +17443,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4954177854935562587, guid: 081cb5ea8ab39df40adc70438da4b952, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -17519,41 +17523,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveSpawner
   waves:
   - waveName: 1
-    enemyPrefab: {fileID: 7906805953484417059, guid: 0b90a65a0c0c3e444939bff8c17dc2f9, type: 3}
+    enemyPrefab: {fileID: 5353150420272380105, guid: 33389fa7603d1d842b62467917f227ae, type: 3}
     count: 3
-    rate: 0.3
+    rate: 10
   - waveName: 2
-    enemyPrefab: {fileID: 0}
+    enemyPrefab: {fileID: 7906805953484417059, guid: 0b90a65a0c0c3e444939bff8c17dc2f9, type: 3}
     count: 4
     rate: 0.6
   - waveName: 3
-    enemyPrefab: {fileID: 0}
+    enemyPrefab: {fileID: 2961228660896816668, guid: 0f095848a6c29014fad2b065562d4b16, type: 3}
     count: 3
     rate: 0.9
   - waveName: 
-    enemyPrefab: {fileID: 0}
+    enemyPrefab: {fileID: 8031329591404873414, guid: d002414a9f03d2c419440f00442358e2, type: 3}
+    count: 0
+    rate: 1
+  - waveName: 
+    enemyPrefab: {fileID: 4902038402336063255, guid: 3ab860a36778ea14ba37f9c8ce81763a, type: 3}
+    count: 0
+    rate: 1
+  - waveName: 
+    enemyPrefab: {fileID: 4608548196022933149, guid: f01a02648f58398478841a8e98be9923, type: 3}
     count: 0
     rate: 0
   - waveName: 
-    enemyPrefab: {fileID: 0}
+    enemyPrefab: {fileID: 5089412571763283408, guid: 2df207edd5455d647abe8b5bc06e2f7d, type: 3}
     count: 0
-    rate: 0
-  - waveName: 
-    enemyPrefab: {fileID: 0}
-    count: 0
-    rate: 0
-  - waveName: 
-    enemyPrefab: {fileID: 0}
-    count: 0
-    rate: 0
+    rate: 1
   - waveName: 
     enemyPrefab: {fileID: 0}
     count: 0
     rate: 0
   spawnPoint: {fileID: 1569615033}
   timeBetweenWaves: 3
-  firstBuildTime: 10
-  bossPrefab: {fileID: 0}
+  firstBuildTime: 7
+  bossPrefab: {fileID: 6303194602915891048, guid: e3bcaedab3ca38c479e5597fcdeaa5c7, type: 3}
   spawnBossAfterLastWave: 1
 --- !u!4 &1017842237
 Transform:
