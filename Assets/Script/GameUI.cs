@@ -6,8 +6,8 @@ public class GameUI : MonoBehaviour
 {
     public static GameUI instance;
 
-    public int castleHP = 50;
-    public int maxCastleHP = 50;
+    public int castleHP = 20;
+    public int maxCastleHP = 20;
 
     private int gold
     {
