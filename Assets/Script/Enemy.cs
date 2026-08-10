@@ -201,7 +201,7 @@ public class Enemy : MonoBehaviour
         // Cộng vàng vào GameUI khi quái chết
         if (GameUI.instance != null)
         {
-            GameUI.instance.AddGold(10);
+            GameUI.instance.AddGold(1);
         }
 
         Destroy(gameObject, 1.0f);
