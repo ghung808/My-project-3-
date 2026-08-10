@@ -69621,6 +69621,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1158693414635317091, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1680034985532871371, guid: e49938dce17a28d47849725b664dc611, type: 3}
     - target: {fileID: 2144027760207575598, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_Name
       value: BuildingSpot (6)
@@ -69635,7 +69639,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -14.94
+      value: -15.13
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.z
@@ -69682,6 +69686,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1158693414635317091, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1680034985532871371, guid: e49938dce17a28d47849725b664dc611, type: 3}
     - target: {fileID: 2144027760207575598, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_Name
       value: BuildingSpot (2)
@@ -69692,7 +69700,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -6.45
+      value: -6.6400003
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.z
@@ -69770,6 +69778,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1158693414635317091, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1680034985532871371, guid: e49938dce17a28d47849725b664dc611, type: 3}
     - target: {fileID: 2144027760207575598, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_Name
       value: BuildingSpot (4)
@@ -69780,7 +69792,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -15.4
+      value: -15.59
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.z
@@ -69964,6 +69976,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1158693414635317091, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1680034985532871371, guid: e49938dce17a28d47849725b664dc611, type: 3}
     - target: {fileID: 2144027760207575598, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_Name
       value: BuildingSpot
@@ -69974,7 +69990,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -10.48
+      value: -10.67
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.z
@@ -70518,6 +70534,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1158693414635317091, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1680034985532871371, guid: e49938dce17a28d47849725b664dc611, type: 3}
     - target: {fileID: 2144027760207575598, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_Name
       value: BuildingSpot (3)
@@ -70528,7 +70548,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.74
+      value: 0.5499995
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.z
@@ -70575,6 +70595,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1158693414635317091, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1680034985532871371, guid: e49938dce17a28d47849725b664dc611, type: 3}
     - target: {fileID: 2144027760207575598, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_Name
       value: BuildingSpot (1)
@@ -70585,7 +70609,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -6.3
+      value: -6.4900007
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.z
@@ -70632,6 +70656,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1158693414635317091, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1680034985532871371, guid: e49938dce17a28d47849725b664dc611, type: 3}
     - target: {fileID: 2144027760207575598, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_Name
       value: BuildingSpot (7)
@@ -70642,7 +70670,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -10.84
+      value: -11.030001
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.z
@@ -71025,6 +71053,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1158693414635317091, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1680034985532871371, guid: e49938dce17a28d47849725b664dc611, type: 3}
     - target: {fileID: 2144027760207575598, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_Name
       value: BuildingSpot (5)
@@ -71035,7 +71067,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3
+      value: 2.8099995
       objectReference: {fileID: 0}
     - target: {fileID: 6920992880197610182, guid: 4c3c778feea8460498eba093ed266ade, type: 3}
       propertyPath: m_LocalPosition.z

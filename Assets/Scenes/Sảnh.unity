@@ -605,7 +605,7 @@ RectTransform:
   m_Father: {fileID: 674831334}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -812,7 +812,7 @@ RectTransform:
   m_Father: {fileID: 146123641}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3106,7 +3106,7 @@ RectTransform:
   m_Father: {fileID: 2114102410}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3291,26 +3291,13 @@ MonoBehaviour:
   - "Th\xE1p \u0110\u1EA1i B\xE0ng"
   - "Th\xE1p Tinh T\xFA"
   thanhTriInfos:
-  - "L\xE0 tuy\u1EBFn ph\xF2ng th\u1EE7 \u0111\u1EA7u ti\xEAn c\u1EE7a v\u01B0\u01A1ng
-    qu\u1ED1c, c\xE1c ki\u1EBFm s\u0129 th\u1EC1 chi\u1EBFn \u0111\u1EA5u \u0111\u1EBFn
-    h\u01A1i th\u1EDF cu\u1ED1i c\xF9ng \u0111\u1EC3 ng\u0103n qu\xE2n \u0111o\xE0n
-    b\xF3ng t\u1ED1i v\u01B0\u1EE3t qua c\u1ED5ng th\xE0nh.\n\nT\u1EA5n c\xF4ng t\u1EA7m
-    g\u1EA7n\nG\xE2y s\xE1t th\u01B0\u01A1ng li\xEAn t\u1EE5c.\nH\u1ED7 tr\u1EE3
-    ti\u1EC1n tuy\u1EBFn.\n\nTinh th\u1EA7n\n\"M\u1ED9t m\u0169i t\xEAn ch\xEDnh
-    x\xE1c c\xF3 th\u1EC3 thay \u0111\u1ED5i c\u1EA3 cu\u1ED9c chi\u1EBFn.\""
-  - "\u0110\u1EE9ng tr\xEAn \u0111\u1EC9nh n\xFAi cao, c\xE1c cung th\u1EE7 h\u1EA1
-    g\u1EE5c k\u1EBB th\xF9 t\u1EEB kho\u1EA3ng c\xE1ch h\xE0ng tr\u0103m m\xE9t,
-    b\u1EA3o v\u1EC7 \u0111\u1ED3ng minh b\u1EB1ng nh\u1EEFng m\u0169i t\xEAn kh\xF4ng
-    bao gi\u1EDD tr\u01B0\u1EE3t.\n\nT\u1EA5n c\xF4ng t\u1EA7m xa.\nG\xE2y s\xE1t
-    th\u01B0\u01A1ng li\xEAn t\u1EE5c.\nH\u1ED7 tr\u1EE3 ti\u1EC1n tuy\u1EBFn.\n\nTinh
-    th\u1EA7n\n\"M\u1ED9t m\u0169i t\xEAn ch\xEDnh x\xE1c c\xF3 th\u1EC3 thay \u0111\u1ED5i
-    c\u1EA3 cu\u1ED9c chi\u1EBFn.\""
-  - "N\u1EAFm gi\u1EEF ngu\u1ED3n ma thu\u1EADt c\u1ED5 \u0111\u1EA1i, c\xE1c ph\xE1p
-    s\u01B0 tri\u1EC7u h\u1ED3i nh\u1EEFng ph\xE9p thu\u1EADt h\u1EE7y di\u1EC7t
-    \u0111\u1EC3 qu\xE9t s\u1EA1ch qu\xE2n \u0111o\xE0n h\u1EAFc \xE1m v\xE0 phong
-    \u1EA5n Ma V\u01B0\u01A1ng.\n\nS\xE1t th\u01B0\u01A1ng ph\xE9p di\u1EC7n r\u1ED9ng.\nL\xE0m
-    ch\u1EADm qu\xE1i.\nG\xE2y hi\u1EC7u \u1EE9ng \u0111\u1EB7c bi\u1EC7t.\n\nTinh
-    th\u1EA7n\n\"Tri th\u1EE9c l\xE0 v\u0169 kh\xED m\u1EA1nh nh\u1EA5t.\""
+  - "X\xE2y d\u1EF1ng ra th\xE0nh tr\xEC ch\u1EE9a ki\u1EBFm s\u0129 \nTh\u1EC3 lo\u1EA1i:
+    T\u1EA7m g\u1EA7n\nM\u1ED7i l\u1EA7n x\xE2y th\xE0nh s\u1EBD ti\xEAu t\u1ED1n
+    2 v\xE0ng "
+  - "X\xE2y d\u1EF1ng th\xE0nh tr\xEC ch\u1EE9a cung th\u1EE7\nTh\u1EC3 lo\u1EA1i:
+    T\u1EA7m xa\nM\u1ED7i l\u1EA7n x\xE2y th\xE0nh s\u1EBD ti\xEAu t\u1ED1n 4 v\xE0ng"
+  - "X\xE2y d\u1EF1ng th\xE0nh tr\xEC ch\u1EE9a ph\xE1p s\u01B0\nTh\u1EC3 lo\u1EA1i:
+    T\u1EA7m xa\nM\u1ED7i l\u1EA7n x\xE2y th\xE0nh s\u1EBD ti\xEAu t\u1ED1n 6 v\xE0ng"
 --- !u!114 &1331851478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4757,7 +4744,7 @@ RectTransform:
   m_Father: {fileID: 758199638}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0.69999695, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -5056,7 +5043,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2104076544
 RectTransform:
   m_ObjectHideFlags: 0
