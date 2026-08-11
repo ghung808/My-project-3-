@@ -37,14 +37,13 @@ public class BuildingSpot2D : MonoBehaviour
             return;
         }
 
-        // Thêm kiểm tra canBuild
-        if (!canBuild)
-        {
-            Debug.Log("Chưa đến thời gian xây thành!");
-            return;
-        }
-
         BuildShopUI.instance.ShowShop(this);
+
+        // Báo cho Tutorial biết người chơi đã bấm ô xây
+        if (GuideManager.instance != null)
+        {
+            GuideManager.instance.BuildingSpotClicked();
+        }
     }
 
     public void BuildTower(GameObject towerPrefab)
