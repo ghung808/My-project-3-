@@ -407,8 +407,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   speed: 1.5
-  maxHp: 20
-  damage: 2
+  maxHp: 10
+  damage: 1
   attackCooldown: 1
   checkRadius: 0.8
   healthSlider: {fileID: 7173908394848523693}
