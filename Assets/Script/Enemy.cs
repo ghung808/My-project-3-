@@ -29,10 +29,21 @@ public class Enemy : MonoBehaviour
     [Header("Cấu hình Rơi Xu")]
     public GameObject coinPrefab;
 
+    // --- Biến quản lý hiệu ứng Đốt (Burn DOT) ---
+    [Header("Hiệu ứng Trạng thái (Đốt)")]
+    private bool isBurning = false;
+    private Coroutine burnCoroutine;
+
+    // --- BỔ SUNG: Biến quản lý hiệu ứng Làm chậm (Slow) ---
+    [Header("Hiệu ứng Trạng thái (Làm chậm)")]
+    private float originalSpeed;
+    private bool isSlowed = false;
+    private Coroutine slowCoroutine;
+
     private Animator animator;
     private Collider2D col;
-    private Rigidbody2D rb; // Thêm biến Rigidbody2D
-    private SpriteRenderer spriteRenderer; // Biến quản lý lật mặt sprite
+    private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
@@ -42,10 +53,9 @@ public class Enemy : MonoBehaviour
 
         animator = GetComponent<Animator>();
         col = GetComponent<Collider2D>();
-        rb = GetComponent<Rigidbody2D>(); // Lấy Rigidbody2D
-        spriteRenderer = GetComponent<SpriteRenderer>(); // Lấy component SpriteRenderer
+        rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Cấu hình Rigidbody2D
         if (rb != null)
         {
             rb.bodyType = RigidbodyType2D.Kinematic;
@@ -59,7 +69,6 @@ public class Enemy : MonoBehaviour
 
         if (isEngaged)
         {
-            // Khi đang đứng đánh lính, tự động quay mặt về phía con lính đó
             if (currentTargetSoldier != null)
             {
                 float directionX = currentTargetSoldier.transform.position.x - transform.position.x;
@@ -72,6 +81,69 @@ public class Enemy : MonoBehaviour
 
         CheckForSoldiersAhead();
         MoveTowardsWaypoint();
+    }
+
+    // --- Hàm kích hoạt hiệu ứng Đốt từ Cầu Lửa ---
+    public void StartBurn(float dps, float duration)
+    {
+        if (isDead) return;
+
+        if (isBurning && burnCoroutine != null)
+        {
+            StopCoroutine(burnCoroutine);
+        }
+
+        burnCoroutine = StartCoroutine(BurnEffectRoutine(dps, duration));
+    }
+
+    IEnumerator BurnEffectRoutine(float dps, float duration)
+    {
+        isBurning = true;
+        float elapsed = 0f;
+        int damagePerTick = Mathf.RoundToInt(dps);
+
+        while (elapsed < duration && !isDead)
+        {
+            yield return new WaitForSeconds(1f);
+            elapsed += 1f;
+
+            if (isDead) break;
+
+            TakeDamage(damagePerTick);
+            Debug.Log("Quái bị thiêu đốt, nhận " + damagePerTick + " sát thương.");
+        }
+
+        isBurning = false;
+    }
+
+    // --- BỔ SUNG: Hàm kích hoạt hiệu ứng Làm chậm từ Kỹ năng Băng ---
+    public void ApplySlow(float slowPercent, float duration)
+    {
+        if (isDead) return;
+
+        if (!isSlowed)
+        {
+            originalSpeed = speed;
+        }
+
+        if (slowCoroutine != null)
+        {
+            StopCoroutine(slowCoroutine);
+        }
+
+        slowCoroutine = StartCoroutine(SlowEffectRoutine(slowPercent, duration));
+    }
+
+    IEnumerator SlowEffectRoutine(float slowPercent, float duration)
+    {
+        isSlowed = true;
+        speed = originalSpeed * slowPercent; // Giảm tốc độ theo tỉ lệ
+        Debug.Log("Quái bị làm chậm!");
+
+        yield return new WaitForSeconds(duration);
+
+        speed = originalSpeed; // Hết giờ, hồi lại tốc độ cũ
+        isSlowed = false;
     }
 
     void CheckForSoldiersAhead()
@@ -89,7 +161,6 @@ public class Enemy : MonoBehaviour
                 isEngaged = true;
                 currentTargetSoldier = hit.GetComponent<MonoBehaviour>();
 
-                // Chuyển sang trạng thái đứng yên (eidle) khi gặp lính
                 SetAnimatorBool("isRunning", false);
                 break;
             }
@@ -117,13 +188,11 @@ public class Enemy : MonoBehaviour
         Vector3 dir = targetWaypoint.position - transform.position;
         transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
 
-        // Quay mặt theo hướng di chuyển trên đường đi
         if (dir.x != 0)
         {
             FlipSprite(dir.x);
         }
 
-        // Chuyển sang trạng thái đi bộ (ewalk)
         SetAnimatorBool("isRunning", true);
 
         if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.2f)
@@ -138,7 +207,7 @@ public class Enemy : MonoBehaviour
 
         if (ui != null)
         {
-            ui.TakeCastleDamage(1); // Mỗi quái trừ 1 máu thành
+            ui.TakeCastleDamage(1);
         }
 
         Destroy(gameObject);
@@ -152,7 +221,6 @@ public class Enemy : MonoBehaviour
         UpdateHealthUI();
         if (hp > 0)
         {
-            // Kích hoạt animation bị thương (ehurt)
             SetAnimatorTrigger("Hurt");
         }
         else
@@ -172,7 +240,6 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
-        // Tăng số quái đã giết trong GameUI
         if (GameUI.instance != null)
         {
             GameUI.instance.enemiesKilled++;
@@ -181,11 +248,8 @@ public class Enemy : MonoBehaviour
         isDead = true;
 
         if (col != null) col.enabled = false;
-
-        // Vô hiệu hóa Rigidbody2D khi chết để tránh va chạm
         if (rb != null) rb.simulated = false;
 
-        // Kích hoạt animation chết (edealth)
         SetAnimatorTrigger("Die");
 
         if (healthSlider != null)
@@ -198,7 +262,6 @@ public class Enemy : MonoBehaviour
             Instantiate(coinPrefab, transform.position, Quaternion.identity);
         }
 
-        // Cộng vàng vào GameUI khi quái chết
         if (GameUI.instance != null)
         {
             GameUI.instance.AddGold(1);
@@ -226,7 +289,6 @@ public class Enemy : MonoBehaviour
     {
         if (currentTargetSoldier == null) return;
 
-        // Kích hoạt animation tấn công (eattack)
         SetAnimatorTrigger("Attack");
 
         if (currentTargetSoldier is PlayerSoldier w) w.TakeDamage(damage);
@@ -234,18 +296,14 @@ public class Enemy : MonoBehaviour
         else if (currentTargetSoldier is ArcherSoldier a) a.TakeDamage(damage);
     }
 
-    // --- HÀM LẬT HƯỚNG SPRITE ---
     void FlipSprite(float directionX)
     {
         if (spriteRenderer != null && Mathf.Abs(directionX) > 0.01f)
         {
-            // Nếu lính/hướng di chuyển nằm bên trái -> lật ảnh (flipX = true)
-            // Nếu nằm bên phải -> giữ nguyên (flipX = false)
             spriteRenderer.flipX = directionX < 0;
         }
     }
 
-    // --- HÀM HỖ TRỢ AN TOÀN TRÁNH LỖI ANIMATOR ---
     void SetAnimatorTrigger(string triggerName)
     {
         if (animator != null && animator.runtimeAnimatorController != null)
