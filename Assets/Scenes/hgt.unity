@@ -17602,7 +17602,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveSpawner
   waves:
   - waveName: 1
-    enemyPrefab: {fileID: 9156490891601836209, guid: c3921349f59c0c54aaf05a8d578b55ea, type: 3}
+    enemyPrefab: {fileID: 5089412571763283408, guid: 2df207edd5455d647abe8b5bc06e2f7d, type: 3}
     count: 3
     rate: 2.76
   - waveName: 2
