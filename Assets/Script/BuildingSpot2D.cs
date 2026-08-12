@@ -46,30 +46,46 @@ public class BuildingSpot2D : MonoBehaviour
         }
     }
 
-    public void BuildTower(GameObject towerPrefab)
+    public bool BuildTower(GameObject towerPrefab)
     {
-        if (towerPrefab == null) return;
+        if (towerPrefab == null)
+            return false;
 
         SpawnTower towerScript = towerPrefab.GetComponent<SpawnTower>();
+
         int cost = towerScript != null ? towerScript.cost : 50;
 
         if (PlayerStats.Money >= cost)
         {
             PlayerStats.Money -= cost;
 
-            currentTower = Instantiate(towerPrefab, transform.position, Quaternion.identity);
+            currentTower = Instantiate(
+                towerPrefab,
+                transform.position,
+                Quaternion.identity
+            );
 
             SpawnTower installedTower = currentTower.GetComponent<SpawnTower>();
+
             if (installedTower != null)
             {
                 installedTower.targetSpot = this;
             }
 
-            if (spotRenderer != null) spotRenderer.enabled = false;
+            if (spotRenderer != null)
+            {
+                spotRenderer.enabled = false;
+            }
+
+            Debug.Log("Xây tháp thành công!");
+
+            return true;
         }
         else
         {
             Debug.Log("Không đủ tiền xây thành!");
+
+            return false;
         }
     }
 
