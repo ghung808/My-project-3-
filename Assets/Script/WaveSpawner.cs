@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using TMPro;
+using TMPro; // Add this for TextMeshPro support
 
 public class WaveSpawner : MonoBehaviour
 {
@@ -10,16 +10,16 @@ public class WaveSpawner : MonoBehaviour
         public string waveName;
         public GameObject enemyPrefab;
         public int count;
-        public float rate;
+        public float rate; // Giữ lại để không lỗi giao diện Inspector
     }
 
     [Header("Cấu hình Wave quái")]
     public Wave[] waves;
-    public Transform spawnPoint;
-    public float timeBetweenWaves = 5f;
+    public Transform spawnPoint; // Vị trí quái xuất hiện
+    public float timeBetweenWaves = 5f; // Thời gian nghỉ giữa các wave
 
     [Header("Thời gian xây")]
-    public float firstBuildTime = 10f;
+    public float firstBuildTime = 10f; // Thời gian xây trước Wave 1
 
     [Header("Boss")]
     public GameObject bossPrefab;
@@ -28,17 +28,6 @@ public class WaveSpawner : MonoBehaviour
     private int currentWaveIndex = 0;
     private float waveCountdown;
     private bool bossSpawned = false;
-    private bool guideReady = false;
-
-    // Tạm dừng sau Wave 1
-    private bool waitingForWave1Guide = false;
-
-    // Tạm dừng sau Wave 2
-    private bool waitingForWave2Guide = false;
-
-    // Tạm dừng sau Wave 3
-    private bool waitingForWave3Mission = false;
-
     private enum SpawnState { SPAWNING, WAITING, COUNTING };
     private SpawnState state = SpawnState.COUNTING;
 
@@ -49,29 +38,16 @@ public class WaveSpawner : MonoBehaviour
             spawnPoint = transform;
         }
 
-        waveCountdown = firstBuildTime;
-        guideReady = false;
+        waveCountdown = firstBuildTime; // Đếm ngược từ 10 giây
 
         // Cho phép xây 10 giây trước Wave 1
         BuildingSpot2D.canBuild = true;
 
-        GameUI.instance.maxWave = waves.Length;
+        GameUI.instance.maxWave = waves.Length; // Set total waves in GameUI
     }
 
     void Update()
     {
-        if (!guideReady)
-            return;
-
-        if (waitingForWave2Guide)
-            return;
-
-        if (waitingForWave1Guide)
-            return;
-
-        if (waitingForWave3Mission)
-            return;
-
         if (state == SpawnState.WAITING)
         {
             // Kiểm tra xem quái đã chết hết chưa
@@ -106,210 +82,42 @@ public class WaveSpawner : MonoBehaviour
     {
         Debug.Log("Wave " + (currentWaveIndex + 1) + " đã hoàn thành!");
 
-        // Cho phép xây trong thời gian nghỉ
-        BuildingSpot2D.canBuild = true;
-
-        // Tăng số Wave
-        currentWaveIndex++;
-
-        // ================================
-        // SAU KHI HOÀN THÀNH WAVE 1
-        // ================================
-        if (currentWaveIndex == 1)
-        {
-            // Dừng WaveSpawner
-            waitingForWave1Guide = true;
-
-            // Không cho tự động chạy Wave 2
-            state = SpawnState.COUNTING;
-
-            // Không chạy countdown
-            waveCountdown = 0f;
-
-            // Hiện bảng chúc mừng
-            if (GuideManager.instance != null)
-            {
-                GuideManager.instance.ShowWave1Complete();
-            }
-
-            Debug.Log("🎉 Wave 1 hoàn thành - đang chờ hướng dẫn Cung Thủ!");
-
-            return;
-        }
-
-        // ================================
-        // SAU KHI HOÀN THÀNH WAVE 2
-        // ================================
-        if (currentWaveIndex == 2)
-        {
-            waitingForWave2Guide = true;
-
-            state = SpawnState.COUNTING;
-
-            BuildingSpot2D.canBuild = true;
-
-            waveCountdown = 0f;
-
-            if (GuideManager.instance != null)
-            {
-                GuideManager.instance.ShowMageUnlockPanel();
-            }
-
-            Debug.Log("🎉 Wave 2 hoàn thành - chờ hướng dẫn Pháp Sư!");
-
-            return;
-        }
-
-        // ================================
-        // SAU KHI HOÀN THÀNH WAVE 3
-        // ================================
-        if (currentWaveIndex == 3)
-        {
-            waitingForWave3Mission = true;
-
-            state = SpawnState.COUNTING;
-
-            waveCountdown = 0f;
-
-            BuildingSpot2D.canBuild = true;
-
-            if (GuideManager.instance != null)
-            {
-                GuideManager.instance.ShowWave3Mission();
-            }
-
-            Debug.Log("🎉 Wave 3 hoàn thành - hiển thị nhiệm vụ!");
-
-            return;
-        }
-
-        // ================================
-        // CÁC WAVE SAU
-        // ================================
         state = SpawnState.COUNTING;
+
+        // Đã hết Wave → cho phép xây trong thời gian nghỉ
+        BuildingSpot2D.canBuild = true;
 
         waveCountdown = timeBetweenWaves;
 
-        GameUI.instance.currentWave = currentWaveIndex + 1;
+        currentWaveIndex++;
+        GameUI.instance.currentWave = currentWaveIndex + 1; // Update current wave in GameUI
 
-        // ================================
-        // ĐÃ HẾT TẤT CẢ WAVE
-        // ================================
         if (currentWaveIndex >= waves.Length)
         {
+            // Đã hết tất cả Wave → không cho xây nữa
             BuildingSpot2D.canBuild = false;
 
-            if (spawnBossAfterLastWave && !bossSpawned)
+            if (spawnBossAfterLastWave && !bossSpawned && bossPrefab != null)
             {
-                state = SpawnState.COUNTING;
+                bossSpawned = true;
 
-                waveCountdown = 0f;
+                Instantiate(
+                    bossPrefab,
+                    spawnPoint.position,
+                    spawnPoint.rotation
+                );
 
-                if (GuideManager.instance != null)
-                {
-                    GuideManager.instance.ShowBossWarning();
-                }
+                state = SpawnState.WAITING;
 
-                Debug.Log("⚠️ Tất cả Wave đã hoàn thành - chờ người chơi xác nhận Boss!");
-
-                return;
+                Debug.Log("Boss xuất hiện!");
+            }
+            else if (bossSpawned && !EnemyIsAlive())
+            {
+                GameUI.instance.WinGame();
             }
 
             return;
         }
-    }
-
-    // Hàm cho GuideManager gọi khi hướng dẫn xong
-    public void StartBattleAfterGuide()
-    {
-        guideReady = true;
-        waveCountdown = 0f;
-
-        Debug.Log("Hướng dẫn xong - Wave 1 bắt đầu!");
-    }
-
-    // Hàm để tiếp tục sau khi hoàn thành hướng dẫn Cung Thủ
-    public void ContinueAfterArcherGuide()
-    {
-        waitingForWave1Guide = false;
-        waveCountdown = timeBetweenWaves;
-        state = SpawnState.COUNTING;
-
-        Debug.Log("✅ Đã hoàn thành hướng dẫn Cung Thủ - Wave 2 sẽ bắt đầu sau " + timeBetweenWaves + " giây!");
-    }
-
-    public void StartWave2AfterGuide()
-    {
-        // Mở khóa WaveSpawner
-        waitingForWave1Guide = false;
-
-        // Cho phép bắt đầu Wave 2 ngay lập tức
-        state = SpawnState.COUNTING;
-        waveCountdown = 0f;
-
-        // Khi Wave 2 bắt đầu thì khóa xây
-        BuildingSpot2D.canBuild = false;
-
-        Debug.Log("🔥 Hướng dẫn Cung Thủ hoàn tất - Wave 2 bắt đầu!");
-    }
-
-    public void StartWave3AfterGuide()
-    {
-        // Mở khóa sau hướng dẫn Wave 2
-        waitingForWave2Guide = false;
-
-        // Cho phép WaveSpawner chạy tiếp
-        guideReady = true;
-
-        // Đưa trạng thái về đếm Wave
-        state = SpawnState.COUNTING;
-
-        // Bắt đầu Wave 3 ngay lập tức
-        waveCountdown = 0f;
-
-        // Khi Wave 3 bắt đầu thì khóa xây
-        BuildingSpot2D.canBuild = false;
-
-        Debug.Log("🔮 Hướng dẫn Pháp Sư hoàn thành - Wave 3 bắt đầu!");
-    }
-
-    public void ContinueAfterWave3Mission()
-    {
-        waitingForWave3Mission = false;
-
-        state = SpawnState.COUNTING;
-
-        waveCountdown = timeBetweenWaves;
-
-        BuildingSpot2D.canBuild = true;
-
-        Debug.Log("🔥 Đã hoàn thành nhiệm vụ - Wave 4 sẽ bắt đầu sau " + timeBetweenWaves + " giây!");
-    }
-
-    public void SpawnFinalBoss()
-    {
-        if (bossSpawned)
-            return;
-
-        if (bossPrefab == null)
-        {
-            Debug.LogError("❌ Chưa gán Boss Prefab!");
-            return;
-        }
-
-        bossSpawned = true;
-
-        BuildingSpot2D.canBuild = false;
-
-        Instantiate(
-            bossPrefab,
-            spawnPoint.position,
-            spawnPoint.rotation
-        );
-
-        state = SpawnState.WAITING;
-
-        Debug.Log("💀 BOSS CUỐI ĐÃ XUẤT HIỆN!");
     }
 
     bool EnemyIsAlive()
@@ -326,7 +134,7 @@ public class WaveSpawner : MonoBehaviour
     {
         state = SpawnState.SPAWNING;
 
-        float spacing = 0.8f;
+        float spacing = 0.8f; // Khoảng cách giữa các con quái để không bị dính vào nhau
 
         // Spawn toàn bộ số lượng quái trong wave CÙNG MỘT LÚC
         for (int i = 0; i < _wave.count; i++)
@@ -340,12 +148,5 @@ public class WaveSpawner : MonoBehaviour
 
         state = SpawnState.WAITING;
         yield break;
-    }
-
-    // Public method to start the wave spawner (can be called from UI button)
-    public void StartWaveSpawner()
-    {
-        guideReady = true;
-        Debug.Log("Wave Spawner started!");
     }
 }
