@@ -28,7 +28,7 @@ public class WaveSpawner : MonoBehaviour
     private int currentWaveIndex = 0;
     private float waveCountdown;
     private bool bossSpawned = false;
-    private bool guideReady = false;
+    private bool guideReady = true; // Sửa thành true để game tự động chạy đếm ngược spawn quái
 
     // Tạm dừng sau Wave 1
     private bool waitingForWave1Guide = false;
@@ -50,12 +50,15 @@ public class WaveSpawner : MonoBehaviour
         }
 
         waveCountdown = firstBuildTime;
-        guideReady = false;
+        guideReady = true; // Đảm bảo luôn sẵn sàng chạy
 
         // Cho phép xây 10 giây trước Wave 1
         BuildingSpot2D.canBuild = true;
 
-        GameUI.instance.maxWave = waves.Length;
+        if (GameUI.instance != null)
+        {
+            GameUI.instance.maxWave = waves.Length;
+        }
     }
 
     void Update()
@@ -190,7 +193,10 @@ public class WaveSpawner : MonoBehaviour
 
         waveCountdown = timeBetweenWaves;
 
-        GameUI.instance.currentWave = currentWaveIndex + 1;
+        if (GameUI.instance != null)
+        {
+            GameUI.instance.currentWave = currentWaveIndex + 1;
+        }
 
         // ================================
         // ĐÃ HẾT TẤT CẢ WAVE
