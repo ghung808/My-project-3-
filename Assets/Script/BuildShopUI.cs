@@ -73,8 +73,21 @@ public class BuildShopUI : MonoBehaviour
     {
         if (selectedSpot != null && BuildManager.instance != null)
         {
-            selectedSpot.BuildTower(BuildManager.instance.archerTowerPrefab);
+            bool builtSuccessfully =
+                selectedSpot.BuildTower(
+                    BuildManager.instance.archerTowerPrefab
+                );
+
+            // Chỉ hiện bảng thông tin nếu Cung Thủ được xây thành công
+            if (builtSuccessfully)
+            {
+                if (GuideManager.instance != null)
+                {
+                    GuideManager.instance.ShowArcherInfo();
+                }
+            }
         }
+
         HideShop();
     }
 
