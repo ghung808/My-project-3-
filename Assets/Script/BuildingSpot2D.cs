@@ -9,7 +9,7 @@ public class BuildingSpot2D : MonoBehaviour
     private Color originalColor;
     private GameObject currentTower;
 
-    public static bool canBuild = false;  // Thêm biến này
+    public static bool canBuild = false;
 
     void Start()
     {
@@ -19,7 +19,6 @@ public class BuildingSpot2D : MonoBehaviour
 
     void OnMouseEnter()
     {
-        // Thêm điều kiện !canBuild
         if (spotRenderer == null || currentTower != null || !canBuild) return;
         spotRenderer.color = hoverColor;
     }
@@ -39,8 +38,8 @@ public class BuildingSpot2D : MonoBehaviour
 
         BuildShopUI.instance.ShowShop(this);
 
-        // Báo cho Tutorial biết người chơi đã bấm ô xây
-        if (GuideManager.instance != null)
+        if (GuideManager.instance != null &&
+            !GuideManager.instance.tutorialFinished)
         {
             GuideManager.instance.BuildingSpotClicked();
         }
@@ -53,40 +52,43 @@ public class BuildingSpot2D : MonoBehaviour
 
         SpawnTower towerScript = towerPrefab.GetComponent<SpawnTower>();
 
-        int cost = towerScript != null ? towerScript.cost : 50;
-
-        if (PlayerStats.Money >= cost)
+        if (towerScript == null)
         {
-            PlayerStats.Money -= cost;
-
-            currentTower = Instantiate(
-                towerPrefab,
-                transform.position,
-                Quaternion.identity
-            );
-
-            SpawnTower installedTower = currentTower.GetComponent<SpawnTower>();
-
-            if (installedTower != null)
-            {
-                installedTower.targetSpot = this;
-            }
-
-            if (spotRenderer != null)
-            {
-                spotRenderer.enabled = false;
-            }
-
-            Debug.Log("Xây tháp thành công!");
-
-            return true;
-        }
-        else
-        {
-            Debug.Log("Không đủ tiền xây thành!");
-
+            Debug.LogError("Tower Prefab không có SpawnTower!");
             return false;
         }
+
+        // Kiểm tra GameUI
+        if (GameUI.instance == null)
+        {
+            Debug.LogError("Không tìm thấy GameUI.instance!");
+            return false;
+        }
+
+        // KHÔNG TRỪ TIỀN Ở ĐÂY
+        // BuildShopUI sẽ trừ tiền sau khi xây thành công.
+
+        currentTower = Instantiate(
+            towerPrefab,
+            transform.position,
+            Quaternion.identity
+        );
+
+        SpawnTower installedTower = currentTower.GetComponent<SpawnTower>();
+
+        if (installedTower != null)
+        {
+            installedTower.targetSpot = this;
+        }
+
+        if (spotRenderer != null)
+        {
+            spotRenderer.enabled = false;
+        }
+
+        Debug.Log("🏗️ Xây tháp thành công!");
+
+        return true;
     }
 
     public void ClearSpot()

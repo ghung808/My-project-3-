@@ -14,6 +14,9 @@ public class ArcherSoldier : MonoBehaviour
     public float attackCooldown = 1f;
     private float lastAttackTime;
 
+    [Header("Tốc độ")]
+    public float speed = 3f;
+
     public GameObject arrowPrefab;
     public Transform shootPoint;
     private Transform targetEnemy;
@@ -62,23 +65,64 @@ public class ArcherSoldier : MonoBehaviour
 
     void FindClosestEnemy()
     {
-        Enemy[] enemies = Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
         float shortestDist = Mathf.Infinity;
-        Transform nearestEnemy = null;
+        Transform nearestTarget = null;
+
+        // =========================
+        // TÌM ENEMY
+        // =========================
+
+        Enemy[] enemies =
+            Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
 
         foreach (Enemy enemy in enemies)
         {
-            float distToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
-            if (distToEnemy < shortestDist)
+            if (enemy == null || !enemy.gameObject.activeInHierarchy)
+                continue;
+
+            float distance = Vector3.Distance(
+                transform.position,
+                enemy.transform.position
+            );
+
+            if (distance < shortestDist)
             {
-                shortestDist = distToEnemy;
-                nearestEnemy = enemy.transform;
+                shortestDist = distance;
+                nearestTarget = enemy.transform;
             }
         }
 
-        if (nearestEnemy != null && shortestDist <= attackRange)
+        // =========================
+        // TÌM BOSS
+        // =========================
+
+        Boss[] bosses =
+            Object.FindObjectsByType<Boss>(FindObjectsSortMode.None);
+
+        foreach (Boss boss in bosses)
         {
-            targetEnemy = nearestEnemy;
+            if (boss == null || !boss.gameObject.activeInHierarchy)
+                continue;
+
+            float distance = Vector3.Distance(
+                transform.position,
+                boss.transform.position
+            );
+
+            if (distance < shortestDist)
+            {
+                shortestDist = distance;
+                nearestTarget = boss.transform;
+            }
+        }
+
+        // =========================
+        // GÁN MỤC TIÊU
+        // =========================
+
+        if (nearestTarget != null && shortestDist <= attackRange)
+        {
+            targetEnemy = nearestTarget;
         }
         else
         {

@@ -4,7 +4,7 @@ public class Arrow : MonoBehaviour
 {
     private Transform target;
     private int damage;
-    public float speed = 10f; // Tốc độ bay của mũi tên
+    public float speed = 10f;
 
     public void Seek(Transform _target, int _damage)
     {
@@ -14,36 +14,49 @@ public class Arrow : MonoBehaviour
 
     void Update()
     {
-        // Nếu quái mục tiêu đã biến mất (chết), hủy mũi tên luôn
         if (target == null)
         {
             Destroy(gameObject);
             return;
         }
 
-        // Di chuyển mũi tên hướng về phía quái
         Vector3 dir = target.position - transform.position;
         float distanceThisFrame = speed * Time.deltaTime;
 
-        transform.Translate(dir.normalized * distanceThisFrame, Space.World);
-
-        // Xoay đầu mũi tên hướng về phía quái (tùy chọn)
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-
-        // Kiểm tra nếu mũi tên bay đến rất gần quái thì gây sát thương và biến mất
-        if (dir.magnitude <= 0.4f)
+        if (dir.magnitude <= distanceThisFrame)
         {
             HitTarget();
+            return;
         }
+
+        transform.Translate(dir.normalized * distanceThisFrame, Space.World);
+        transform.LookAt(target);
     }
 
     void HitTarget()
     {
-        Enemy enemyScript = target.GetComponent<Enemy>();
-        if (enemyScript != null)
+        if (target == null)
         {
-            enemyScript.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
+        }
+
+        Enemy enemy = target.GetComponent<Enemy>();
+
+        if (enemy != null)
+        {
+            enemy.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
+        }
+
+        Boss boss = target.GetComponent<Boss>();
+
+        if (boss != null)
+        {
+            boss.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
         }
 
         Destroy(gameObject);

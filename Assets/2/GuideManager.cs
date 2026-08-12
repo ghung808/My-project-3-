@@ -26,12 +26,14 @@ public class GuideManager : MonoBehaviour
 
     [Header("Fighter Info")]
     public GameObject fighterInfoPanel;
+    public Button fighterInfoContinueButton;
 
     [Header("Guide State")]
     public bool fighterGuideCompleted = false;
     public bool tutorialFinished = false;
     private bool waitingForArcherGuide = false;
     private bool waitingForMageGuide = false;
+    private bool guideStarted = false;
 
     [Header("Wave")]
     public WaveSpawner waveSpawner;
@@ -101,10 +103,10 @@ public class GuideManager : MonoBehaviour
             fighterInfoPanel.SetActive(false);
         }
 
-        // Gán sự kiện cho nút Tiếp tục
-        if (continueButton != null)
+        // Gán nút Tiếp tục của bảng thông tin Đấu Sĩ
+        if (fighterInfoContinueButton != null)
         {
-            continueButton.onClick.AddListener(ContinueGuide);
+            fighterInfoContinueButton.onClick.AddListener(ContinueGuide);
         }
 
         // Tắt bảng thông tin Cung Thủ
@@ -176,22 +178,28 @@ public class GuideManager : MonoBehaviour
 
     public void StartGuide()
     {
+        // Đánh dấu: người chơi mới bắt đầu hướng dẫn
+        guideStarted = true;
+
+        // Tắt bảng hướng dẫn tân thủ
         if (guidePanel != null)
         {
             guidePanel.SetActive(false);
         }
 
+        // Chỉ hiện mũi tên
         if (guideArrow != null)
         {
             guideArrow.SetActive(true);
         }
 
+        // Chỉ vào ô xây Đấu Sĩ
         if (target != null)
         {
             UpdateArrowPosition();
         }
 
-        Debug.Log("Mũi tên đã xuất hiện và chỉ vào mục tiêu đầu tiên!");
+        Debug.Log("✅ ĐÃ BẮT ĐẦU HƯỚNG DẪN - CHƯA BẮT ĐẦU WAVE 1!");
     }
 
     public void BuildingSpotClicked()
@@ -281,11 +289,20 @@ public class GuideManager : MonoBehaviour
 
         target = null;
 
-        Debug.Log("Đã bấm Đấu Sĩ - Kết thúc bước hướng dẫn!");
+        // Hiện bảng thông tin Đấu Sĩ
+        ShowFighterInfo();
+
+        Debug.Log("Đã bấm Đấu Sĩ - hiện bảng thông tin Đấu Sĩ!");
     }
 
     public void ShowFighterInfo()
     {
+        if (tutorialFinished)
+            return;
+
+        if (!guideStarted)
+            return;
+
         if (guideArrow != null)
         {
             guideArrow.SetActive(false);
@@ -313,7 +330,7 @@ public class GuideManager : MonoBehaviour
             waveSpawner.StartBattleAfterGuide();
         }
 
-        Debug.Log("Đã hoàn thành hướng dẫn Đấu Sĩ - Wave 1 bắt đầu!");
+        Debug.LogError("🚨 CONTINUE GUIDE ĐANG BỊ GỌI!");
     }
 
     public void ShowArcherGuide()
@@ -347,6 +364,12 @@ public class GuideManager : MonoBehaviour
 
     public void ShowArcherInfo()
     {
+        if (tutorialFinished)
+            return;
+
+        if (!guideStarted)
+            return;
+
         if (guideArrow != null)
         {
             guideArrow.SetActive(false);
@@ -531,6 +554,12 @@ public class GuideManager : MonoBehaviour
 
     public void ShowMageInfo()
     {
+        if (tutorialFinished)
+            return;
+
+        if (!guideStarted)
+            return;
+
         if (guideArrow != null)
         {
             guideArrow.SetActive(false);
@@ -664,7 +693,7 @@ public class GuideManager : MonoBehaviour
         if (targetRect != null)
         {
             arrowRect.position =
-                targetRect.position + new Vector3(0f, 100f, 0f);
+                targetRect.position + new Vector3(-30f, 100f, 0f);
 
             return;
         }

@@ -4,7 +4,7 @@ public class MagicBullet : MonoBehaviour
 {
     private Transform target;
     private int damage;
-    public float speed = 10f;
+    public float speed = 8f;
 
     public void Seek(Transform _target, int _damage)
     {
@@ -14,13 +14,13 @@ public class MagicBullet : MonoBehaviour
 
     void Update()
     {
-        if (target == null || !target.gameObject.activeInHierarchy)
+        if (target == null)
         {
             Destroy(gameObject);
             return;
         }
 
-        Vector2 dir = target.position - transform.position;
+        Vector3 dir = target.position - transform.position;
         float distanceThisFrame = speed * Time.deltaTime;
 
         if (dir.magnitude <= distanceThisFrame)
@@ -34,11 +34,28 @@ public class MagicBullet : MonoBehaviour
 
     void HitTarget()
     {
-        // Gây sát thương khi đạn chạm trúng Quái (Enemy)
+        if (target == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Enemy enemy = target.GetComponent<Enemy>();
+
         if (enemy != null)
         {
             enemy.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
+        }
+
+        Boss boss = target.GetComponent<Boss>();
+
+        if (boss != null)
+        {
+            boss.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
         }
 
         Destroy(gameObject);

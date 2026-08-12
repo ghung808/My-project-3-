@@ -8,6 +8,9 @@ public class MageSoldier : MonoBehaviour
     public float detectRadius = 5f;
     public float attackRange = 3.5f;
 
+    [Header("Tốc độ")]
+    public float speed = 3f;
+
     [Header("Stats")]
     public int maxHp = 15;
     public int currentHp = 15;
@@ -97,25 +100,71 @@ public class MageSoldier : MonoBehaviour
     {
         if (targetEnemy != null && targetEnemy.gameObject.activeInHierarchy)
         {
-            float distToTarget = Vector3.Distance(transform.position, targetEnemy.position);
-            if (distToTarget <= detectRadius * 1.5f) return;
+            float distToTarget = Vector3.Distance(
+                transform.position,
+                targetEnemy.position
+            );
+
+            if (distToTarget <= detectRadius * 1.5f)
+                return;
         }
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         float shortestDistance = Mathf.Infinity;
         Transform nearestEnemy = null;
 
+        // =========================
+        // TÌM ENEMY THƯỜNG
+        // =========================
+
+        GameObject[] enemies =
+            GameObject.FindGameObjectsWithTag("Enemy");
+
         foreach (GameObject enemy in enemies)
         {
-            if (enemy == null || !enemy.activeInHierarchy) continue;
+            if (enemy == null || !enemy.activeInHierarchy)
+                continue;
 
-            float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
-            if (distanceToEnemy <= detectRadius && distanceToEnemy < shortestDistance)
+            float distance = Vector3.Distance(
+                transform.position,
+                enemy.transform.position
+            );
+
+            if (distance <= detectRadius &&
+                distance < shortestDistance)
             {
-                shortestDistance = distanceToEnemy;
+                shortestDistance = distance;
                 nearestEnemy = enemy.transform;
             }
         }
+
+        // =========================
+        // TÌM BOSS
+        // =========================
+
+        Boss[] bosses =
+            Object.FindObjectsByType<Boss>(FindObjectsSortMode.None);
+
+        foreach (Boss boss in bosses)
+        {
+            if (boss == null || !boss.gameObject.activeInHierarchy)
+                continue;
+
+            float distance = Vector3.Distance(
+                transform.position,
+                boss.transform.position
+            );
+
+            if (distance <= detectRadius &&
+                distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                nearestEnemy = boss.transform;
+            }
+        }
+
+        // =========================
+        // GÁN MỤC TIÊU
+        // =========================
 
         targetEnemy = nearestEnemy;
     }
@@ -168,12 +217,18 @@ public class MageSoldier : MonoBehaviour
 
     void ShootMagicBullet()
     {
-        if (targetEnemy == null || magicBulletPrefab == null) return;
+        if (targetEnemy == null || magicBulletPrefab == null)
+            return;
 
-        Vector3 spawnPos = (firePoint != null) ? firePoint.position : transform.position;
-        GameObject bulletObj = Instantiate(magicBulletPrefab, spawnPos, Quaternion.identity);
+        Vector3 spawnPos =
+            (firePoint != null) ? firePoint.position : transform.position;
 
-        MagicBullet bullet = bulletObj.GetComponent<MagicBullet>();
+        GameObject bulletObj =
+            Instantiate(magicBulletPrefab, spawnPos, Quaternion.identity);
+
+        MagicBullet bullet =
+            bulletObj.GetComponent<MagicBullet>();
+
         if (bullet != null)
         {
             bullet.Seek(targetEnemy, damage);

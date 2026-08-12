@@ -28,7 +28,7 @@ public class WaveSpawner : MonoBehaviour
     private int currentWaveIndex = 0;
     private float waveCountdown;
     private bool bossSpawned = false;
-    private bool guideReady = true; // Sửa thành true để game tự động chạy đếm ngược spawn quái
+    private bool guideReady = false; // KHÓA WAVE KHI MỚI VÀO GAME
 
     // Tạm dừng sau Wave 1
     private bool waitingForWave1Guide = false;
@@ -49,10 +49,12 @@ public class WaveSpawner : MonoBehaviour
             spawnPoint = transform;
         }
 
-        waveCountdown = firstBuildTime;
-        guideReady = true; // Đảm bảo luôn sẵn sàng chạy
+        // KHÓA WAVE KHI MỚI VÀO GAME
+        guideReady = false;
 
-        // Cho phép xây 10 giây trước Wave 1
+        waveCountdown = 0f;
+
+        // Vẫn cho phép người chơi xây tháp
         BuildingSpot2D.canBuild = true;
 
         if (GameUI.instance != null)
@@ -226,6 +228,7 @@ public class WaveSpawner : MonoBehaviour
     }
 
     // Hàm cho GuideManager gọi khi hướng dẫn xong
+    // ĐÂY LÀ CỬA DUY NHẤT MỞ WAVE 1
     public void StartBattleAfterGuide()
     {
         guideReady = true;
@@ -346,12 +349,5 @@ public class WaveSpawner : MonoBehaviour
 
         state = SpawnState.WAITING;
         yield break;
-    }
-
-    // Public method to start the wave spawner (can be called from UI button)
-    public void StartWaveSpawner()
-    {
-        guideReady = true;
-        Debug.Log("Wave Spawner started!");
     }
 }

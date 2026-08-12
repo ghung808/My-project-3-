@@ -16,6 +16,7 @@ public class SpawnTower : MonoBehaviour
     [Header("Chỉ Số Lính")]
     public int soldierHp = 20;
     public int soldierDamage = 2;
+    public float soldierSpeed = 3f;
 
     [Header("Vị Trí Tập Kết (Rally Point)")]
     public Vector3 rallyPoint;
@@ -32,8 +33,6 @@ public class SpawnTower : MonoBehaviour
         rallyPoint = GetNearestRoadPoint();
         SpawnAllSoldiers();
     }
-
-    // Không còn hàm Update đếm giờ hồi sinh nữa
 
     void SpawnAllSoldiers()
     {
@@ -63,16 +62,19 @@ public class SpawnTower : MonoBehaviour
         if (warrior != null)
         {
             warrior.InitializeStats(soldierHp, soldierDamage, this);
+            warrior.speed = soldierSpeed;
             warrior.SetRallyPosition(targetPos);
         }
         else if (mage != null)
         {
             mage.InitializeStats(soldierHp, soldierDamage, this);
+            mage.speed = soldierSpeed;
             mage.SetRallyPosition(targetPos);
         }
         else if (archer != null)
         {
             archer.InitializeStats(soldierHp, soldierDamage, this);
+            archer.speed = soldierSpeed;
             archer.SetRallyPosition(targetPos);
         }
 
@@ -90,21 +92,84 @@ public class SpawnTower : MonoBehaviour
 
     public void UpgradeTower()
     {
-        level++;
-        soldierHp += 10;
-        soldierDamage += 2;
+        if (level >= 3)
+        {
+            Debug.Log("Tháp đã đạt Level 3!");
+            return;
+        }
 
+        level++;
+
+        if (level == 2)
+        {
+            soldierHp += 10;
+            soldierDamage += 1;
+            soldierSpeed += 1f;
+
+            maxSoldiers += 2;
+
+            SpawnAdditionalSoldiers(2);
+        }
+        else if (level == 3)
+        {
+            soldierHp += 5;
+            soldierDamage += 1;
+            soldierSpeed += 1f;
+
+            maxSoldiers += 3;
+
+            SpawnAdditionalSoldiers(3);
+        }
+
+        UpdateAllSoldierStats();
+
+        Debug.Log(
+            "Nâng cấp Lv." + level +
+            " | Lính: " + activeSoldiers.Count +
+            " | HP: " + soldierHp +
+            " | Damage: " + soldierDamage +
+            " | Speed: " + soldierSpeed
+        );
+    }
+
+    void SpawnAdditionalSoldiers(int amount)
+    {
+        int startIndex = activeSoldiers.Count;
+
+        for (int i = 0; i < amount; i++)
+        {
+            SpawnSingleSoldier(startIndex + i);
+        }
+    }
+
+    void UpdateAllSoldierStats()
+    {
         foreach (var soldierGO in activeSoldiers)
         {
-            if (soldierGO != null)
-            {
-                PlayerSoldier w = soldierGO.GetComponent<PlayerSoldier>();
-                MageSoldier m = soldierGO.GetComponent<MageSoldier>();
-                ArcherSoldier a = soldierGO.GetComponent<ArcherSoldier>();
+            if (soldierGO == null)
+                continue;
 
-                if (w != null) { w.InitializeStats(soldierHp, soldierDamage, this); w.FullHeal(); }
-                else if (m != null) { m.InitializeStats(soldierHp, soldierDamage, this); m.FullHeal(); }
-                else if (a != null) { a.InitializeStats(soldierHp, soldierDamage, this); a.FullHeal(); }
+            PlayerSoldier w = soldierGO.GetComponent<PlayerSoldier>();
+            MageSoldier m = soldierGO.GetComponent<MageSoldier>();
+            ArcherSoldier a = soldierGO.GetComponent<ArcherSoldier>();
+
+            if (w != null)
+            {
+                w.InitializeStats(soldierHp, soldierDamage, this);
+                w.speed = soldierSpeed;
+                w.FullHeal();
+            }
+            else if (m != null)
+            {
+                m.InitializeStats(soldierHp, soldierDamage, this);
+                m.speed = soldierSpeed;
+                m.FullHeal();
+            }
+            else if (a != null)
+            {
+                a.InitializeStats(soldierHp, soldierDamage, this);
+                a.speed = soldierSpeed;
+                a.FullHeal();
             }
         }
     }
@@ -116,7 +181,10 @@ public class SpawnTower : MonoBehaviour
 
     public void SellTower()
     {
-        PlayerStats.Money += cost / 2;
+        if (GameUI.instance != null)
+        {
+            GameUI.instance.AddGold(cost / 2);
+        }
 
         foreach (var soldierGO in activeSoldiers)
         {
@@ -125,6 +193,7 @@ public class SpawnTower : MonoBehaviour
                 Destroy(soldierGO);
             }
         }
+
         activeSoldiers.Clear();
 
         if (targetSpot != null)
