@@ -224,16 +224,4 @@ public class GameUI : MonoBehaviour
             SceneManager.GetActiveScene().buildIndex
         );
     }
-
-    // =========================
-    // HÀM TIẾP TỤC SANG MAP 2
-    // =========================
-
-    public void ContinueToMap2()
-    {
-        PlayerPrefs.SetInt("Map2Unlocked", 1);
-        PlayerPrefs.Save();
-
-        SceneManager.LoadScene("hgt");
-    }
 }
