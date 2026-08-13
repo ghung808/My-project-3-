@@ -422,10 +422,10 @@ GameObject:
   - component: {fileID: 1729638429536053074}
   - component: {fileID: 8881268595733219800}
   - component: {fileID: -128840477866535908}
-  - component: {fileID: 8109981628108882302}
+  - component: {fileID: 2663190092717128039}
   m_Layer: 0
   m_Name: BossFly
-  m_TagString: Untagged
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -541,10 +541,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7768c3451a018854fa4fa13e2b08bb22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boss
-  maxHp: 2000
+  maxHp: 150
   moveSpeed: 2
   armor: 5
-  attackDamage: 50
+  attackDamage: 10
   attackCooldown: 2
   detectRadius: 4
   attackRange: 1.5
@@ -578,8 +578,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!70 &8109981628108882302
-CapsuleCollider2D:
+--- !u!61 &2663190092717128039
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -612,6 +612,15 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.15, y: -0.1}
-  m_Size: {x: 0.7, y: 0.65}
-  m_Direction: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.7083334, y: 1.2708334}
+    newSize: {x: 0.82, y: 0.61}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1.7083334, y: 1.2708334}
+  m_EdgeRadius: 0
