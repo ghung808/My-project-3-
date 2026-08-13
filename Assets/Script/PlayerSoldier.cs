@@ -7,7 +7,13 @@ public class PlayerSoldier : MonoBehaviour
     public float speed = 3f;
     public float attackRate = 1f;
     public float detectRadius = 4f;
-    public float attackRange = 1.0f; // Đã tăng từ 0.8 lên 1.0
+
+    // Khoảng cách để bắt đầu đánh
+    public float attackRange = 1.0f;
+
+    // Khoảng cách thực tế lính sẽ dừng trước mục tiêu
+    // Tăng giá trị này để lính không chui vào Boss
+    public float stopDistance = 1.2f;
 
     [Header("Stats")]
     public int maxHp = 20;
@@ -25,7 +31,7 @@ public class PlayerSoldier : MonoBehaviour
     private Transform targetEnemy;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
-    private bool hasMovedFromRally = false; // Đánh dấu xem lính đã rời vị trí tập kết để đi đánh quái chưa
+    private bool hasMovedFromRally = false;
 
     public void InitializeStats(int hp, int dmg, SpawnTower tower)
     {
@@ -33,6 +39,9 @@ public class PlayerSoldier : MonoBehaviour
         currentHp = hp;
         damage = dmg;
         homeTower = tower;
+
+        currentHp = maxHp;
+
         UpdateHealthBarUI();
     }
 
@@ -62,142 +71,246 @@ public class PlayerSoldier : MonoBehaviour
             transform.position = rallyPosition;
         }
 
-        InvokeRepeating("FindEnemy", 0f, 0.2f);
+        InvokeRepeating(nameof(FindEnemy), 0f, 0.2f);
     }
+
+    // =========================================================
+    // TÌM MỤC TIÊU
+    // =========================================================
 
     void FindEnemy()
     {
         if (targetEnemy != null && targetEnemy.gameObject.activeInHierarchy)
         {
-            float distToTarget = Vector3.Distance(transform.position, targetEnemy.position);
-            if (distToTarget <= detectRadius * 1.5f) return;
+            float distToTarget =
+                Vector3.Distance(transform.position, targetEnemy.position);
+
+            if (distToTarget <= detectRadius * 1.5f)
+                return;
         }
 
         float shortestDistance = Mathf.Infinity;
         Transform nearestEnemy = null;
 
-        // Tìm Enemy thường
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        // -----------------------------------------------------
+        // TÌM ENEMY THƯỜNG
+        // -----------------------------------------------------
+
+        GameObject[] enemies =
+            GameObject.FindGameObjectsWithTag("Enemy");
 
         foreach (GameObject enemy in enemies)
         {
-            if (enemy == null || !enemy.activeInHierarchy) continue;
+            if (enemy == null || !enemy.activeInHierarchy)
+                continue;
 
-            float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
+            float distance =
+                Vector3.Distance(transform.position, enemy.transform.position);
 
-            if (distanceToEnemy <= detectRadius && distanceToEnemy < shortestDistance)
+            if (distance <= detectRadius &&
+                distance < shortestDistance)
             {
-                shortestDistance = distanceToEnemy;
+                shortestDistance = distance;
                 nearestEnemy = enemy.transform;
             }
         }
 
-        // Tìm Boss
-        GameObject boss = GameObject.FindGameObjectWithTag("Boss");
+        // -----------------------------------------------------
+        // TÌM BOSS
+        // -----------------------------------------------------
 
-        if (boss != null && boss.activeInHierarchy)
+        GameObject bossObject =
+            GameObject.FindGameObjectWithTag("Boss");
+
+        if (bossObject != null && bossObject.activeInHierarchy)
         {
-            float distanceToBoss = Vector3.Distance(transform.position, boss.transform.position);
+            float distanceToBoss =
+                Vector3.Distance(
+                    transform.position,
+                    bossObject.transform.position
+                );
 
-            if (distanceToBoss <= detectRadius && distanceToBoss < shortestDistance)
+            if (distanceToBoss <= detectRadius &&
+                distanceToBoss < shortestDistance)
             {
                 shortestDistance = distanceToBoss;
-                nearestEnemy = boss.transform;
+                nearestEnemy = bossObject.transform;
             }
         }
 
         targetEnemy = nearestEnemy;
     }
 
+    // =========================================================
+    // UPDATE
+    // =========================================================
+
     void Update()
     {
-        if (targetEnemy != null && !targetEnemy.gameObject.activeInHierarchy)
+        // Nếu mục tiêu đã bị Destroy / inactive
+        if (targetEnemy != null &&
+            !targetEnemy.gameObject.activeInHierarchy)
         {
             targetEnemy = null;
         }
 
+        // -----------------------------------------------------
+        // CÓ MỤC TIÊU
+        // -----------------------------------------------------
+
         if (targetEnemy != null)
         {
-            float distanceToEnemy = Vector3.Distance(transform.position, targetEnemy.position);
-
-            if (distanceToEnemy > attackRange)
-            {
-                // ĐÃ SỬA: Chỉ chạy đến mép tầm đánh, không chui vào trong Enemy
-                Vector3 direction = (targetEnemy.position - transform.position).normalized;
-
-                // Chỉ chạy đến mép tầm đánh, không chui vào trong Enemy
-                Vector3 stopPosition = targetEnemy.position - direction * attackRange;
-
-                transform.position = Vector3.MoveTowards(
+            float distanceToEnemy =
+                Vector3.Distance(
                     transform.position,
-                    stopPosition,
-                    speed * Time.deltaTime
+                    targetEnemy.position
                 );
 
+            // =================================================
+            // CHƯA ĐỦ GẦN → DI CHUYỂN
+            // =================================================
+
+            if (distanceToEnemy > stopDistance)
+            {
+                Vector3 direction =
+                    (targetEnemy.position - transform.position).normalized;
+
+                /*
+                 * QUAN TRỌNG:
+                 *
+                 * Lính chỉ tiến tới stopDistance.
+                 * Không tiến sát tâm Boss.
+                 *
+                 * Trước đây:
+                 *
+                 * attackRange = 1.0
+                 *
+                 * nên nhiều lính có thể cùng ép vào Boss.
+                 *
+                 * Bây giờ:
+                 *
+                 * stopDistance = 1.2
+                 *
+                 * giúp tạo khoảng cách an toàn.
+                 */
+
+                Vector3 stopPosition =
+                    targetEnemy.position -
+                    direction * stopDistance;
+
+                transform.position =
+                    Vector3.MoveTowards(
+                        transform.position,
+                        stopPosition,
+                        speed * Time.deltaTime
+                    );
+
                 if (direction != Vector3.zero)
+                {
                     FlipSprite(direction.x);
+                }
 
                 SetMovingAnimation(true);
+
                 hasMovedFromRally = true;
             }
             else
             {
-                // Đã áp sát tầm đánh -> Đứng im đánh quái
+                // Đã đứng đủ xa mục tiêu
                 SetMovingAnimation(false);
             }
 
-            // --- XỬ LÝ TẤN CÔNG CẬN CHIẾN ---
+            // =================================================
+            // TẤN CÔNG
+            // =================================================
+
             if (distanceToEnemy <= attackRange)
             {
-                Vector3 dirToEnemy = targetEnemy.position - transform.position;
-                if (dirToEnemy != Vector3.zero) FlipSprite(dirToEnemy.x);
+                Vector3 dirToEnemy =
+                    targetEnemy.position - transform.position;
+
+                if (dirToEnemy != Vector3.zero)
+                {
+                    FlipSprite(dirToEnemy.x);
+                }
 
                 if (attackCountdown <= 0f)
                 {
                     TriggerAttackAnimation();
+
                     OnAttackHit();
+
                     attackCountdown = 1f / attackRate;
                 }
             }
         }
         else
         {
-            // --- KHI HẾT QUÁI (QUÁI ĐÃ CHẾT HẾT) ---
-            attackCountdown = 0f; // Reset thời gian tấn công để không bị treo trạng thái
+            // =================================================
+            // KHÔNG CÓ QUÁI
+            // =================================================
+
+            attackCountdown = 0f;
+
             SetMovingAnimation(false);
 
             if (hasMovedFromRally)
             {
-                // Nếu đã từng rời tháp đi đánh, bây giờ hết quái sẽ tự động quay trở về tháp
-                float distToRally = Vector3.Distance(transform.position, rallyPosition);
+                float distToRally =
+                    Vector3.Distance(
+                        transform.position,
+                        rallyPosition
+                    );
+
                 if (distToRally > 0.1f)
                 {
-                    transform.position = Vector3.MoveTowards(transform.position, rallyPosition, speed * Time.deltaTime);
-                    Vector3 moveBackDir = (rallyPosition - transform.position).normalized;
-                    if (moveBackDir != Vector3.zero) FlipSprite(moveBackDir.x);
-                    SetMovingAnimation(true); // Bật animation chạy về
+                    transform.position =
+                        Vector3.MoveTowards(
+                            transform.position,
+                            rallyPosition,
+                            speed * Time.deltaTime
+                        );
+
+                    Vector3 moveBackDir =
+                        (rallyPosition - transform.position).normalized;
+
+                    if (moveBackDir != Vector3.zero)
+                    {
+                        FlipSprite(moveBackDir.x);
+                    }
+
+                    SetMovingAnimation(true);
                 }
                 else
                 {
-                    // Đã về tới vị trí tháp -> Đứng yên (idle) và reset trạng thái
                     transform.position = rallyPosition;
+
                     SetMovingAnimation(false);
+
                     hasMovedFromRally = false;
                 }
             }
             else
             {
-                // Đang ở sẵn tháp thì đứng yên tại chỗ
                 transform.position = rallyPosition;
+
                 SetMovingAnimation(false);
             }
         }
+
+        // =====================================================
+        // COOLDOWN
+        // =====================================================
 
         if (attackCountdown > 0f)
         {
             attackCountdown -= Time.deltaTime;
         }
     }
+
+    // =========================================================
+    // ANIMATION
+    // =========================================================
 
     void SetMovingAnimation(bool isMoving)
     {
@@ -215,11 +328,21 @@ public class PlayerSoldier : MonoBehaviour
         }
     }
 
+    // =========================================================
+    // ĐÁNH MỤC TIÊU
+    // =========================================================
+
     public void OnAttackHit()
     {
-        if (targetEnemy == null) return;
+        if (targetEnemy == null)
+            return;
 
-        Enemy enemy = targetEnemy.GetComponent<Enemy>();
+        // -----------------------------------------------------
+        // ENEMY THƯỜNG
+        // -----------------------------------------------------
+
+        Enemy enemy =
+            targetEnemy.GetComponent<Enemy>();
 
         if (enemy != null)
         {
@@ -227,25 +350,54 @@ public class PlayerSoldier : MonoBehaviour
             return;
         }
 
-        Boss boss = targetEnemy.GetComponent<Boss>();
+        // -----------------------------------------------------
+        // BOSS CŨ - NẾU CÓ CLASS BOSS
+        // -----------------------------------------------------
+
+        Boss boss =
+            targetEnemy.GetComponent<Boss>();
 
         if (boss != null)
         {
             boss.TakeDamage(damage);
+            return;
+        }
+
+        // -----------------------------------------------------
+        // BOSS HIỆN TẠI - BossEnemy
+        // -----------------------------------------------------
+
+        BossEnemy bossEnemy =
+            targetEnemy.GetComponent<BossEnemy>();
+
+        if (bossEnemy != null)
+        {
+            bossEnemy.TakeDamage(damage);
+            return;
         }
     }
 
+    // =========================================================
+    // FLIP
+    // =========================================================
+
     void FlipSprite(float directionX)
     {
-        if (spriteRenderer != null && Mathf.Abs(directionX) > 0.01f)
+        if (spriteRenderer != null &&
+            Mathf.Abs(directionX) > 0.01f)
         {
             spriteRenderer.flipX = directionX < 0;
         }
     }
 
+    // =========================================================
+    // NHẬN DAMAGE
+    // =========================================================
+
     public void TakeDamage(int damageAmount)
     {
         currentHp -= damageAmount;
+
         if (animator != null)
         {
             animator.SetTrigger("HurtTrigger");
@@ -259,6 +411,10 @@ public class PlayerSoldier : MonoBehaviour
         }
     }
 
+    // =========================================================
+    // HEALTH BAR
+    // =========================================================
+
     void UpdateHealthBarUI()
     {
         if (healthBarSlider != null)
@@ -267,6 +423,10 @@ public class PlayerSoldier : MonoBehaviour
             healthBarSlider.value = currentHp;
         }
     }
+
+    // =========================================================
+    // CHẾT
+    // =========================================================
 
     void Die()
     {

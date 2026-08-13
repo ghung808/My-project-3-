@@ -90,24 +90,7 @@ public class BossEnemy : MonoBehaviour
 
         CheckForSoldiersAhead();
         MoveTowardsWaypoint();
-        ApplySeparation(); // Giúp quái tự động đẩy nhau ra không bị chồng đống
-    }
-
-    // --- HÀM TRÁNH CHỒNG ĐỐNG (SEPARATION) ---
-    void ApplySeparation()
-    {
-        // Kiểm tra các quái khác trong bán kính nhỏ xung quanh
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 0.6f);
-        foreach (var hit in hits)
-        {
-            // Nếu va chạm với các đối tượng khác cũng là quái
-            if (hit.gameObject != gameObject && (hit.CompareTag("Enemy") || hit.GetComponent<BossEnemy>() != null || hit.GetComponent<Enemy>() != null))
-            {
-                Vector3 pushDir = transform.position - hit.transform.position;
-                // Đẩy nhẹ ra hướng ngược lại để tạo khoảng cách
-                transform.position += pushDir.normalized * Time.deltaTime * 1.5f;
-            }
-        }
+        // Đã xóa ApplySeparation() để Boss không bị đẩy cưỡng bức
     }
 
     void CheckRagePhase()
