@@ -6,6 +6,8 @@ public class SpawnTower : MonoBehaviour
     [Header("Giá Cả & Nâng Cấp")]
     public int cost = 100;
     public int upgradeCost = 50;
+    public int upgradeCostLevel2 = 4;
+    public int upgradeCostLevel3 = 7;
     public int level = 1;
 
     [Header("Cấu Hình Lính")]
@@ -94,9 +96,35 @@ public class SpawnTower : MonoBehaviour
     {
         if (level >= 3)
         {
-            Debug.Log("Tháp đã đạt Level 3!");
+            Debug.Log("⚠️ Tháp đã đạt Level 3!");
             return;
         }
+
+        // Kiểm tra GameUI
+        if (GameUI.instance == null)
+        {
+            Debug.LogError("❌ Không tìm thấy GameUI.instance!");
+            return;
+        }
+
+        // Lấy giá nâng cấp
+        int currentUpgradeCost = GetUpgradeCost();
+
+        // Kiểm tra đủ tiền
+        if (GameUI.instance.gold < currentUpgradeCost)
+        {
+            Debug.Log(
+                "❌ Không đủ vàng nâng cấp! " +
+                "Cần: " + currentUpgradeCost +
+                " | Có: " + GameUI.instance.gold
+            );
+
+            return;
+        }
+
+        // =====================================================
+        // NÂNG CẤP
+        // =====================================================
 
         level++;
 
@@ -123,8 +151,25 @@ public class SpawnTower : MonoBehaviour
 
         UpdateAllSoldierStats();
 
+        // =====================================================
+        // TRỪ TIỀN
+        // =====================================================
+
+        GameUI.instance.AddGold(-currentUpgradeCost);
+
+        // =====================================================
+        // HIỆN BẢNG THÔNG TIN
+        // =====================================================
+
+        if (UpgradeInfoUI.instance != null)
+        {
+            UpgradeInfoUI.instance.ShowInfo(this);
+        }
+
         Debug.Log(
-            "Nâng cấp Lv." + level +
+            "⬆️ Nâng cấp Lv." + level +
+            " | -" + currentUpgradeCost + " vàng" +
+            " | Còn: " + GameUI.instance.gold +
             " | Lính: " + activeSoldiers.Count +
             " | HP: " + soldierHp +
             " | Damage: " + soldierDamage +
@@ -239,5 +284,17 @@ public class SpawnTower : MonoBehaviour
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(rallyPoint, 0.4f);
         Gizmos.DrawLine(transform.position, rallyPoint);
+    }
+
+    // Thêm phương thức GetUpgradeCost
+    public int GetUpgradeCost()
+    {
+        if (level == 1)
+            return upgradeCostLevel2;
+
+        if (level == 2)
+            return upgradeCostLevel3;
+
+        return 0;
     }
 }

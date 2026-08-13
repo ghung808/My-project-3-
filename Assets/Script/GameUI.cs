@@ -37,8 +37,18 @@ public class GameUI : MonoBehaviour
     public TextMeshProUGUI totalGoldEarnedText;
     public TextMeshProUGUI playTimeText;
 
+    [Header("Lose Stats")]
+    public TextMeshProUGUI loseEnemiesKilledText;
+    public TextMeshProUGUI loseTotalGoldEarnedText;
+    public TextMeshProUGUI losePlayTimeText;
+
     [Header("Win Button")]
     public Button continueButton;
+
+    [Header("Win / Lose Navigation Buttons")]
+    public Button winMenuButton;
+    public Button loseReplayButton;
+    public Button loseMenuButton;
 
     private bool gameEnded = false;
 
@@ -57,26 +67,71 @@ public class GameUI : MonoBehaviour
 
     void Start()
     {
+        // =====================================================
+        // RESET THỐNG KÊ KHI BẮT ĐẦU MAP
+        // =====================================================
+
+        enemiesKilled = 0;
+        totalGoldEarned = 0;
+        playTime = 0f;
+
+        gameEnded = false;
+
+        // =====================================================
+        // UPDATE UI
+        // =====================================================
+
         UpdateUI();
 
-        // Ẩn bảng Win / Lose khi bắt đầu map
+        // =====================================================
+        // ẨN WIN / LOSE PANEL
+        // =====================================================
+
         if (winPanel != null)
             winPanel.SetActive(false);
 
         if (losePanel != null)
             losePanel.SetActive(false);
 
-        // Gán nút Continue
+        // =====================================================
+        // NÚT TIẾP TỤC
+        // =====================================================
+
         if (continueButton != null)
         {
             continueButton.onClick.RemoveAllListeners();
             continueButton.onClick.AddListener(LoadNextMap);
         }
 
-        // Reset thống kê khi bắt đầu map mới
-        enemiesKilled = 0;
-        totalGoldEarned = 0;
-        playTime = 0f;
+        // =====================================================
+        // NÚT VỀ MENU - WIN
+        // =====================================================
+
+        if (winMenuButton != null)
+        {
+            winMenuButton.onClick.RemoveAllListeners();
+            winMenuButton.onClick.AddListener(BackToMenu);
+        }
+
+        // =====================================================
+        // NÚT CHƠI LẠI - LOSE
+        // =====================================================
+
+        if (loseReplayButton != null)
+        {
+            loseReplayButton.onClick.RemoveAllListeners();
+            loseReplayButton.onClick.AddListener(RestartCurrentMap);
+        }
+
+        // =====================================================
+        // NÚT VỀ MENU - LOSE
+        // =====================================================
+
+        if (loseMenuButton != null)
+        {
+            loseMenuButton.onClick.RemoveAllListeners();
+            loseMenuButton.onClick.AddListener(BackToMenu);
+        }
     }
 
     void Update()
@@ -95,17 +150,20 @@ public class GameUI : MonoBehaviour
     {
         if (castleText != null)
         {
-            castleText.text = castleHP + " / " + maxCastleHP;
+            castleText.text =
+                castleHP + " / " + maxCastleHP;
         }
 
         if (goldText != null)
         {
-            goldText.text = gold.ToString();
+            goldText.text =
+                gold.ToString();
         }
 
         if (waveText != null)
         {
-            waveText.text = "Wave " + currentWave + " / " + maxWave;
+            waveText.text =
+                "Wave " + currentWave + " / " + maxWave;
         }
     }
 
@@ -171,6 +229,34 @@ public class GameUI : MonoBehaviour
 
     void UpdateBattleStatsUI()
     {
+        int seconds = Mathf.FloorToInt(playTime);
+
+        int minutes = seconds / 60;
+        int remainingSeconds = seconds % 60;
+
+        string timeText;
+
+        if (minutes > 0)
+        {
+            timeText =
+                "Time: " +
+                minutes +
+                "m " +
+                remainingSeconds +
+                "s";
+        }
+        else
+        {
+            timeText =
+                "Time: " +
+                remainingSeconds +
+                "s";
+        }
+
+        // =====================================================
+        // WIN STATS
+        // =====================================================
+
         if (enemiesKilledText != null)
         {
             enemiesKilledText.text =
@@ -185,21 +271,30 @@ public class GameUI : MonoBehaviour
 
         if (playTimeText != null)
         {
-            int seconds = Mathf.FloorToInt(playTime);
+            playTimeText.text =
+                timeText;
+        }
 
-            int minutes = seconds / 60;
-            int remainingSeconds = seconds % 60;
+        // =====================================================
+        // LOSE STATS
+        // =====================================================
 
-            if (minutes > 0)
-            {
-                playTimeText.text =
-                    "Time: " + minutes + "m " + remainingSeconds + "s";
-            }
-            else
-            {
-                playTimeText.text =
-                    "Time: " + remainingSeconds + "s";
-            }
+        if (loseEnemiesKilledText != null)
+        {
+            loseEnemiesKilledText.text =
+                "Enemy Killed: " + enemiesKilled;
+        }
+
+        if (loseTotalGoldEarnedText != null)
+        {
+            loseTotalGoldEarnedText.text =
+                "Gold Earned: " + totalGoldEarned;
+        }
+
+        if (losePlayTimeText != null)
+        {
+            losePlayTimeText.text =
+                timeText;
         }
     }
 
@@ -227,26 +322,43 @@ public class GameUI : MonoBehaviour
             winPanel.SetActive(true);
         }
 
-        // Kiểm tra map hiện tại
         string currentScene =
             SceneManager.GetActiveScene().name;
 
-        Debug.Log("Map hiện tại: " + currentScene);
+        Debug.Log(
+            "Map hiện tại: " +
+            currentScene
+        );
 
         if (currentScene == "Vht")
         {
-            Debug.Log("🏆 Đã thắng MAP 1 - Vht");
-            Debug.Log("➡️ Nút TIẾP TỤC sẽ sang MAP 2 - hgt");
+            Debug.Log(
+                "🏆 Đã thắng MAP 1 - Vht"
+            );
+
+            Debug.Log(
+                "➡️ Nút TIẾP TỤC sẽ sang MAP 2 - hgt"
+            );
         }
         else if (currentScene == "hgt")
         {
-            Debug.Log("🏆 Đã thắng MAP 2 - hgt");
-            Debug.Log("➡️ Nút TIẾP TỤC sẽ sang MAP 3 - dh");
+            Debug.Log(
+                "🏆 Đã thắng MAP 2 - hgt"
+            );
+
+            Debug.Log(
+                "➡️ Nút TIẾP TỤC sẽ sang MAP 3 - dh"
+            );
         }
         else if (currentScene == "dh")
         {
-            Debug.Log("🏆 Đã thắng MAP 3 - dh");
-            Debug.Log("🎉 ĐÃ HOÀN THÀNH TOÀN BỘ 3 MAP!");
+            Debug.Log(
+                "🏆 Đã thắng MAP 3 - dh"
+            );
+
+            Debug.Log(
+                "🎉 ĐÃ HOÀN THÀNH TOÀN BỘ 3 MAP!"
+            );
         }
     }
 
@@ -260,7 +372,8 @@ public class GameUI : MonoBehaviour
             SceneManager.GetActiveScene().name;
 
         Debug.Log(
-            "Đang chuyển map từ: " + currentScene
+            "Đang chuyển map từ: " +
+            currentScene
         );
 
         // MAP 1 → MAP 2
@@ -296,8 +409,8 @@ public class GameUI : MonoBehaviour
         }
 
         Debug.LogWarning(
-            "⚠️ Scene hiện tại không phải Vht, hgt hoặc dh: "
-            + currentScene
+            "⚠️ Scene hiện tại không phải Vht, hgt hoặc dh: " +
+            currentScene
         );
     }
 
@@ -318,14 +431,47 @@ public class GameUI : MonoBehaviour
         Debug.Log("💀 THUA GAME!");
 
         Debug.Log(
-            "Enemy Killed: " + enemiesKilled +
-            " | Gold Earned: " + totalGoldEarned +
-            " | Time: " + playTime
+            "Enemy Killed: " +
+            enemiesKilled +
+            " | Gold Earned: " +
+            totalGoldEarned +
+            " | Time: " +
+            playTime
         );
 
         if (losePanel != null)
         {
             losePanel.SetActive(true);
         }
+    }
+
+    // =========================================================
+    // CHƠI LẠI MAP HIỆN TẠI
+    // =========================================================
+
+    public void RestartCurrentMap()
+    {
+        string currentScene =
+            SceneManager.GetActiveScene().name;
+
+        Debug.Log(
+            "🔄 Chơi lại map hiện tại: " +
+            currentScene
+        );
+
+        SceneManager.LoadScene(currentScene);
+    }
+
+    // =========================================================
+    // VỀ SẢNH
+    // =========================================================
+
+    public void BackToMenu()
+    {
+        Debug.Log(
+            "🏠 Đang quay về Sảnh..."
+        );
+
+        SceneManager.LoadScene("Sảnh");
     }
 }

@@ -17636,7 +17636,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 1569615033}
   timeBetweenWaves: 10
   firstBuildTime: 15
-  bossPrefab: {fileID: 6303194602915891048, guid: e3bcaedab3ca38c479e5597fcdeaa5c7, type: 3}
+  bossPrefab: {fileID: 9156490891601836209, guid: c3921349f59c0c54aaf05a8d578b55ea, type: 3}
   spawnBossAfterLastWave: 1
 --- !u!4 &1017842237
 Transform:

@@ -76,6 +76,12 @@ public class BuildManager : MonoBehaviour
 
         spawnTower.UpgradeTower();
 
+        // Giữ nguyên tutorial Wave 4
+        if (GuideManager.instance != null)
+        {
+            GuideManager.instance.Wave4UpgradeButtonClicked();
+        }
+
         HideTowerActionPanel();
     }
 
@@ -121,6 +127,12 @@ public class BuildManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.U))
         {
             spawnTowerScript.UpgradeTower();
+
+            if (GuideManager.instance != null)
+            {
+                GuideManager.instance.Wave4UpgradeButtonClicked();
+            }
+
             selectedSpot = null;
         }
         else if (Input.GetKeyDown(KeyCode.S))

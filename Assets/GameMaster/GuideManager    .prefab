@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2092107431811646585
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4102422797016970012}
+  - component: {fileID: 449555149271944692}
+  m_Layer: 0
+  m_Name: 'GuideManager    '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4102422797016970012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092107431811646585}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 870.41504, y: 534.6937, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &449555149271944692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092107431811646585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fb992bf7f6b79246bbf0e23e6fe37e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GuideManager
+  guidePanel: {fileID: 0}
+  guideArrow: {fileID: 0}
+  startGuideButton: {fileID: 0}
+  continueButton: {fileID: 0}
+  target: {fileID: 0}
+  towerButtonTarget: {fileID: 0}
+  archerBuildingSpot: {fileID: 0}
+  waveCompletePanel: {fileID: 0}
+  waveCompleteContinueButton: {fileID: 0}
+  fighterInfoPanel: {fileID: 0}
+  fighterInfoContinueButton: {fileID: 0}
+  fighterGuideCompleted: 0
+  tutorialFinished: 0
+  waveSpawner: {fileID: 0}
+  archerButtonTargetOld: {fileID: 0}
+  archerBuildingSpotOld: {fileID: 0}
+  archerInfoPanel: {fileID: 0}
+  archerContinueButton: {fileID: 0}
+  wave3MissionPanel: {fileID: 0}
+  wave3MissionContinueButton: {fileID: 0}
+  bossWarningPanel: {fileID: 0}
+  bossContinueButton: {fileID: 0}
+  mageBuildingSpot: {fileID: 0}
+  mageButtonTarget: {fileID: 0}
+  mageInfoPanel: {fileID: 0}
+  mageContinueButton: {fileID: 0}
+  mageUnlockPanel: {fileID: 0}
+  mageUnlockContinueButton: {fileID: 0}

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GuideManager : MonoBehaviour
 {
@@ -66,6 +67,10 @@ public class GuideManager : MonoBehaviour
     public GameObject mageUnlockPanel;
     public Button mageUnlockContinueButton;
 
+    [Header("Wave 4 Upgrade Guide")]
+    private bool wave4UpgradeGuideStarted = false;
+    private bool waitingForUpgradeButton = false;
+
     void Awake()
     {
         instance = this;
@@ -73,6 +78,18 @@ public class GuideManager : MonoBehaviour
 
     void Start()
     {
+        // Chỉ Map Vht mới có hệ thống hướng dẫn
+        if (SceneManager.GetActiveScene().name != "Vht")
+        {
+            if (guidePanel != null)
+                guidePanel.SetActive(false);
+
+            if (guideArrow != null)
+                guideArrow.SetActive(false);
+
+            return;
+        }
+
         // Tắt bảng hoàn thành Wave 1 khi mới vào game
         if (waveCompletePanel != null)
         {
@@ -705,5 +722,121 @@ public class GuideManager : MonoBehaviour
 
             arrowRect.position = screenPosition;
         }
+    }
+
+    // =====================================================
+    // WAVE 4 - HƯỚNG DẪN NÂNG CẤP THÁP
+    // =====================================================
+
+    public void StartWave4UpgradeGuide()
+    {
+        if (SceneManager.GetActiveScene().name != "Vht")
+            return;
+
+        if (wave4UpgradeGuideStarted)
+            return;
+
+        BuildingSpot2D[] spots =
+            Object.FindObjectsByType<BuildingSpot2D>(
+                FindObjectsSortMode.None
+            );
+
+        foreach (BuildingSpot2D spot in spots)
+        {
+            if (spot == null)
+                continue;
+
+            GameObject tower = spot.GetCurrentTower();
+
+            if (tower != null)
+            {
+                wave4UpgradeGuideStarted = true;
+                waitingForUpgradeButton = false;
+
+                target = tower.transform;
+
+                if (guideArrow != null)
+                    guideArrow.SetActive(true);
+
+                UpdateArrowPosition();
+
+                Debug.Log(
+                    "🔧 Wave 4: Mũi tên đang chỉ vào tháp " +
+                    tower.name
+                );
+
+                return;
+            }
+        }
+
+        Debug.LogWarning(
+            "⚠️ Wave 4 chưa tìm thấy tháp nào để hướng dẫn!"
+        );
+    }
+
+    public void Wave4BuildingSpotClicked(BuildingSpot2D spot)
+    {
+        if (SceneManager.GetActiveScene().name != "Vht")
+            return;
+
+        if (!wave4UpgradeGuideStarted)
+            return;
+
+        if (waitingForUpgradeButton)
+            return;
+
+        if (spot == null)
+            return;
+
+        GameObject tower = spot.GetCurrentTower();
+
+        if (tower == null)
+            return;
+
+        waitingForUpgradeButton = true;
+
+        if (BuildManager.instance != null &&
+            BuildManager.instance.upgradeButton != null)
+        {
+            target = BuildManager.instance.upgradeButton.transform;
+
+            if (guideArrow != null)
+                guideArrow.SetActive(true);
+
+            UpdateArrowPosition();
+
+            Debug.Log(
+                "✅ Đã bấm tháp - mũi tên chuyển sang nút Nâng cấp!"
+            );
+        }
+        else
+        {
+            Debug.LogError(
+                "❌ Không tìm thấy BuildManager.instance.upgradeButton!"
+            );
+        }
+    }
+
+    public void Wave4UpgradeButtonClicked()
+    {
+        if (SceneManager.GetActiveScene().name != "Vht")
+            return;
+
+        if (!wave4UpgradeGuideStarted)
+            return;
+
+        if (!waitingForUpgradeButton)
+            return;
+
+        waitingForUpgradeButton = false;
+
+        if (guideArrow != null)
+            guideArrow.SetActive(false);
+
+        target = null;
+
+        Debug.Log(
+            "⬆️ Đã bấm Nâng cấp - mũi tên đã tắt!"
+        );
     }
 }

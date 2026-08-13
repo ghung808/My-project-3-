@@ -33,11 +33,19 @@ public class BuildingSpot2D : MonoBehaviour
         if (currentTower != null)
         {
             BuildManager.instance.SelectSpotToUpgrade(this);
+
+            // Hướng dẫn Wave 4
+            if (GuideManager.instance != null)
+            {
+                GuideManager.instance.Wave4BuildingSpotClicked(this);
+            }
+
             return;
         }
 
         BuildShopUI.instance.ShowShop(this);
 
+        // Báo cho Tutorial biết người chơi đã bấm ô xây
         if (GuideManager.instance != null &&
             !GuideManager.instance.tutorialFinished)
         {

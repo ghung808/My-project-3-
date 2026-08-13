@@ -98,6 +98,17 @@ public class WaveSpawner : MonoBehaviour
                 // Bắt đầu Wave mới → khóa xây
                 BuildingSpot2D.canBuild = false;
 
+                // ==========================================
+                // WAVE 4 - BẮT ĐẦU HƯỚNG DẪN NÂNG CẤP
+                // ==========================================
+                if (currentWaveIndex == 3)
+                {
+                    if (GuideManager.instance != null)
+                    {
+                        GuideManager.instance.StartWave4UpgradeGuide();
+                    }
+                }
+
                 StartCoroutine(SpawnWave(waves[currentWaveIndex]));
             }
         }
