@@ -10,7 +10,6 @@ public class PlayerSoldier : MonoBehaviour
 
     [Header("Attack")]
     public float attackRange = 1.7f;
-    public float stopDistance = 1.2f;
 
     [Header("Stats")]
     public int maxHp = 20;
@@ -27,6 +26,7 @@ public class PlayerSoldier : MonoBehaviour
     public SpawnTower homeTower;
 
     private float attackCountdown = 0f;
+
     private Transform targetEnemy;
 
     private SpriteRenderer spriteRenderer;
@@ -39,7 +39,11 @@ public class PlayerSoldier : MonoBehaviour
     // KHỞI TẠO
     // =========================================================
 
-    public void InitializeStats(int hp, int dmg, SpawnTower tower)
+    public void InitializeStats(
+        int hp,
+        int dmg,
+        SpawnTower tower
+    )
     {
         maxHp = hp;
         currentHp = hp;
@@ -49,16 +53,21 @@ public class PlayerSoldier : MonoBehaviour
         UpdateHealthBarUI();
     }
 
+
     public void SetRallyPosition(Vector3 newPos)
     {
         rallyPosition = newPos;
+
         transform.position = rallyPosition;
+
         hasMovedFromRally = false;
     }
+
 
     public void FullHeal()
     {
         currentHp = maxHp;
+
         UpdateHealthBarUI();
     }
 
@@ -69,19 +78,30 @@ public class PlayerSoldier : MonoBehaviour
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
+        spriteRenderer =
+            GetComponent<SpriteRenderer>();
+
+        animator =
+            GetComponent<Animator>();
 
         currentHp = maxHp;
 
         UpdateHealthBarUI();
 
+
         if (rallyPosition != Vector3.zero)
         {
-            transform.position = rallyPosition;
+            transform.position =
+                rallyPosition;
         }
 
-        InvokeRepeating(nameof(FindEnemy), 0f, 0.2f);
+
+        // Tìm enemy liên tục
+        InvokeRepeating(
+            nameof(FindEnemy),
+            0f,
+            0.2f
+        );
     }
 
 
@@ -91,14 +111,16 @@ public class PlayerSoldier : MonoBehaviour
 
     void FindEnemy()
     {
+        // Nếu target hiện tại vẫn còn và còn đủ gần
         if (targetEnemy != null &&
             targetEnemy.gameObject != null &&
             targetEnemy.gameObject.activeInHierarchy)
         {
-            float distance = Vector3.Distance(
-                transform.position,
-                targetEnemy.position
-            );
+            float distance =
+                Vector3.Distance(
+                    transform.position,
+                    targetEnemy.position
+                );
 
             if (distance <= detectRadius * 1.5f)
             {
@@ -106,17 +128,23 @@ public class PlayerSoldier : MonoBehaviour
             }
         }
 
-        float shortestDistance = Mathf.Infinity;
+
+        float shortestDistance =
+            Mathf.Infinity;
+
         Transform nearestEnemy = null;
 
 
         // =====================================================
-        // TÌM ENEMY
+        // TÌM ENEMY THƯỜNG
         // =====================================================
 
-        Enemy[] enemies = FindObjectsByType<Enemy>(
-            FindObjectsSortMode.None
-        );
+        Enemy[] enemies =
+            FindObjectsByType<Enemy>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None
+            );
+
 
         foreach (Enemy enemy in enemies)
         {
@@ -126,16 +154,22 @@ public class PlayerSoldier : MonoBehaviour
             if (!enemy.gameObject.activeInHierarchy)
                 continue;
 
-            float distance = Vector3.Distance(
-                transform.position,
-                enemy.transform.position
-            );
+
+            float distance =
+                Vector3.Distance(
+                    transform.position,
+                    enemy.transform.position
+                );
+
 
             if (distance <= detectRadius &&
                 distance < shortestDistance)
             {
-                shortestDistance = distance;
-                nearestEnemy = enemy.transform;
+                shortestDistance =
+                    distance;
+
+                nearestEnemy =
+                    enemy.transform;
             }
         }
 
@@ -144,9 +178,12 @@ public class PlayerSoldier : MonoBehaviour
         // TÌM BOSS ENEMY
         // =====================================================
 
-        BossEnemy[] bossEnemies = FindObjectsByType<BossEnemy>(
-            FindObjectsSortMode.None
-        );
+        BossEnemy[] bossEnemies =
+            FindObjectsByType<BossEnemy>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None
+            );
+
 
         foreach (BossEnemy bossEnemy in bossEnemies)
         {
@@ -156,27 +193,36 @@ public class PlayerSoldier : MonoBehaviour
             if (!bossEnemy.gameObject.activeInHierarchy)
                 continue;
 
-            float distance = Vector3.Distance(
-                transform.position,
-                bossEnemy.transform.position
-            );
+
+            float distance =
+                Vector3.Distance(
+                    transform.position,
+                    bossEnemy.transform.position
+                );
+
 
             if (distance <= detectRadius &&
                 distance < shortestDistance)
             {
-                shortestDistance = distance;
-                nearestEnemy = bossEnemy.transform;
+                shortestDistance =
+                    distance;
+
+                nearestEnemy =
+                    bossEnemy.transform;
             }
         }
 
 
         // =====================================================
-        // TÌM BOSS CŨ
+        // BOSS CŨ
         // =====================================================
 
-        Boss[] bosses = FindObjectsByType<Boss>(
-            FindObjectsSortMode.None
-        );
+        Boss[] bosses =
+            FindObjectsByType<Boss>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None
+            );
+
 
         foreach (Boss boss in bosses)
         {
@@ -186,21 +232,39 @@ public class PlayerSoldier : MonoBehaviour
             if (!boss.gameObject.activeInHierarchy)
                 continue;
 
-            float distance = Vector3.Distance(
-                transform.position,
-                boss.transform.position
-            );
+
+            float distance =
+                Vector3.Distance(
+                    transform.position,
+                    boss.transform.position
+                );
+
 
             if (distance <= detectRadius &&
                 distance < shortestDistance)
             {
-                shortestDistance = distance;
-                nearestEnemy = boss.transform;
+                shortestDistance =
+                    distance;
+
+                nearestEnemy =
+                    boss.transform;
             }
         }
 
 
-        targetEnemy = nearestEnemy;
+        targetEnemy =
+            nearestEnemy;
+
+
+        // Debug để kiểm tra
+        if (targetEnemy != null)
+        {
+            Debug.Log(
+                gameObject.name +
+                " đang nhắm: " +
+                targetEnemy.name
+            );
+        }
     }
 
 
@@ -210,7 +274,7 @@ public class PlayerSoldier : MonoBehaviour
 
     void Update()
     {
-        // Mục tiêu bị Destroy
+        // Target đã bị Destroy
         if (targetEnemy != null)
         {
             if (targetEnemy.gameObject == null ||
@@ -227,45 +291,69 @@ public class PlayerSoldier : MonoBehaviour
 
         if (targetEnemy != null)
         {
-            float distanceToEnemy = Vector3.Distance(
-                transform.position,
-                targetEnemy.position
-            );
-
-
-            // =================================================
-            // DI CHUYỂN TỚI ENEMY
-            // =================================================
-
-            if (distanceToEnemy > stopDistance)
-            {
-                Vector3 direction = (
-                    targetEnemy.position -
-                    transform.position
-                ).normalized;
-
-                Vector3 stopPosition =
-                    targetEnemy.position -
-                    direction * stopDistance;
-
-                transform.position = Vector3.MoveTowards(
+            float distanceToEnemy =
+                Vector3.Distance(
                     transform.position,
-                    stopPosition,
-                    speed * Time.deltaTime
+                    targetEnemy.position
                 );
 
-                if (direction != Vector3.zero)
+
+            // =================================================
+            // CÒN XA → CHẠY TỚI
+            // =================================================
+
+            if (distanceToEnemy > attackRange)
+            {
+                Vector3 direction =
+                    (
+                        targetEnemy.position -
+                        transform.position
+                    ).normalized;
+
+
+                transform.position =
+                    Vector3.MoveTowards(
+                        transform.position,
+                        targetEnemy.position,
+                        speed * Time.deltaTime
+                    );
+
+
+                if (Mathf.Abs(direction.x) > 0.01f)
                 {
-                    FlipSprite(direction.x);
+                    FlipSprite(
+                        direction.x
+                    );
                 }
+
 
                 SetMovingAnimation(true);
 
                 hasMovedFromRally = true;
+
+
+                // Không đánh khi còn đang chạy
+                return;
             }
-            else
+
+
+            // =================================================
+            // ĐỦ GẦN → DỪNG
+            // =================================================
+
+            SetMovingAnimation(false);
+
+
+            Vector3 attackDirection =
+                targetEnemy.position -
+                transform.position;
+
+
+            if (Mathf.Abs(attackDirection.x) > 0.01f)
             {
-                SetMovingAnimation(false);
+                FlipSprite(
+                    attackDirection.x
+                );
             }
 
 
@@ -273,29 +361,29 @@ public class PlayerSoldier : MonoBehaviour
             // ĐÁNH
             // =================================================
 
-            if (distanceToEnemy <= attackRange)
+            if (attackCountdown <= 0f)
             {
-                Vector3 direction =
-                    targetEnemy.position -
-                    transform.position;
+                Debug.Log(
+                    gameObject.name +
+                    " ĐANG ĐÁNH " +
+                    targetEnemy.name
+                );
 
-                if (direction != Vector3.zero)
-                {
-                    FlipSprite(direction.x);
-                }
 
-                if (attackCountdown <= 0f)
-                {
-                    TriggerAttackAnimation();
+                TriggerAttackAnimation();
 
-                    OnAttackHit();
 
-                    attackCountdown =
-                        1f / Mathf.Max(
-                            attackRate,
-                            0.01f
-                        );
-                }
+                // Gây damage
+                OnAttackHit();
+
+
+                // Cooldown
+                attackCountdown =
+                    1f /
+                    Mathf.Max(
+                        attackRate,
+                        0.01f
+                    );
             }
         }
 
@@ -310,35 +398,47 @@ public class PlayerSoldier : MonoBehaviour
 
             SetMovingAnimation(false);
 
+
             if (hasMovedFromRally)
             {
-                float distToRally = Vector3.Distance(
-                    transform.position,
-                    rallyPosition
-                );
-
-                if (distToRally > 0.1f)
-                {
-                    transform.position = Vector3.MoveTowards(
+                float distanceToRally =
+                    Vector3.Distance(
                         transform.position,
-                        rallyPosition,
-                        speed * Time.deltaTime
+                        rallyPosition
                     );
 
-                    Vector3 moveBackDir =
-                        (rallyPosition -
-                         transform.position).normalized;
 
-                    if (moveBackDir != Vector3.zero)
+                if (distanceToRally > 0.1f)
+                {
+                    transform.position =
+                        Vector3.MoveTowards(
+                            transform.position,
+                            rallyPosition,
+                            speed * Time.deltaTime
+                        );
+
+
+                    Vector3 moveBackDirection =
+                        (
+                            rallyPosition -
+                            transform.position
+                        ).normalized;
+
+
+                    if (Mathf.Abs(moveBackDirection.x) > 0.01f)
                     {
-                        FlipSprite(moveBackDir.x);
+                        FlipSprite(
+                            moveBackDirection.x
+                        );
                     }
+
 
                     SetMovingAnimation(true);
                 }
                 else
                 {
-                    transform.position = rallyPosition;
+                    transform.position =
+                        rallyPosition;
 
                     SetMovingAnimation(false);
 
@@ -347,7 +447,8 @@ public class PlayerSoldier : MonoBehaviour
             }
             else
             {
-                transform.position = rallyPosition;
+                transform.position =
+                    rallyPosition;
 
                 SetMovingAnimation(false);
             }
@@ -360,7 +461,8 @@ public class PlayerSoldier : MonoBehaviour
 
         if (attackCountdown > 0f)
         {
-            attackCountdown -= Time.deltaTime;
+            attackCountdown -=
+                Time.deltaTime;
         }
     }
 
@@ -372,15 +474,23 @@ public class PlayerSoldier : MonoBehaviour
     public void OnAttackHit()
     {
         if (targetEnemy == null)
+        {
+            Debug.LogWarning(
+                gameObject.name +
+                ": Không có target!"
+            );
+
             return;
+        }
 
 
         // =====================================================
-        // ENEMY
+        // ENEMY THƯỜNG
         // =====================================================
 
         Enemy enemy =
             targetEnemy.GetComponent<Enemy>();
+
 
         if (enemy == null)
         {
@@ -388,9 +498,19 @@ public class PlayerSoldier : MonoBehaviour
                 targetEnemy.GetComponentInParent<Enemy>();
         }
 
+
         if (enemy != null)
         {
+            Debug.Log(
+                gameObject.name +
+                " gây " +
+                damage +
+                " damage cho Enemy"
+            );
+
+
             enemy.TakeDamage(damage);
+
             return;
         }
 
@@ -402,15 +522,26 @@ public class PlayerSoldier : MonoBehaviour
         BossEnemy bossEnemy =
             targetEnemy.GetComponent<BossEnemy>();
 
+
         if (bossEnemy == null)
         {
             bossEnemy =
                 targetEnemy.GetComponentInParent<BossEnemy>();
         }
 
+
         if (bossEnemy != null)
         {
+            Debug.Log(
+                gameObject.name +
+                " gây " +
+                damage +
+                " damage cho BossEnemy"
+            );
+
+
             bossEnemy.TakeDamage(damage);
+
             return;
         }
 
@@ -422,30 +553,44 @@ public class PlayerSoldier : MonoBehaviour
         Boss boss =
             targetEnemy.GetComponent<Boss>();
 
+
         if (boss == null)
         {
             boss =
                 targetEnemy.GetComponentInParent<Boss>();
         }
 
+
         if (boss != null)
         {
+            Debug.Log(
+                gameObject.name +
+                " gây " +
+                damage +
+                " damage cho Boss"
+            );
+
+
             boss.TakeDamage(damage);
+
             return;
         }
 
+
         Debug.LogError(
-            "Không tìm thấy Enemy/Boss trên: " +
+            "TARGET KHÔNG CÓ Enemy/Boss: " +
             targetEnemy.name
         );
     }
 
 
     // =========================================================
-    // ANIMATION
+    // ANIMATION DI CHUYỂN
     // =========================================================
 
-    void SetMovingAnimation(bool isMoving)
+    void SetMovingAnimation(
+        bool isMoving
+    )
     {
         if (animator != null)
         {
@@ -455,6 +600,11 @@ public class PlayerSoldier : MonoBehaviour
             );
         }
     }
+
+
+    // =========================================================
+    // ANIMATION ATTACK
+    // =========================================================
 
     void TriggerAttackAnimation()
     {
@@ -471,7 +621,9 @@ public class PlayerSoldier : MonoBehaviour
     // FLIP
     // =========================================================
 
-    void FlipSprite(float directionX)
+    void FlipSprite(
+        float directionX
+    )
     {
         if (spriteRenderer != null &&
             Mathf.Abs(directionX) > 0.01f)
@@ -486,9 +638,13 @@ public class PlayerSoldier : MonoBehaviour
     // NHẬN DAMAGE
     // =========================================================
 
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(
+        int damageAmount
+    )
     {
-        currentHp -= damageAmount;
+        currentHp -=
+            damageAmount;
+
 
         if (animator != null)
         {
@@ -497,7 +653,9 @@ public class PlayerSoldier : MonoBehaviour
             );
         }
 
+
         UpdateHealthBarUI();
+
 
         if (currentHp <= 0)
         {
@@ -514,8 +672,11 @@ public class PlayerSoldier : MonoBehaviour
     {
         if (healthBarSlider != null)
         {
-            healthBarSlider.maxValue = maxHp;
-            healthBarSlider.value = currentHp;
+            healthBarSlider.maxValue =
+                maxHp;
+
+            healthBarSlider.value =
+                currentHp;
         }
     }
 
@@ -533,11 +694,18 @@ public class PlayerSoldier : MonoBehaviour
             );
         }
 
+
         if (homeTower != null)
         {
-            homeTower.OnSoldierDied(this);
+            homeTower.OnSoldierDied(
+                this
+            );
         }
 
-        Destroy(gameObject, 0.3f);
+
+        Destroy(
+            gameObject,
+            0.3f
+        );
     }
 }
