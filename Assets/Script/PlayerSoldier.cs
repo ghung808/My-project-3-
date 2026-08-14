@@ -8,11 +8,8 @@ public class PlayerSoldier : MonoBehaviour
     public float attackRate = 1f;
     public float detectRadius = 4f;
 
-    // Khoảng cách để bắt đầu đánh
-    public float attackRange = 1.0f;
-
-    // Khoảng cách thực tế lính sẽ dừng trước mục tiêu
-    // Tăng giá trị này để lính không chui vào Boss
+    [Header("Attack")]
+    public float attackRange = 1.7f;
     public float stopDistance = 1.2f;
 
     [Header("Stats")]
@@ -25,13 +22,22 @@ public class PlayerSoldier : MonoBehaviour
 
     [Header("Positioning")]
     public Vector3 rallyPosition;
-    [HideInInspector] public SpawnTower homeTower;
+
+    [HideInInspector]
+    public SpawnTower homeTower;
 
     private float attackCountdown = 0f;
     private Transform targetEnemy;
+
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+
     private bool hasMovedFromRally = false;
+
+
+    // =========================================================
+    // KHỞI TẠO
+    // =========================================================
 
     public void InitializeStats(int hp, int dmg, SpawnTower tower)
     {
@@ -39,8 +45,6 @@ public class PlayerSoldier : MonoBehaviour
         currentHp = hp;
         damage = dmg;
         homeTower = tower;
-
-        currentHp = maxHp;
 
         UpdateHealthBarUI();
     }
@@ -58,12 +62,18 @@ public class PlayerSoldier : MonoBehaviour
         UpdateHealthBarUI();
     }
 
+
+    // =========================================================
+    // START
+    // =========================================================
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
 
         currentHp = maxHp;
+
         UpdateHealthBarUI();
 
         if (rallyPosition != Vector3.zero)
@@ -74,38 +84,52 @@ public class PlayerSoldier : MonoBehaviour
         InvokeRepeating(nameof(FindEnemy), 0f, 0.2f);
     }
 
+
     // =========================================================
-    // TÌM MỤC TIÊU
+    // TÌM ENEMY
     // =========================================================
 
     void FindEnemy()
     {
-        if (targetEnemy != null && targetEnemy.gameObject.activeInHierarchy)
+        if (targetEnemy != null &&
+            targetEnemy.gameObject != null &&
+            targetEnemy.gameObject.activeInHierarchy)
         {
-            float distToTarget =
-                Vector3.Distance(transform.position, targetEnemy.position);
+            float distance = Vector3.Distance(
+                transform.position,
+                targetEnemy.position
+            );
 
-            if (distToTarget <= detectRadius * 1.5f)
+            if (distance <= detectRadius * 1.5f)
+            {
                 return;
+            }
         }
 
         float shortestDistance = Mathf.Infinity;
         Transform nearestEnemy = null;
 
-        // -----------------------------------------------------
-        // TÌM ENEMY THƯỜNG
-        // -----------------------------------------------------
 
-        GameObject[] enemies =
-            GameObject.FindGameObjectsWithTag("Enemy");
+        // =====================================================
+        // TÌM ENEMY
+        // =====================================================
 
-        foreach (GameObject enemy in enemies)
+        Enemy[] enemies = FindObjectsByType<Enemy>(
+            FindObjectsSortMode.None
+        );
+
+        foreach (Enemy enemy in enemies)
         {
-            if (enemy == null || !enemy.activeInHierarchy)
+            if (enemy == null)
                 continue;
 
-            float distance =
-                Vector3.Distance(transform.position, enemy.transform.position);
+            if (!enemy.gameObject.activeInHierarchy)
+                continue;
+
+            float distance = Vector3.Distance(
+                transform.position,
+                enemy.transform.position
+            );
 
             if (distance <= detectRadius &&
                 distance < shortestDistance)
@@ -115,31 +139,70 @@ public class PlayerSoldier : MonoBehaviour
             }
         }
 
-        // -----------------------------------------------------
-        // TÌM BOSS
-        // -----------------------------------------------------
 
-        GameObject bossObject =
-            GameObject.FindGameObjectWithTag("Boss");
+        // =====================================================
+        // TÌM BOSS ENEMY
+        // =====================================================
 
-        if (bossObject != null && bossObject.activeInHierarchy)
+        BossEnemy[] bossEnemies = FindObjectsByType<BossEnemy>(
+            FindObjectsSortMode.None
+        );
+
+        foreach (BossEnemy bossEnemy in bossEnemies)
         {
-            float distanceToBoss =
-                Vector3.Distance(
-                    transform.position,
-                    bossObject.transform.position
-                );
+            if (bossEnemy == null)
+                continue;
 
-            if (distanceToBoss <= detectRadius &&
-                distanceToBoss < shortestDistance)
+            if (!bossEnemy.gameObject.activeInHierarchy)
+                continue;
+
+            float distance = Vector3.Distance(
+                transform.position,
+                bossEnemy.transform.position
+            );
+
+            if (distance <= detectRadius &&
+                distance < shortestDistance)
             {
-                shortestDistance = distanceToBoss;
-                nearestEnemy = bossObject.transform;
+                shortestDistance = distance;
+                nearestEnemy = bossEnemy.transform;
             }
         }
 
+
+        // =====================================================
+        // TÌM BOSS CŨ
+        // =====================================================
+
+        Boss[] bosses = FindObjectsByType<Boss>(
+            FindObjectsSortMode.None
+        );
+
+        foreach (Boss boss in bosses)
+        {
+            if (boss == null)
+                continue;
+
+            if (!boss.gameObject.activeInHierarchy)
+                continue;
+
+            float distance = Vector3.Distance(
+                transform.position,
+                boss.transform.position
+            );
+
+            if (distance <= detectRadius &&
+                distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                nearestEnemy = boss.transform;
+            }
+        }
+
+
         targetEnemy = nearestEnemy;
     }
+
 
     // =========================================================
     // UPDATE
@@ -147,63 +210,49 @@ public class PlayerSoldier : MonoBehaviour
 
     void Update()
     {
-        // Nếu mục tiêu đã bị Destroy / inactive
-        if (targetEnemy != null &&
-            !targetEnemy.gameObject.activeInHierarchy)
+        // Mục tiêu bị Destroy
+        if (targetEnemy != null)
         {
-            targetEnemy = null;
+            if (targetEnemy.gameObject == null ||
+                !targetEnemy.gameObject.activeInHierarchy)
+            {
+                targetEnemy = null;
+            }
         }
 
-        // -----------------------------------------------------
+
+        // =====================================================
         // CÓ MỤC TIÊU
-        // -----------------------------------------------------
+        // =====================================================
 
         if (targetEnemy != null)
         {
-            float distanceToEnemy =
-                Vector3.Distance(
-                    transform.position,
-                    targetEnemy.position
-                );
+            float distanceToEnemy = Vector3.Distance(
+                transform.position,
+                targetEnemy.position
+            );
+
 
             // =================================================
-            // CHƯA ĐỦ GẦN → DI CHUYỂN
+            // DI CHUYỂN TỚI ENEMY
             // =================================================
 
             if (distanceToEnemy > stopDistance)
             {
-                Vector3 direction =
-                    (targetEnemy.position - transform.position).normalized;
-
-                /*
-                 * QUAN TRỌNG:
-                 *
-                 * Lính chỉ tiến tới stopDistance.
-                 * Không tiến sát tâm Boss.
-                 *
-                 * Trước đây:
-                 *
-                 * attackRange = 1.0
-                 *
-                 * nên nhiều lính có thể cùng ép vào Boss.
-                 *
-                 * Bây giờ:
-                 *
-                 * stopDistance = 1.2
-                 *
-                 * giúp tạo khoảng cách an toàn.
-                 */
+                Vector3 direction = (
+                    targetEnemy.position -
+                    transform.position
+                ).normalized;
 
                 Vector3 stopPosition =
                     targetEnemy.position -
                     direction * stopDistance;
 
-                transform.position =
-                    Vector3.MoveTowards(
-                        transform.position,
-                        stopPosition,
-                        speed * Time.deltaTime
-                    );
+                transform.position = Vector3.MoveTowards(
+                    transform.position,
+                    stopPosition,
+                    speed * Time.deltaTime
+                );
 
                 if (direction != Vector3.zero)
                 {
@@ -216,22 +265,23 @@ public class PlayerSoldier : MonoBehaviour
             }
             else
             {
-                // Đã đứng đủ xa mục tiêu
                 SetMovingAnimation(false);
             }
 
+
             // =================================================
-            // TẤN CÔNG
+            // ĐÁNH
             // =================================================
 
             if (distanceToEnemy <= attackRange)
             {
-                Vector3 dirToEnemy =
-                    targetEnemy.position - transform.position;
+                Vector3 direction =
+                    targetEnemy.position -
+                    transform.position;
 
-                if (dirToEnemy != Vector3.zero)
+                if (direction != Vector3.zero)
                 {
-                    FlipSprite(dirToEnemy.x);
+                    FlipSprite(direction.x);
                 }
 
                 if (attackCountdown <= 0f)
@@ -240,39 +290,44 @@ public class PlayerSoldier : MonoBehaviour
 
                     OnAttackHit();
 
-                    attackCountdown = 1f / attackRate;
+                    attackCountdown =
+                        1f / Mathf.Max(
+                            attackRate,
+                            0.01f
+                        );
                 }
             }
         }
+
+
+        // =====================================================
+        // KHÔNG CÓ ENEMY
+        // =====================================================
+
         else
         {
-            // =================================================
-            // KHÔNG CÓ QUÁI
-            // =================================================
-
             attackCountdown = 0f;
 
             SetMovingAnimation(false);
 
             if (hasMovedFromRally)
             {
-                float distToRally =
-                    Vector3.Distance(
-                        transform.position,
-                        rallyPosition
-                    );
+                float distToRally = Vector3.Distance(
+                    transform.position,
+                    rallyPosition
+                );
 
                 if (distToRally > 0.1f)
                 {
-                    transform.position =
-                        Vector3.MoveTowards(
-                            transform.position,
-                            rallyPosition,
-                            speed * Time.deltaTime
-                        );
+                    transform.position = Vector3.MoveTowards(
+                        transform.position,
+                        rallyPosition,
+                        speed * Time.deltaTime
+                    );
 
                     Vector3 moveBackDir =
-                        (rallyPosition - transform.position).normalized;
+                        (rallyPosition -
+                         transform.position).normalized;
 
                     if (moveBackDir != Vector3.zero)
                     {
@@ -298,6 +353,7 @@ public class PlayerSoldier : MonoBehaviour
             }
         }
 
+
         // =====================================================
         // COOLDOWN
         // =====================================================
@@ -308,6 +364,83 @@ public class PlayerSoldier : MonoBehaviour
         }
     }
 
+
+    // =========================================================
+    // ĐÁNH ENEMY / BOSS
+    // =========================================================
+
+    public void OnAttackHit()
+    {
+        if (targetEnemy == null)
+            return;
+
+
+        // =====================================================
+        // ENEMY
+        // =====================================================
+
+        Enemy enemy =
+            targetEnemy.GetComponent<Enemy>();
+
+        if (enemy == null)
+        {
+            enemy =
+                targetEnemy.GetComponentInParent<Enemy>();
+        }
+
+        if (enemy != null)
+        {
+            enemy.TakeDamage(damage);
+            return;
+        }
+
+
+        // =====================================================
+        // BOSS ENEMY
+        // =====================================================
+
+        BossEnemy bossEnemy =
+            targetEnemy.GetComponent<BossEnemy>();
+
+        if (bossEnemy == null)
+        {
+            bossEnemy =
+                targetEnemy.GetComponentInParent<BossEnemy>();
+        }
+
+        if (bossEnemy != null)
+        {
+            bossEnemy.TakeDamage(damage);
+            return;
+        }
+
+
+        // =====================================================
+        // BOSS CŨ
+        // =====================================================
+
+        Boss boss =
+            targetEnemy.GetComponent<Boss>();
+
+        if (boss == null)
+        {
+            boss =
+                targetEnemy.GetComponentInParent<Boss>();
+        }
+
+        if (boss != null)
+        {
+            boss.TakeDamage(damage);
+            return;
+        }
+
+        Debug.LogError(
+            "Không tìm thấy Enemy/Boss trên: " +
+            targetEnemy.name
+        );
+    }
+
+
     // =========================================================
     // ANIMATION
     // =========================================================
@@ -316,7 +449,10 @@ public class PlayerSoldier : MonoBehaviour
     {
         if (animator != null)
         {
-            animator.SetBool("isMoving", isMoving);
+            animator.SetBool(
+                "isMoving",
+                isMoving
+            );
         }
     }
 
@@ -324,58 +460,12 @@ public class PlayerSoldier : MonoBehaviour
     {
         if (animator != null)
         {
-            animator.SetTrigger("AttackTrigger");
+            animator.SetTrigger(
+                "AttackTrigger"
+            );
         }
     }
 
-    // =========================================================
-    // ĐÁNH MỤC TIÊU
-    // =========================================================
-
-    public void OnAttackHit()
-    {
-        if (targetEnemy == null)
-            return;
-
-        // -----------------------------------------------------
-        // ENEMY THƯỜNG
-        // -----------------------------------------------------
-
-        Enemy enemy =
-            targetEnemy.GetComponent<Enemy>();
-
-        if (enemy != null)
-        {
-            enemy.TakeDamage(damage);
-            return;
-        }
-
-        // -----------------------------------------------------
-        // BOSS CŨ - NẾU CÓ CLASS BOSS
-        // -----------------------------------------------------
-
-        Boss boss =
-            targetEnemy.GetComponent<Boss>();
-
-        if (boss != null)
-        {
-            boss.TakeDamage(damage);
-            return;
-        }
-
-        // -----------------------------------------------------
-        // BOSS HIỆN TẠI - BossEnemy
-        // -----------------------------------------------------
-
-        BossEnemy bossEnemy =
-            targetEnemy.GetComponent<BossEnemy>();
-
-        if (bossEnemy != null)
-        {
-            bossEnemy.TakeDamage(damage);
-            return;
-        }
-    }
 
     // =========================================================
     // FLIP
@@ -386,9 +476,11 @@ public class PlayerSoldier : MonoBehaviour
         if (spriteRenderer != null &&
             Mathf.Abs(directionX) > 0.01f)
         {
-            spriteRenderer.flipX = directionX < 0;
+            spriteRenderer.flipX =
+                directionX < 0;
         }
     }
+
 
     // =========================================================
     // NHẬN DAMAGE
@@ -400,7 +492,9 @@ public class PlayerSoldier : MonoBehaviour
 
         if (animator != null)
         {
-            animator.SetTrigger("HurtTrigger");
+            animator.SetTrigger(
+                "HurtTrigger"
+            );
         }
 
         UpdateHealthBarUI();
@@ -410,6 +504,7 @@ public class PlayerSoldier : MonoBehaviour
             Die();
         }
     }
+
 
     // =========================================================
     // HEALTH BAR
@@ -424,15 +519,18 @@ public class PlayerSoldier : MonoBehaviour
         }
     }
 
+
     // =========================================================
-    // CHẾT
+    // DIE
     // =========================================================
 
     void Die()
     {
         if (animator != null)
         {
-            animator.SetTrigger("DieTrigger");
+            animator.SetTrigger(
+                "DieTrigger"
+            );
         }
 
         if (homeTower != null)

@@ -51,6 +51,10 @@ public class BossEnemy : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
 
+    // --- Biến quản lý waypoint tùy chỉnh cho Boss ---
+    [HideInInspector]
+    public Transform[] customWaypoints;
+
     void Start()
     {
         hp = maxHp;
@@ -196,21 +200,31 @@ public class BossEnemy : MonoBehaviour
 
     void GetNextWaypoint()
     {
-        if (Waypoints.points == null || Waypoints.points.Length == 0) return;
+        // Lấy danh sách waypoint hiện tại
+        Transform[] currentWaypoints = customWaypoints != null && customWaypoints.Length > 0
+            ? customWaypoints
+            : Waypoints.points;
 
-        if (waypointIndex >= Waypoints.points.Length)
+        if (currentWaypoints == null || currentWaypoints.Length == 0) return;
+
+        if (waypointIndex >= currentWaypoints.Length)
         {
             ReachDestination();
             return;
         }
 
-        targetWaypoint = Waypoints.points[waypointIndex];
+        targetWaypoint = currentWaypoints[waypointIndex];
         waypointIndex++;
     }
 
     void MoveTowardsWaypoint()
     {
         if (targetWaypoint == null) return;
+
+        // Lấy danh sách waypoint hiện tại
+        Transform[] currentWaypoints = customWaypoints != null && customWaypoints.Length > 0
+            ? customWaypoints
+            : Waypoints.points;
 
         Vector3 dir = targetWaypoint.position - transform.position;
         transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);

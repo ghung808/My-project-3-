@@ -45,6 +45,10 @@ public class Enemy : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
 
+    // --- Biến quản lý waypoint tùy chỉnh cho Map3 ---
+    [HideInInspector]
+    public Transform[] customWaypoints;
+
     void Start()
     {
         hp = maxHp;
@@ -169,21 +173,31 @@ public class Enemy : MonoBehaviour
 
     void GetNextWaypoint()
     {
-        if (Waypoints.points == null || Waypoints.points.Length == 0) return;
+        // Lấy danh sách waypoint hiện tại
+        Transform[] currentWaypoints = customWaypoints != null && customWaypoints.Length > 0
+            ? customWaypoints
+            : Waypoints.points;
 
-        if (waypointIndex >= Waypoints.points.Length)
+        if (currentWaypoints == null || currentWaypoints.Length == 0) return;
+
+        if (waypointIndex >= currentWaypoints.Length)
         {
             ReachDestination();
             return;
         }
 
-        targetWaypoint = Waypoints.points[waypointIndex];
+        targetWaypoint = currentWaypoints[waypointIndex];
         waypointIndex++;
     }
 
     void MoveTowardsWaypoint()
     {
         if (targetWaypoint == null) return;
+
+        // Lấy danh sách waypoint hiện tại
+        Transform[] currentWaypoints = customWaypoints != null && customWaypoints.Length > 0
+            ? customWaypoints
+            : Waypoints.points;
 
         Vector3 dir = targetWaypoint.position - transform.position;
         transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
@@ -215,10 +229,25 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int amt)
     {
-        if (isDead) return;
+        Debug.Log(
+            "🔥 ENEMY NHẬN DAMAGE: " +
+            amt +
+            " | HP trước: " +
+            hp
+        );
+
+        if (isDead)
+            return;
 
         hp -= amt;
+
+        Debug.Log(
+            "🔥 ENEMY HP SAU KHI BỊ ĐÁNH: " +
+            hp
+        );
+
         UpdateHealthUI();
+
         if (hp > 0)
         {
             SetAnimatorTrigger("Hurt");
