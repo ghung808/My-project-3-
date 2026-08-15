@@ -117,6 +117,33 @@ public class ArcherSoldier : MonoBehaviour
         }
 
         // =========================
+        // TÌM BOSS MAP 3
+        // =========================
+
+        BossEnemy[] bossEnemies =
+            Object.FindObjectsByType<BossEnemy>(
+                FindObjectsSortMode.None
+            );
+
+        foreach (BossEnemy bossEnemy in bossEnemies)
+        {
+            if (bossEnemy == null ||
+                !bossEnemy.gameObject.activeInHierarchy)
+                continue;
+
+            float distance = Vector3.Distance(
+                transform.position,
+                bossEnemy.transform.position
+            );
+
+            if (distance < shortestDist)
+            {
+                shortestDist = distance;
+                nearestTarget = bossEnemy.transform;
+            }
+        }
+
+        // =========================
         // GÁN MỤC TIÊU
         // =========================
 

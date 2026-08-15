@@ -11,14 +11,25 @@ public class WaveSpawnerMap3 : MonoBehaviour
 
     private int currentWaveIndex = 0;
 
-    // Số enemy đang sống của Map3
+    // =========================================================
+    // SỐ ENEMY ĐANG SỐNG
+    // =========================================================
+
     private int enemiesAliveMap3 = 0;
+
+    // =========================================================
+    // WAYPOINT MAP 3
+    // =========================================================
 
     [Header("Waypoint Map3")]
     public WaypointsMap3 waypointsMap3;
 
+    // =========================================================
+    // BOSS
+    // =========================================================
+
     [Header("Boss")]
-    public int bossWave = 8;
+    public int bossWave = 12;
     public GameObject bossPrefab;
 
     [Header("Boss UI")]
@@ -29,63 +40,163 @@ public class WaveSpawnerMap3 : MonoBehaviour
 
 
     // =========================================================
+    // LẤY WAVE HIỆN TẠI
+    // =========================================================
+
+    public int GetCurrentWaveNumber()
+    {
+        return currentWaveIndex + 1;
+    }
+
+
+    // =========================================================
     // START
     // =========================================================
 
     void Start()
     {
+        // -----------------------------------------------------
+        // ẨN BẢNG BOSS
+        // -----------------------------------------------------
+
         if (bossWarningPanel != null)
         {
             bossWarningPanel.SetActive(false);
         }
+
+
+        // -----------------------------------------------------
+        // GAME UI
+        // -----------------------------------------------------
+
+        if (GameUI.instance != null)
+        {
+            GameUI.instance.maxWave = 12;
+            GameUI.instance.currentWave = 1;
+            GameUI.instance.UpdateUI();
+        }
+
+
+        // -----------------------------------------------------
+        // KIỂM TRA 12 WAVE
+        // -----------------------------------------------------
+
+        if (waves == null || waves.Length < 12)
+        {
+            Debug.LogError(
+                "❌ MAP 3 CHƯA ĐỦ 12 WAVE! " +
+                "Hiện tại chỉ có " +
+                (waves == null ? 0 : waves.Length) +
+                " Wave."
+            );
+
+            return;
+        }
+
+
+        // -----------------------------------------------------
+        // KIỂM TRA WAYPOINT
+        // -----------------------------------------------------
+
+        if (waypointsMap3 == null)
+        {
+            Debug.LogError(
+                "❌ MAP 3 CHƯA GÁN WaypointsMap3!"
+            );
+
+            return;
+        }
+
+
+        Debug.Log(
+            "================================"
+        );
+
+        Debug.Log(
+            "🟦 MAP 3 BẮT ĐẦU"
+        );
+
+        Debug.Log(
+            "🟦 TỔNG SỐ WAVE: 12"
+        );
+
+        Debug.Log(
+            "================================"
+        );
+
 
         StartCoroutine(SpawnWaves());
     }
 
 
     // =========================================================
-    // CHẠY WAVE 1 -> WAVE 7
+    // CHẠY WAVE 1 → 12
     // =========================================================
 
     IEnumerator SpawnWaves()
     {
         yield return new WaitForSeconds(2f);
 
-        while (currentWaveIndex < waves.Length &&
-               currentWaveIndex < 7)
+
+        while (
+            currentWaveIndex < waves.Length &&
+            currentWaveIndex < 12
+        )
         {
-            int waveNumber = currentWaveIndex + 1;
+            int waveNumber =
+                currentWaveIndex + 1;
+
+
+            // =================================================
+            // CẬP NHẬT UI
+            // =================================================
+
+            if (GameUI.instance != null)
+            {
+                GameUI.instance.currentWave =
+                    waveNumber;
+
+                GameUI.instance.maxWave =
+                    12;
+
+                GameUI.instance.UpdateUI();
+            }
+
 
             Debug.Log(
-                "=============================="
+                "================================"
             );
 
             Debug.Log(
-                "CHUẨN BỊ WAVE " + waveNumber
+                "⚔️ CHUẨN BỊ WAVE " +
+                waveNumber +
+                " / 12"
             );
 
             Debug.Log(
-                "=============================="
+                "================================"
             );
 
 
-            // -------------------------------------------------
+            // =================================================
             // COUNTDOWN
-            // -------------------------------------------------
+            // =================================================
 
-            yield return new WaitForSeconds(countdown);
+            yield return new WaitForSeconds(
+                countdown
+            );
 
 
-            // -------------------------------------------------
-            // RESET SỐ ENEMY
-            // -------------------------------------------------
+            // =================================================
+            // RESET ENEMY
+            // =================================================
 
             enemiesAliveMap3 = 0;
 
 
-            // -------------------------------------------------
+            // =================================================
             // SPAWN WAVE
-            // -------------------------------------------------
+            // =================================================
 
             yield return StartCoroutine(
                 SpawnCurrentWave()
@@ -93,20 +204,27 @@ public class WaveSpawnerMap3 : MonoBehaviour
 
 
             Debug.Log(
-                "Wave " +
-                waveNumber +
-                " đã spawn xong."
+                "================================"
             );
 
             Debug.Log(
-                "Enemy đang sống: " +
+                "🟢 SPAWN XONG WAVE " +
+                waveNumber
+            );
+
+            Debug.Log(
+                "🟢 Enemy đang sống: " +
                 enemiesAliveMap3
             );
 
+            Debug.Log(
+                "================================"
+            );
 
-            // -------------------------------------------------
-            // CHỜ TẤT CẢ ENEMY CHẾT
-            // -------------------------------------------------
+
+            // =================================================
+            // CHỜ ENEMY CHẾT HẾT
+            // =================================================
 
             yield return new WaitUntil(
                 () => enemiesAliveMap3 <= 0
@@ -114,81 +232,128 @@ public class WaveSpawnerMap3 : MonoBehaviour
 
 
             Debug.Log(
-                "=============================="
+                "================================"
             );
 
             Debug.Log(
-                "WAVE " +
+                "✅ WAVE " +
                 waveNumber +
-                " ĐÃ HOÀN THÀNH!"
+                " / 12 HOÀN THÀNH!"
             );
 
             Debug.Log(
-                "=============================="
+                "================================"
             );
 
 
-            // -------------------------------------------------
+            // =================================================
             // TĂNG WAVE
-            // -------------------------------------------------
+            // =================================================
 
             currentWaveIndex++;
 
 
-            // -------------------------------------------------
-            // NẾU CHƯA PHẢI WAVE 7
-            // -------------------------------------------------
+            // =================================================
+            // ĐÃ XONG WAVE 12
+            // =================================================
 
-            if (currentWaveIndex < 7 &&
-                currentWaveIndex < waves.Length)
+            if (currentWaveIndex >= 12)
             {
+                if (GameUI.instance != null)
+                {
+                    GameUI.instance.currentWave = 12;
+                    GameUI.instance.maxWave = 12;
+                    GameUI.instance.UpdateUI();
+                }
+
+
                 Debug.Log(
-                    "Wave tiếp theo sau " +
-                    timeBetweenWaves +
-                    " giây..."
+                    "========================================"
                 );
 
-                yield return new WaitForSeconds(
-                    timeBetweenWaves
+                Debug.Log(
+                    "🎉 ĐÃ HOÀN THÀNH TẤT CẢ 12 WAVE!"
                 );
+
+                Debug.Log(
+                    "💀 CHUẨN BỊ HIỆN BẢNG BOSS!"
+                );
+
+                Debug.Log(
+                    "========================================"
+                );
+
+
+                ShowBossPanel();
+
+                yield break;
             }
+
+
+            // =================================================
+            // WAVE TIẾP THEO
+            // =================================================
+
+            int nextWave =
+                currentWaveIndex + 1;
+
+
+            if (GameUI.instance != null)
+            {
+                GameUI.instance.currentWave =
+                    nextWave;
+
+                GameUI.instance.maxWave =
+                    12;
+
+                GameUI.instance.UpdateUI();
+            }
+
+
+            Debug.Log(
+                "➡️ Wave tiếp theo: " +
+                nextWave +
+                " / 12"
+            );
+
+
+            Debug.Log(
+                "⏳ Wave tiếp theo sau " +
+                timeBetweenWaves +
+                " giây..."
+            );
+
+
+            yield return new WaitForSeconds(
+                timeBetweenWaves
+            );
         }
 
 
-        // =====================================================
-        // HOÀN THÀNH WAVE 7
-        // =====================================================
+        // =================================================
+        // KIỂM TRA CUỐI
+        // =================================================
 
-        if (currentWaveIndex >= 7)
+        if (currentWaveIndex >= 12)
         {
-            Debug.Log(
-                "================================"
-            );
-
-            Debug.Log(
-                "ĐÃ HOÀN THÀNH WAVE 7"
-            );
-
-            Debug.Log(
-                "HIỆN BẢNG BOSS"
-            );
-
-            Debug.Log(
-                "================================"
-            );
-
-            ShowBossPanel();
+            if (!bossStarted)
+            {
+                ShowBossPanel();
+            }
         }
     }
 
 
     // =========================================================
-    // SPAWN WAVE
+    // SPAWN WAVE HIỆN TẠI
     // =========================================================
 
     IEnumerator SpawnCurrentWave()
     {
-        if (currentWaveIndex >= waves.Length)
+        if (
+            currentWaveIndex >=
+            waves.Length
+        )
         {
             yield break;
         }
@@ -204,18 +369,18 @@ public class WaveSpawnerMap3 : MonoBehaviour
         Debug.Log(
             "========== BẮT ĐẦU WAVE " +
             waveNumber +
-            " =========="
+            " / 12 =========="
         );
 
 
-        // -------------------------------------------------
+        // =================================================
         // KIỂM TRA PREFAB
-        // -------------------------------------------------
+        // =================================================
 
         if (wave.enemyPrefab == null)
         {
             Debug.LogError(
-                "Wave " +
+                "❌ Wave " +
                 waveNumber +
                 " chưa gán Enemy Prefab!"
             );
@@ -224,14 +389,14 @@ public class WaveSpawnerMap3 : MonoBehaviour
         }
 
 
-        // -------------------------------------------------
+        // =================================================
         // KIỂM TRA COUNT
-        // -------------------------------------------------
+        // =================================================
 
         if (wave.count <= 0)
         {
             Debug.LogError(
-                "Wave " +
+                "❌ Wave " +
                 waveNumber +
                 " có Count = 0!"
             );
@@ -240,18 +405,30 @@ public class WaveSpawnerMap3 : MonoBehaviour
         }
 
 
-        // -------------------------------------------------
+        // =================================================
         // SPAWN TỪNG ENEMY
-        // -------------------------------------------------
+        // =================================================
 
-        for (int i = 0; i < wave.count; i++)
+        for (
+            int i = 0;
+            i < wave.count;
+            i++
+        )
         {
+            // -------------------------------------------------
+            // CHỌN ĐƯỜNG
+            // -------------------------------------------------
+
             Transform[] selectedPath =
                 GetPathForEnemy(
                     waveNumber,
                     i
                 );
 
+
+            // -------------------------------------------------
+            // SPAWN
+            // -------------------------------------------------
 
             GameObject enemy =
                 SpawnEnemy(
@@ -264,9 +441,14 @@ public class WaveSpawnerMap3 : MonoBehaviour
             {
                 enemiesAliveMap3++;
 
-                // Gắn callback theo dõi enemy chết
+
+                // =================================================
+                // TRACKER
+                // =================================================
+
                 EnemyMap3Tracker tracker =
                     enemy.GetComponent<EnemyMap3Tracker>();
+
 
                 if (tracker == null)
                 {
@@ -274,12 +456,23 @@ public class WaveSpawnerMap3 : MonoBehaviour
                         enemy.AddComponent<EnemyMap3Tracker>();
                 }
 
+
                 tracker.spawner = this;
+
+
+                Debug.Log(
+                    "🟢 Spawn Enemy Map3 " +
+                    (i + 1) +
+                    "/" +
+                    wave.count +
+                    " | Wave " +
+                    waveNumber
+                );
             }
 
 
             // -------------------------------------------------
-            // DELAY GIỮA CÁC ENEMY
+            // DELAY
             // -------------------------------------------------
 
             if (wave.rate > 0f)
@@ -294,6 +487,7 @@ public class WaveSpawnerMap3 : MonoBehaviour
         Debug.Log(
             "Spawn xong Wave " +
             waveNumber +
+            " / 12" +
             " | Tổng Enemy: " +
             enemiesAliveMap3
         );
@@ -312,23 +506,33 @@ public class WaveSpawnerMap3 : MonoBehaviour
         if (prefab == null)
         {
             Debug.LogError(
-                "Enemy Prefab NULL!"
+                "❌ Enemy Prefab NULL!"
             );
 
             return null;
         }
 
 
-        if (path == null ||
-            path.Length == 0)
+        // =================================================
+        // KIỂM TRA PATH
+        // =================================================
+
+        if (
+            path == null ||
+            path.Length == 0
+        )
         {
             Debug.LogError(
-                "Waypoint Map3 bị thiếu!"
+                "❌ Waypoint Map3 bị thiếu!"
             );
 
             return null;
         }
 
+
+        // =================================================
+        // SPAWN TẠI WAYPOINT ĐẦU TIÊN
+        // =================================================
 
         GameObject enemy =
             Instantiate(
@@ -338,6 +542,10 @@ public class WaveSpawnerMap3 : MonoBehaviour
             );
 
 
+        // =================================================
+        // LẤY ENEMY SCRIPT
+        // =================================================
+
         Enemy enemyScript =
             enemy.GetComponent<Enemy>();
 
@@ -345,7 +553,7 @@ public class WaveSpawnerMap3 : MonoBehaviour
         if (enemyScript == null)
         {
             Debug.LogError(
-                "Enemy Prefab không có Enemy.cs!"
+                "❌ Enemy Prefab không có Enemy.cs!"
             );
 
             Destroy(enemy);
@@ -354,9 +562,20 @@ public class WaveSpawnerMap3 : MonoBehaviour
         }
 
 
-        // Gán đường đi riêng cho Map3
+        // =================================================
+        // RẤT QUAN TRỌNG
+        // GÁN ĐƯỜNG RIÊNG CHO MAP 3
+        // =================================================
+
         enemyScript.customWaypoints =
             path;
+
+
+        Debug.Log(
+            "🛣️ Enemy Map3 nhận " +
+            path.Length +
+            " Waypoint."
+        );
 
 
         return enemy;
@@ -364,7 +583,7 @@ public class WaveSpawnerMap3 : MonoBehaviour
 
 
     // =========================================================
-    // CHỌN ĐƯỜNG CHO ENEMY
+    // CHỌN ĐƯỜNG ENEMY
     // =========================================================
 
     Transform[] GetPathForEnemy(
@@ -375,17 +594,17 @@ public class WaveSpawnerMap3 : MonoBehaviour
         if (waypointsMap3 == null)
         {
             Debug.LogError(
-                "Chưa gán WaypointsMap3!"
+                "❌ Chưa gán WaypointsMap3!"
             );
 
             return null;
         }
 
 
-        // =====================================================
+        // =================================================
         // WAVE 1
         // CHỈ ĐƯỜNG GIỮA
-        // =====================================================
+        // =================================================
 
         if (waveNumber == 1)
         {
@@ -393,10 +612,10 @@ public class WaveSpawnerMap3 : MonoBehaviour
         }
 
 
-        // =====================================================
+        // =================================================
         // WAVE 2
         // GIỮA + TRÊN
-        // =====================================================
+        // =================================================
 
         if (waveNumber == 2)
         {
@@ -411,36 +630,51 @@ public class WaveSpawnerMap3 : MonoBehaviour
         }
 
 
-        // =====================================================
-        // WAVE 3 -> WAVE 7
+        // =================================================
+        // WAVE 3 → 12
         // CẢ 3 ĐƯỜNG
-        // =====================================================
+        // =================================================
 
         int lane =
             enemyIndex % 3;
 
+
+        // -------------------------------------------------
+        // ĐƯỜNG GIỮA
+        // -------------------------------------------------
 
         if (lane == 0)
         {
             return waypointsMap3.middlePoints;
         }
 
+
+        // -------------------------------------------------
+        // ĐƯỜNG TRÊN
+        // -------------------------------------------------
+
         if (lane == 1)
         {
             return waypointsMap3.topPoints;
         }
+
+
+        // -------------------------------------------------
+        // ĐƯỜNG DƯỚI
+        // -------------------------------------------------
 
         return waypointsMap3.bottomPoints;
     }
 
 
     // =========================================================
-    // ENEMY CHẾT
+    // ENEMY MAP 3 CHẾT
     // =========================================================
 
     public void OnEnemyMap3Died()
     {
         enemiesAliveMap3--;
+
 
         if (enemiesAliveMap3 < 0)
         {
@@ -449,18 +683,30 @@ public class WaveSpawnerMap3 : MonoBehaviour
 
 
         Debug.Log(
-            "Enemy Map3 chết. Còn lại: " +
+            "💀 Enemy Map3 chết | Còn lại: " +
             enemiesAliveMap3
         );
     }
 
 
     // =========================================================
-    // BOSS WARNING PANEL
+    // HIỆN BẢNG BOSS
     // =========================================================
 
     void ShowBossPanel()
     {
+        if (bossStarted)
+        {
+            return;
+        }
+
+
+        if (waitingForBossStart)
+        {
+            return;
+        }
+
+
         waitingForBossStart = true;
 
 
@@ -475,11 +721,15 @@ public class WaveSpawnerMap3 : MonoBehaviour
         );
 
         Debug.Log(
-            "BOSS WAVE 8 ĐANG CHỜ!"
+            "💀 ĐÃ HOÀN THÀNH WAVE 12!"
         );
 
         Debug.Log(
-            "Bấm nút BẮT ĐẦU để xuất hiện Boss."
+            "⚠️ BOSS ĐANG CHỜ!"
+        );
+
+        Debug.Log(
+            "👉 Bấm nút BẮT ĐẦU để xuất hiện Boss."
         );
 
         Debug.Log(
@@ -497,7 +747,7 @@ public class WaveSpawnerMap3 : MonoBehaviour
         if (!waitingForBossStart)
         {
             Debug.LogWarning(
-                "Chưa đến lúc bắt đầu Boss!"
+                "⚠️ Chưa đến lúc bắt đầu Boss!"
             );
 
             return;
@@ -520,6 +770,23 @@ public class WaveSpawnerMap3 : MonoBehaviour
         }
 
 
+        Debug.Log(
+            "================================"
+        );
+
+        Debug.Log(
+            "🔥 NGƯỜI CHƠI ĐÃ BẤM BẮT ĐẦU!"
+        );
+
+        Debug.Log(
+            "💀 BOSS ĐANG XUẤT HIỆN!"
+        );
+
+        Debug.Log(
+            "================================"
+        );
+
+
         SpawnBoss();
     }
 
@@ -533,7 +800,7 @@ public class WaveSpawnerMap3 : MonoBehaviour
         if (bossPrefab == null)
         {
             Debug.LogError(
-                "Chưa gán Boss Prefab!"
+                "❌ Chưa gán Boss Prefab!"
             );
 
             return;
@@ -543,25 +810,30 @@ public class WaveSpawnerMap3 : MonoBehaviour
         if (waypointsMap3 == null)
         {
             Debug.LogError(
-                "Chưa gán WaypointsMap3!"
+                "❌ Chưa gán WaypointsMap3!"
             );
 
             return;
         }
 
 
-        if (waypointsMap3.middlePoints == null ||
-            waypointsMap3.middlePoints.Length == 0)
+        if (
+            waypointsMap3.middlePoints == null ||
+            waypointsMap3.middlePoints.Length == 0
+        )
         {
             Debug.LogError(
-                "Middle Points chưa được gán!"
+                "❌ Middle Points chưa được gán!"
             );
 
             return;
         }
 
 
-        // Boss chỉ đi đường giữa
+        // =================================================
+        // BOSS CHỈ ĐI ĐƯỜNG GIỮA
+        // =================================================
+
         Transform[] bossPath =
             waypointsMap3.middlePoints;
 
@@ -573,6 +845,10 @@ public class WaveSpawnerMap3 : MonoBehaviour
                 Quaternion.identity
             );
 
+
+        // =================================================
+        // BOSS SCRIPT
+        // =================================================
 
         BossEnemy bossScript =
             boss.GetComponent<BossEnemy>();
@@ -586,7 +862,7 @@ public class WaveSpawnerMap3 : MonoBehaviour
         else
         {
             Debug.LogError(
-                "Boss Prefab không có BossEnemy.cs!"
+                "❌ Boss Prefab không có BossEnemy.cs!"
             );
         }
 
@@ -596,7 +872,11 @@ public class WaveSpawnerMap3 : MonoBehaviour
         );
 
         Debug.Log(
-            "BOSS WAVE 8 ĐÃ XUẤT HIỆN!"
+            "💀 BOSS SAU WAVE 12 ĐÃ XUẤT HIỆN!"
+        );
+
+        Debug.Log(
+            "💀 BOSS ĐI ĐƯỜNG GIỮA!"
         );
 
         Debug.Log(
@@ -621,7 +901,10 @@ public class EnemyMap3Tracker : MonoBehaviour
     void OnDestroy()
     {
         if (hasReportedDeath)
+        {
             return;
+        }
+
 
         hasReportedDeath = true;
 
