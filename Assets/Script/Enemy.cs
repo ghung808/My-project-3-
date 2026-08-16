@@ -23,7 +23,6 @@ public class Enemy : MonoBehaviour
     private bool isEngaged = false;
     private bool isDead = false;
 
-    // Mục tiêu hiện tại
     private MonoBehaviour currentTargetSoldier;
 
     [Header("Thanh máu (UI Slider)")]
@@ -32,7 +31,6 @@ public class Enemy : MonoBehaviour
     [Header("Cấu hình Rơi Xu")]
     public GameObject coinPrefab;
 
-
     // =========================================================
     // BURN
     // =========================================================
@@ -40,7 +38,6 @@ public class Enemy : MonoBehaviour
     [Header("Hiệu ứng Trạng thái (Đốt)")]
     private bool isBurning = false;
     private Coroutine burnCoroutine;
-
 
     // =========================================================
     // SLOW
@@ -51,7 +48,6 @@ public class Enemy : MonoBehaviour
     private bool isSlowed = false;
     private Coroutine slowCoroutine;
 
-
     // =========================================================
     // COMPONENT
     // =========================================================
@@ -61,14 +57,12 @@ public class Enemy : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
 
-
     // =========================================================
     // MAP 3 WAYPOINT
     // =========================================================
 
     [HideInInspector]
     public Transform[] customWaypoints;
-
 
     // =========================================================
     // KIỂM TRA MAP 3
@@ -78,7 +72,6 @@ public class Enemy : MonoBehaviour
     {
         return SceneManager.GetActiveScene().name == "dh";
     }
-
 
     // =========================================================
     // START
@@ -114,12 +107,86 @@ public class Enemy : MonoBehaviour
 
         UpdateHealthUI();
 
-        GetNextWaypoint();
+        // =====================================================
+        // QUAN TRỌNG:
+        // NẾU ĐÃ ĐƯỢC GÁN CUSTOM WAYPOINT
+        // THÌ KHÔNG ĐƯỢC DÙNG Waypoints.points
+        // =====================================================
+
+        if (customWaypoints != null &&
+            customWaypoints.Length > 0)
+        {
+            waypointIndex = 1;
+
+            if (customWaypoints.Length > 1)
+            {
+                targetWaypoint =
+                    customWaypoints[1];
+            }
+            else
+            {
+                targetWaypoint =
+                    customWaypoints[0];
+            }
+
+            Debug.Log(
+                "🛣️ ENEMY MAP 3 KHỞI TẠO | " +
+                "Spawn: " +
+                customWaypoints[0].name +
+                " | Next: " +
+                targetWaypoint.name
+            );
+        }
+        else
+        {
+            // MAP 1 + MAP 2
+            GetNextWaypoint();
+        }
     }
 
+    // =========================================================
+    // KHỞI TẠO ĐƯỜNG MAP 3
+    // =========================================================
+
+    public void InitializeMap3Path()
+    {
+        if (customWaypoints == null ||
+            customWaypoints.Length == 0)
+        {
+            Debug.LogError(
+                "❌ ENEMY MAP 3 KHÔNG CÓ WAYPOINT!"
+            );
+
+            return;
+        }
+
+        waypointIndex = 1;
+
+        if (customWaypoints.Length > 1)
+        {
+            targetWaypoint =
+                customWaypoints[1];
+        }
+        else
+        {
+            targetWaypoint =
+                customWaypoints[0];
+        }
+
+        isEngaged = false;
+        isDead = false;
+
+        Debug.Log(
+            "✅ ENEMY MAP 3 NHẬN ĐƯỜNG | " +
+            "Spawn: " +
+            customWaypoints[0].name +
+            " | Next: " +
+            targetWaypoint.name
+        );
+    }
 
     // =========================================================
-    // ĐỘ KHÓ MAP 3
+    // CÂN BẰNG ENEMY MAP 3
     // =========================================================
 
     void ApplyMap3Difficulty()
@@ -135,152 +202,142 @@ public class Enemy : MonoBehaviour
                 spawner.GetCurrentWaveNumber();
         }
 
-
-        // =====================================================
-        // WAVE 1
-        // NHẸ HƠN
-        // =====================================================
-
         switch (waveNumber)
         {
             case 1:
 
                 speed = 2.0f;
-                maxHp = 18;
+                maxHp = 20;
                 damage = 2;
                 attackCooldown = 1.2f;
 
                 break;
 
-
             case 2:
 
-                speed = 2.1f;
-                maxHp = 20;
-                damage = 3;
-                attackCooldown = 1.1f;
+                speed = 2.05f;
+                maxHp = 22;
+                damage = 2;
+                attackCooldown = 1.15f;
 
                 break;
-
 
             case 3:
 
-                speed = 2.2f;
-                maxHp = 23;
+                speed = 2.1f;
+                maxHp = 25;
                 damage = 3;
                 attackCooldown = 1.1f;
 
                 break;
 
-
             case 4:
 
-                speed = 2.3f;
-                maxHp = 26;
-                damage = 4;
-                attackCooldown = 1.0f;
+                speed = 2.15f;
+                maxHp = 28;
+                damage = 3;
+                attackCooldown = 1.05f;
 
                 break;
-
 
             case 5:
 
-                speed = 2.4f;
-                maxHp = 30;
+                speed = 2.2f;
+                maxHp = 32;
+                damage = 3;
+                attackCooldown = 1.0f;
+
+                break;
+
+            case 6:
+
+                speed = 2.25f;
+                maxHp = 36;
                 damage = 4;
                 attackCooldown = 1.0f;
 
                 break;
 
-
-            case 6:
-
-                speed = 2.5f;
-                maxHp = 34;
-                damage = 5;
-                attackCooldown = 1.0f;
-
-                break;
-
-
             case 7:
 
-                speed = 2.6f;
-                maxHp = 38;
-                damage = 5;
+                speed = 2.3f;
+                maxHp = 40;
+                damage = 4;
                 attackCooldown = 0.95f;
 
                 break;
-
 
             case 8:
 
-                speed = 2.7f;
-                maxHp = 42;
-                damage = 6;
+                speed = 2.35f;
+                maxHp = 45;
+                damage = 5;
                 attackCooldown = 0.95f;
 
                 break;
 
-
             case 9:
 
-                speed = 2.8f;
-                maxHp = 46;
+                speed = 2.4f;
+                maxHp = 50;
+                damage = 5;
+                attackCooldown = 0.9f;
+
+                break;
+
+            case 10:
+
+                speed = 2.45f;
+                maxHp = 56;
                 damage = 6;
                 attackCooldown = 0.9f;
 
                 break;
 
+            case 11:
 
-            case 10:
-
-                speed = 2.9f;
-                maxHp = 50;
-                damage = 7;
-                attackCooldown = 0.9f;
+                speed = 2.5f;
+                maxHp = 62;
+                damage = 6;
+                attackCooldown = 0.85f;
 
                 break;
 
+            case 12:
 
-            case 11:
-
-                speed = 3.0f;
-                maxHp = 55;
+                speed = 2.55f;
+                maxHp = 70;
                 damage = 7;
                 attackCooldown = 0.85f;
 
                 break;
 
+            default:
 
-            case 12:
-
-                speed = 3.1f;
-                maxHp = 60;
-                damage = 8;
+                speed = 2.55f;
+                maxHp = 70;
+                damage = 7;
                 attackCooldown = 0.85f;
 
                 break;
         }
 
-
         hp = maxHp;
-
         originalSpeed = speed;
-
 
         Debug.Log(
             "🔥 MAP 3 - WAVE " +
             waveNumber +
-            " | Speed: " +
-            speed +
             " | HP: " +
             maxHp +
             " | Damage: " +
-            damage
+            damage +
+            " | Speed: " +
+            speed +
+            " | Cooldown: " +
+            attackCooldown
         );
     }
-
 
     // =========================================================
     // UPDATE
@@ -291,44 +348,19 @@ public class Enemy : MonoBehaviour
         if (isDead)
             return;
 
-
-        // =====================================================
-        // ĐANG ĐÁNH LÍNH
-        // =====================================================
-
         if (isEngaged)
         {
             CheckSoldierAlive();
-
             return;
         }
-
-
-        // =====================================================
-        // KIỂM TRA LÍNH PHÍA TRƯỚC
-        // =====================================================
 
         CheckForSoldiersAhead();
 
-
-        // =====================================================
-        // NẾU VỪA PHÁT HIỆN LÍNH
-        // KHÔNG ĐƯỢC CHẠY TIẾP
-        // =====================================================
-
         if (isEngaged)
-        {
             return;
-        }
-
-
-        // =====================================================
-        // KHÔNG CÓ LÍNH → TIẾP TỤC ĐI
-        // =====================================================
 
         MoveTowardsWaypoint();
     }
-
 
     // =========================================================
     // KIỂM TRA LÍNH
@@ -342,30 +374,17 @@ public class Enemy : MonoBehaviour
                 checkRadius
             );
 
-
-        // =====================================================
-        // TÌM MỤC TIÊU
-        // =====================================================
-
         PlayerSoldier warrior = null;
         MageSoldier mage = null;
         ArcherSoldier archer = null;
-
 
         foreach (Collider2D hit in hits)
         {
             if (hit == null)
                 continue;
 
-
-            // Không lấy chính enemy
             if (hit.transform == transform)
                 continue;
-
-
-            // =================================================
-            // TÌM ĐẤU SĨ
-            // =================================================
 
             PlayerSoldier w =
                 hit.GetComponent<PlayerSoldier>();
@@ -375,11 +394,6 @@ public class Enemy : MonoBehaviour
                 warrior = w;
             }
 
-
-            // =================================================
-            // TÌM PHÁP SƯ
-            // =================================================
-
             MageSoldier m =
                 hit.GetComponent<MageSoldier>();
 
@@ -387,11 +401,6 @@ public class Enemy : MonoBehaviour
             {
                 mage = m;
             }
-
-
-            // =================================================
-            // TÌM CUNG THỦ
-            // =================================================
 
             ArcherSoldier a =
                 hit.GetComponent<ArcherSoldier>();
@@ -402,59 +411,17 @@ public class Enemy : MonoBehaviour
             }
         }
 
-
-        // =====================================================
-        // MAP 3
-        // ƯU TIÊN ĐẤU SĨ
-        // SAU ĐÓ PHÁP SƯ
-        // SAU ĐÓ CUNG THỦ
-        // =====================================================
-
-        if (IsMap3())
-        {
-            if (warrior != null)
-            {
-                EngageTarget(warrior);
-                return;
-            }
-
-
-            if (mage != null)
-            {
-                EngageTarget(mage);
-                return;
-            }
-
-
-            if (archer != null)
-            {
-                EngageTarget(archer);
-                return;
-            }
-
-
-            return;
-        }
-
-
-        // =====================================================
-        // MAP 1 + MAP 2
-        // GIỮ NGUYÊN CƠ CHẾ CŨ
-        // =====================================================
-
         if (warrior != null)
         {
             EngageTarget(warrior);
             return;
         }
 
-
         if (mage != null)
         {
             EngageTarget(mage);
             return;
         }
-
 
         if (archer != null)
         {
@@ -463,9 +430,8 @@ public class Enemy : MonoBehaviour
         }
     }
 
-
     // =========================================================
-    // BẮT ĐẦU ĐÁNH MỤC TIÊU
+    // BẮT ĐẦU ĐÁNH
     // =========================================================
 
     void EngageTarget(MonoBehaviour target)
@@ -473,33 +439,26 @@ public class Enemy : MonoBehaviour
         if (target == null)
             return;
 
-
         currentTargetSoldier = target;
 
         isEngaged = true;
 
-
-        // Dừng animation chạy
         SetAnimatorBool(
             "isRunning",
             false
         );
 
-
-        // Flip về phía mục tiêu
         float directionX =
             target.transform.position.x -
             transform.position.x;
 
         FlipSprite(directionX);
 
-
         Debug.Log(
             "⚔️ ENEMY DỪNG LẠI ĐÁNH: " +
             target.gameObject.name
         );
     }
-
 
     // =========================================================
     // BURN
@@ -513,7 +472,6 @@ public class Enemy : MonoBehaviour
         if (isDead)
             return;
 
-
         if (
             isBurning &&
             burnCoroutine != null
@@ -524,7 +482,6 @@ public class Enemy : MonoBehaviour
             );
         }
 
-
         burnCoroutine =
             StartCoroutine(
                 BurnEffectRoutine(
@@ -533,7 +490,6 @@ public class Enemy : MonoBehaviour
                 )
             );
     }
-
 
     IEnumerator BurnEffectRoutine(
         float dps,
@@ -545,8 +501,10 @@ public class Enemy : MonoBehaviour
         float elapsed = 0f;
 
         int damagePerTick =
-            Mathf.RoundToInt(dps);
-
+            Mathf.Max(
+                1,
+                Mathf.RoundToInt(dps)
+            );
 
         while (
             elapsed < duration &&
@@ -557,20 +515,16 @@ public class Enemy : MonoBehaviour
 
             elapsed += 1f;
 
-
             if (isDead)
                 break;
-
 
             TakeDamage(
                 damagePerTick
             );
         }
 
-
         isBurning = false;
     }
-
 
     // =========================================================
     // SLOW
@@ -584,12 +538,10 @@ public class Enemy : MonoBehaviour
         if (isDead)
             return;
 
-
         if (!isSlowed)
         {
             originalSpeed = speed;
         }
-
 
         if (slowCoroutine != null)
         {
@@ -597,7 +549,6 @@ public class Enemy : MonoBehaviour
                 slowCoroutine
             );
         }
-
 
         slowCoroutine =
             StartCoroutine(
@@ -608,7 +559,6 @@ public class Enemy : MonoBehaviour
             );
     }
 
-
     IEnumerator SlowEffectRoutine(
         float slowPercent,
         float duration
@@ -616,22 +566,21 @@ public class Enemy : MonoBehaviour
     {
         isSlowed = true;
 
-
         speed =
             originalSpeed *
             slowPercent;
-
 
         yield return new WaitForSeconds(
             duration
         );
 
-
-        speed = originalSpeed;
+        if (!isDead)
+        {
+            speed = originalSpeed;
+        }
 
         isSlowed = false;
     }
-
 
     // =========================================================
     // WAYPOINT
@@ -642,18 +591,20 @@ public class Enemy : MonoBehaviour
         Transform[] currentWaypoints =
             customWaypoints != null &&
             customWaypoints.Length > 0
-            ? customWaypoints
-            : Waypoints.points;
-
+                ? customWaypoints
+                : Waypoints.points;
 
         if (
             currentWaypoints == null ||
             currentWaypoints.Length == 0
         )
         {
+            Debug.LogError(
+                "❌ ENEMY KHÔNG CÓ WAYPOINT!"
+            );
+
             return;
         }
-
 
         if (
             waypointIndex >=
@@ -661,10 +612,8 @@ public class Enemy : MonoBehaviour
         )
         {
             ReachDestination();
-
             return;
         }
-
 
         targetWaypoint =
             currentWaypoints[
@@ -674,7 +623,6 @@ public class Enemy : MonoBehaviour
         waypointIndex++;
     }
 
-
     // =========================================================
     // DI CHUYỂN
     // =========================================================
@@ -682,13 +630,17 @@ public class Enemy : MonoBehaviour
     void MoveTowardsWaypoint()
     {
         if (targetWaypoint == null)
-            return;
+        {
+            Debug.LogWarning(
+                "⚠️ Enemy không có Target Waypoint!"
+            );
 
+            return;
+        }
 
         Vector3 dir =
             targetWaypoint.position -
             transform.position;
-
 
         transform.Translate(
             dir.normalized *
@@ -697,18 +649,15 @@ public class Enemy : MonoBehaviour
             Space.World
         );
 
-
-        if (dir.x != 0)
+        if (Mathf.Abs(dir.x) > 0.01f)
         {
             FlipSprite(dir.x);
         }
-
 
         SetAnimatorBool(
             "isRunning",
             true
         );
-
 
         if (
             Vector3.Distance(
@@ -721,7 +670,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-
     // =========================================================
     // ĐẾN CASTLE
     // =========================================================
@@ -731,16 +679,13 @@ public class Enemy : MonoBehaviour
         GameUI ui =
             FindFirstObjectByType<GameUI>();
 
-
         if (ui != null)
         {
             ui.TakeCastleDamage(1);
         }
 
-
         Destroy(gameObject);
     }
-
 
     // =========================================================
     // NHẬN DAMAGE
@@ -751,12 +696,15 @@ public class Enemy : MonoBehaviour
         if (isDead)
             return;
 
-
         hp -= amt;
 
+        hp =
+            Mathf.Max(
+                hp,
+                0
+            );
 
         UpdateHealthUI();
-
 
         if (hp > 0)
         {
@@ -769,7 +717,6 @@ public class Enemy : MonoBehaviour
             Die();
         }
     }
-
 
     // =========================================================
     // HEALTH UI
@@ -787,7 +734,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-
     // =========================================================
     // CHẾT
     // =========================================================
@@ -797,43 +743,34 @@ public class Enemy : MonoBehaviour
         if (isDead)
             return;
 
-
         isDead = true;
 
-
-        // Xóa mục tiêu
         currentTargetSoldier = null;
         isEngaged = false;
-
 
         if (GameUI.instance != null)
         {
             GameUI.instance.enemiesKilled++;
         }
 
-
         if (col != null)
         {
             col.enabled = false;
         }
-
 
         if (rb != null)
         {
             rb.simulated = false;
         }
 
-
         SetAnimatorTrigger(
             "Die"
         );
-
 
         if (healthSlider != null)
         {
             healthSlider.gameObject.SetActive(false);
         }
-
 
         if (coinPrefab != null)
         {
@@ -844,12 +781,10 @@ public class Enemy : MonoBehaviour
             );
         }
 
-
         if (GameUI.instance != null)
         {
             GameUI.instance.AddGold(1);
         }
-
 
         Destroy(
             gameObject,
@@ -857,98 +792,64 @@ public class Enemy : MonoBehaviour
         );
     }
 
-
     // =========================================================
-    // KIỂM TRA MỤC TIÊU CÒN SỐNG
+    // KIỂM TRA MỤC TIÊU
     // =========================================================
 
     void CheckSoldierAlive()
     {
-        // Không còn mục tiêu
         if (currentTargetSoldier == null)
         {
             ResumeMoving();
-
             return;
         }
 
-
-        // GameObject bị tắt
         if (
             !currentTargetSoldier.gameObject
                 .activeInHierarchy
         )
         {
             ResumeMoving();
-
             return;
         }
-
-
-        // =====================================================
-        // KIỂM TRA TỪNG LOẠI LÍNH
-        // =====================================================
-
-        PlayerSoldier warrior =
-            currentTargetSoldier
-            as PlayerSoldier;
-
-
-        MageSoldier mage =
-            currentTargetSoldier
-            as MageSoldier;
-
-
-        ArcherSoldier archer =
-            currentTargetSoldier
-            as ArcherSoldier;
-
 
         bool targetAlive = false;
 
-
-        if (warrior != null)
+        if (
+            currentTargetSoldier
+            is PlayerSoldier
+        )
         {
             targetAlive = true;
         }
 
-
-        if (mage != null)
+        if (
+            currentTargetSoldier
+            is MageSoldier
+        )
         {
             targetAlive = true;
         }
 
-
-        if (archer != null)
+        if (
+            currentTargetSoldier
+            is ArcherSoldier
+        )
         {
             targetAlive = true;
         }
 
-
-        // Không còn đúng loại mục tiêu
         if (!targetAlive)
         {
             ResumeMoving();
-
             return;
         }
-
-
-        // =====================================================
-        // FLIP VỀ PHÍA MỤC TIÊU
-        // =====================================================
 
         float directionX =
             currentTargetSoldier.transform.position.x -
             transform.position.x;
 
-
         FlipSprite(directionX);
-
-
-        // =====================================================
-        // ĐÁNH
-        // =====================================================
 
         if (
             Time.time >=
@@ -963,7 +864,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-
     // =========================================================
     // QUAY LẠI CHẠY
     // =========================================================
@@ -974,13 +874,11 @@ public class Enemy : MonoBehaviour
 
         isEngaged = false;
 
-
         SetAnimatorBool(
             "isRunning",
             true
         );
     }
-
 
     // =========================================================
     // ĐÁNH LÍNH
@@ -991,69 +889,36 @@ public class Enemy : MonoBehaviour
         if (currentTargetSoldier == null)
             return;
 
-
         SetAnimatorTrigger(
             "Attack"
         );
 
-
-        // =====================================================
-        // ĐẤU SĨ
-        // =====================================================
-
-        PlayerSoldier warrior =
+        if (
             currentTargetSoldier
-            as PlayerSoldier;
-
-
-        if (warrior != null)
+            is PlayerSoldier warrior
+        )
         {
-            warrior.TakeDamage(
-                damage
-            );
-
+            warrior.TakeDamage(damage);
             return;
         }
 
-
-        // =====================================================
-        // PHÁP SƯ
-        // =====================================================
-
-        MageSoldier mage =
+        if (
             currentTargetSoldier
-            as MageSoldier;
-
-
-        if (mage != null)
+            is MageSoldier mage
+        )
         {
-            mage.TakeDamage(
-                damage
-            );
-
+            mage.TakeDamage(damage);
             return;
         }
 
-
-        // =====================================================
-        // CUNG THỦ
-        // =====================================================
-
-        ArcherSoldier archer =
+        if (
             currentTargetSoldier
-            as ArcherSoldier;
-
-
-        if (archer != null)
+            is ArcherSoldier archer
+        )
         {
-            archer.TakeDamage(
-                damage
-            );
-
-            return;
+            archer.TakeDamage(damage);
         }
     }
-
 
     // =========================================================
     // FLIP
@@ -1072,7 +937,6 @@ public class Enemy : MonoBehaviour
                 directionX < 0;
         }
     }
-
 
     // =========================================================
     // ANIMATION TRIGGER
@@ -1107,7 +971,6 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-
 
     // =========================================================
     // ANIMATION BOOL
@@ -1145,7 +1008,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-
     // =========================================================
     // GIZMOS
     // =========================================================
@@ -1154,7 +1016,6 @@ public class Enemy : MonoBehaviour
     {
         Gizmos.color =
             Color.yellow;
-
 
         Gizmos.DrawWireSphere(
             transform.position,

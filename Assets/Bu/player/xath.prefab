@@ -582,8 +582,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0e1c958e4d6f224291a21cba7739660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArcherSoldier
-  attackRange: 5
-  attackCooldown: 1
+  attackRange: 2
+  attackCooldown: 2
   speed: 3
   arrowPrefab: {fileID: 5840466639587056359, guid: d993d53bf1385a64f906f3f7f13da2d4, type: 3}
   shootPoint: {fileID: 0}

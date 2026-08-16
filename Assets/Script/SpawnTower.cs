@@ -15,10 +15,24 @@ public class SpawnTower : MonoBehaviour
     public Transform spawnPoint;
     public int maxSoldiers = 3;
 
-    [Header("Chỉ Số Lính")]
-    public int soldierHp = 20;
-    public int soldierDamage = 2;
+    [Header("Chỉ Số Chung")]
     public float soldierSpeed = 3f;
+
+    // =========================================================
+    // CÂN BẰNG 3 LOẠI LÍNH
+    // =========================================================
+
+    [Header("ĐẤU SĨ - TANK")]
+    public int warriorHp = 35;
+    public int warriorDamage = 2;
+
+    [Header("CUNG THỦ - DAMAGE CAO")]
+    public int archerHp = 18;
+    public int archerDamage = 5;
+
+    [Header("PHÁP SƯ - DAMAGE CAO NHẤT")]
+    public int mageHp = 14;
+    public int mageDamage = 7;
 
     [Header("Vị Trí Tập Kết (Rally Point)")]
     public Vector3 rallyPoint;
@@ -26,7 +40,8 @@ public class SpawnTower : MonoBehaviour
 
     [HideInInspector] public BuildingSpot2D targetSpot;
 
-    private List<GameObject> activeSoldiers = new List<GameObject>();
+    private List<GameObject> activeSoldiers =
+        new List<GameObject>();
 
     // =========================================================
     // MAP 3
@@ -41,7 +56,8 @@ public class SpawnTower : MonoBehaviour
         Bottom
     }
 
-    private Map3Lane selectedMap3Lane = Map3Lane.Middle;
+    private Map3Lane selectedMap3Lane =
+        Map3Lane.Middle;
 
     // =========================================================
     // START
@@ -53,25 +69,28 @@ public class SpawnTower : MonoBehaviour
             spawnPoint = transform;
 
         // Tự tìm WaypointsMap3 trong Scene.
-        // Map 1 và Map 2 không có WaypointsMap3 nên không bị ảnh hưởng.
-        map3Waypoints = FindFirstObjectByType<WaypointsMap3>();
+        // Map 1 / Map 2 không có thì dùng hệ thống cũ.
+        map3Waypoints =
+            FindFirstObjectByType<WaypointsMap3>();
 
         if (map3Waypoints != null)
         {
-            // Đây là Map 3
-            rallyPoint = GetMap3NearestRoadPoint();
+            // MAP 3
+            rallyPoint =
+                GetMap3NearestRoadPoint();
         }
         else
         {
-            // Map 1 / Map 2 dùng hệ thống cũ
-            rallyPoint = GetNearestRoadPoint();
+            // MAP 1 / MAP 2
+            rallyPoint =
+                GetNearestRoadPoint();
         }
 
         SpawnAllSoldiers();
     }
 
     // =========================================================
-    // SPAWN LÍNH
+    // SPAWN TẤT CẢ LÍNH
     // =========================================================
 
     void SpawnAllSoldiers()
@@ -81,6 +100,10 @@ public class SpawnTower : MonoBehaviour
             SpawnSingleSoldier(i);
         }
     }
+
+    // =========================================================
+    // SPAWN 1 LÍNH
+    // =========================================================
 
     void SpawnSingleSoldier(int index)
     {
@@ -95,29 +118,30 @@ public class SpawnTower : MonoBehaviour
         }
 
         // =====================================================
-        // XÁC ĐỊNH VỊ TRÍ SPAWN
+        // VỊ TRÍ SPAWN
         // =====================================================
 
         Vector3 soldierSpawnPosition;
 
         if (map3Waypoints != null)
         {
-            // MAP 3:
-            // Spawn trực tiếp trên đường đã xác định.
-            soldierSpawnPosition = rallyPoint;
+            // MAP 3
+            soldierSpawnPosition =
+                rallyPoint;
         }
         else
         {
-            // MAP 1 / MAP 2:
-            // Giữ nguyên cách spawn cũ.
-            soldierSpawnPosition = spawnPoint.position;
+            // MAP 1 / MAP 2
+            soldierSpawnPosition =
+                spawnPoint.position;
         }
 
-        GameObject soldierGO = Instantiate(
-            soldierPrefab,
-            soldierSpawnPosition,
-            Quaternion.identity
-        );
+        GameObject soldierGO =
+            Instantiate(
+                soldierPrefab,
+                soldierSpawnPosition,
+                Quaternion.identity
+            );
 
         // =====================================================
         // VỊ TRÍ RALLY
@@ -127,16 +151,14 @@ public class SpawnTower : MonoBehaviour
 
         if (map3Waypoints != null)
         {
-            // Map 3:
-            // Cho 3 lính đứng quanh waypoint nhưng vẫn ở trên đường.
-            Vector3 offset = GetMap3SoldierOffset(index);
+            Vector3 offset =
+                GetMap3SoldierOffset(index);
 
-            targetPos = rallyPoint + offset;
+            targetPos =
+                rallyPoint + offset;
         }
         else
         {
-            // Map 1 / Map 2:
-            // Giữ nguyên logic cũ.
             Vector3 offset =
                 Quaternion.Euler(
                     0,
@@ -146,7 +168,8 @@ public class SpawnTower : MonoBehaviour
                 Vector3.right *
                 rallyRadius;
 
-            targetPos = rallyPoint + offset;
+            targetPos =
+                rallyPoint + offset;
         }
 
         // =====================================================
@@ -163,44 +186,77 @@ public class SpawnTower : MonoBehaviour
             soldierGO.GetComponent<ArcherSoldier>();
 
         // =====================================================
-        // KHỞI TẠO LÍNH
+        // KHỞI TẠO ĐẤU SĨ
         // =====================================================
 
         if (warrior != null)
         {
             warrior.InitializeStats(
-                soldierHp,
-                soldierDamage,
+                warriorHp,
+                warriorDamage,
                 this
             );
 
-            warrior.speed = soldierSpeed;
-            warrior.SetRallyPosition(targetPos);
+            warrior.speed =
+                soldierSpeed;
+
+            warrior.SetRallyPosition(
+                targetPos
+            );
         }
+
+        // =====================================================
+        // KHỞI TẠO PHÁP SƯ
+        // =====================================================
+
         else if (mage != null)
         {
             mage.InitializeStats(
-                soldierHp,
-                soldierDamage,
+                mageHp,
+                mageDamage,
                 this
             );
 
-            mage.speed = soldierSpeed;
-            mage.SetRallyPosition(targetPos);
+            mage.speed =
+                soldierSpeed;
+
+            mage.SetRallyPosition(
+                targetPos
+            );
         }
+
+        // =====================================================
+        // KHỞI TẠO CUNG THỦ
+        // =====================================================
+
         else if (archer != null)
         {
             archer.InitializeStats(
-                soldierHp,
-                soldierDamage,
+                archerHp,
+                archerDamage,
                 this
             );
 
-            archer.speed = soldierSpeed;
-            archer.SetRallyPosition(targetPos);
+            archer.speed =
+                soldierSpeed;
+
+            archer.SetRallyPosition(
+                targetPos
+            );
         }
 
-        activeSoldiers.Add(soldierGO);
+        else
+        {
+            Debug.LogError(
+                "❌ Soldier Prefab không có " +
+                "PlayerSoldier / MageSoldier / ArcherSoldier: "
+                + soldierGO.name
+            );
+        }
+
+        activeSoldiers.Add(
+            soldierGO
+        );
     }
 
     // =========================================================
@@ -218,43 +274,55 @@ public class SpawnTower : MonoBehaviour
             return transform.position;
         }
 
-        float middleDistance = GetDistanceToPath(
-            map3Waypoints.middlePoints
-        );
+        float middleDistance =
+            GetDistanceToPath(
+                map3Waypoints.middlePoints
+            );
 
-        float topDistance = GetDistanceToPath(
-            map3Waypoints.topPoints
-        );
+        float topDistance =
+            GetDistanceToPath(
+                map3Waypoints.topPoints
+            );
 
-        float bottomDistance = GetDistanceToPath(
-            map3Waypoints.bottomPoints
-        );
+        float bottomDistance =
+            GetDistanceToPath(
+                map3Waypoints.bottomPoints
+            );
 
         // =====================================================
         // CHỌN ĐƯỜNG GẦN NHẤT
         // =====================================================
 
-        float smallestDistance = middleDistance;
+        float smallestDistance =
+            middleDistance;
 
-        selectedMap3Lane = Map3Lane.Middle;
+        selectedMap3Lane =
+            Map3Lane.Middle;
 
         if (topDistance < smallestDistance)
         {
-            smallestDistance = topDistance;
-            selectedMap3Lane = Map3Lane.Top;
+            smallestDistance =
+                topDistance;
+
+            selectedMap3Lane =
+                Map3Lane.Top;
         }
 
         if (bottomDistance < smallestDistance)
         {
-            smallestDistance = bottomDistance;
-            selectedMap3Lane = Map3Lane.Bottom;
+            smallestDistance =
+                bottomDistance;
+
+            selectedMap3Lane =
+                Map3Lane.Bottom;
         }
 
         // =====================================================
-        // LẤY WAYPOINT GẦN NHẤT CỦA ĐƯỜNG ĐÃ CHỌN
+        // TÌM WAYPOINT
         // =====================================================
 
-        Transform nearestWaypoint = null;
+        Transform nearestWaypoint =
+            null;
 
         switch (selectedMap3Lane)
         {
@@ -308,15 +376,21 @@ public class SpawnTower : MonoBehaviour
     }
 
     // =========================================================
-    // TÍNH KHOẢNG CÁCH TỚI 1 ĐƯỜNG
+    // TÍNH KHOẢNG CÁCH TỚI ĐƯỜNG
     // =========================================================
 
-    float GetDistanceToPath(Transform[] points)
+    float GetDistanceToPath(
+        Transform[] points
+    )
     {
-        if (points == null || points.Length == 0)
+        if (points == null ||
+            points.Length == 0)
+        {
             return Mathf.Infinity;
+        }
 
-        float minDistance = Mathf.Infinity;
+        float minDistance =
+            Mathf.Infinity;
 
         foreach (Transform point in points)
         {
@@ -331,7 +405,8 @@ public class SpawnTower : MonoBehaviour
 
             if (distance < minDistance)
             {
-                minDistance = distance;
+                minDistance =
+                    distance;
             }
         }
 
@@ -342,13 +417,21 @@ public class SpawnTower : MonoBehaviour
     // LẤY WAYPOINT GẦN NHẤT
     // =========================================================
 
-    Transform GetNearestWaypoint(Transform[] points)
+    Transform GetNearestWaypoint(
+        Transform[] points
+    )
     {
-        if (points == null || points.Length == 0)
+        if (points == null ||
+            points.Length == 0)
+        {
             return null;
+        }
 
-        float minDistance = Mathf.Infinity;
-        Transform nearest = null;
+        float minDistance =
+            Mathf.Infinity;
+
+        Transform nearest =
+            null;
 
         foreach (Transform point in points)
         {
@@ -363,8 +446,11 @@ public class SpawnTower : MonoBehaviour
 
             if (distance < minDistance)
             {
-                minDistance = distance;
-                nearest = point;
+                minDistance =
+                    distance;
+
+                nearest =
+                    point;
             }
         }
 
@@ -372,15 +458,15 @@ public class SpawnTower : MonoBehaviour
     }
 
     // =========================================================
-    // VỊ TRÍ 3 LÍNH TRÊN ĐƯỜNG MAP 3
+    // VỊ TRÍ LÍNH MAP 3
     // =========================================================
 
-    Vector3 GetMap3SoldierOffset(int index)
+    Vector3 GetMap3SoldierOffset(
+        int index
+    )
     {
-        // Cho lính đứng thành hàng nhỏ trên đường.
-        // Không đẩy quá xa khỏi đường.
-
-        float spacing = 0.35f;
+        float spacing =
+            0.35f;
 
         if (index == 0)
             return Vector3.zero;
@@ -391,11 +477,14 @@ public class SpawnTower : MonoBehaviour
         if (index == 2)
             return Vector3.right * spacing;
 
-        // Nếu nâng cấp có thêm lính
-        int extraIndex = index - 3;
+        int extraIndex =
+            index - 3;
 
-        float row = (extraIndex / 3) + 1;
-        int position = extraIndex % 3;
+        float row =
+            (extraIndex / 3) + 1;
+
+        int position =
+            extraIndex % 3;
 
         float xOffset =
             (position - 1) * spacing;
@@ -414,10 +503,14 @@ public class SpawnTower : MonoBehaviour
     // KHI LÍNH CHẾT
     // =========================================================
 
-    public void OnSoldierDied(MonoBehaviour soldier)
+    public void OnSoldierDied(
+        MonoBehaviour soldier
+    )
     {
         if (soldier != null &&
-            activeSoldiers.Contains(soldier.gameObject))
+            activeSoldiers.Contains(
+                soldier.gameObject
+            ))
         {
             activeSoldiers.Remove(
                 soldier.gameObject
@@ -433,7 +526,10 @@ public class SpawnTower : MonoBehaviour
     {
         if (level >= 3)
         {
-            Debug.Log("⚠️ Tháp đã đạt Level 3!");
+            Debug.Log(
+                "⚠️ Tháp đã đạt Level 3!"
+            );
+
             return;
         }
 
@@ -449,12 +545,15 @@ public class SpawnTower : MonoBehaviour
         int currentUpgradeCost =
             GetUpgradeCost();
 
-        if (GameUI.instance.gold < currentUpgradeCost)
+        if (GameUI.instance.gold <
+            currentUpgradeCost)
         {
             Debug.Log(
                 "❌ Không đủ vàng nâng cấp! " +
-                "Cần: " + currentUpgradeCost +
-                " | Có: " + GameUI.instance.gold
+                "Cần: " +
+                currentUpgradeCost +
+                " | Có: " +
+                GameUI.instance.gold
             );
 
             return;
@@ -462,20 +561,49 @@ public class SpawnTower : MonoBehaviour
 
         level++;
 
+        // =====================================================
+        // LEVEL 2
+        // =====================================================
+
         if (level == 2)
         {
-            soldierHp += 10;
-            soldierDamage += 1;
+            // ĐẤU SĨ
+            warriorHp += 10;
+            warriorDamage += 1;
+
+            // CUNG THỦ
+            archerHp += 6;
+            archerDamage += 2;
+
+            // PHÁP SƯ
+            mageHp += 4;
+            mageDamage += 2;
+
             soldierSpeed += 1f;
 
             maxSoldiers += 2;
 
             SpawnAdditionalSoldiers(2);
         }
+
+        // =====================================================
+        // LEVEL 3
+        // =====================================================
+
         else if (level == 3)
         {
-            soldierHp += 5;
-            soldierDamage += 1;
+            // ĐẤU SĨ
+            warriorHp += 10;
+            warriorDamage += 1;
+
+            // CUNG THỦ
+            archerHp += 5;
+            archerDamage += 2;
+
+            // PHÁP SƯ
+            mageHp += 4;
+            mageDamage += 2;
+
             soldierSpeed += 1f;
 
             maxSoldiers += 3;
@@ -483,7 +611,15 @@ public class SpawnTower : MonoBehaviour
             SpawnAdditionalSoldiers(3);
         }
 
+        // =====================================================
+        // CẬP NHẬT LÍNH
+        // =====================================================
+
         UpdateAllSoldierStats();
+
+        // =====================================================
+        // TRỪ VÀNG
+        // =====================================================
 
         GameUI.instance.AddGold(
             -currentUpgradeCost
@@ -491,7 +627,9 @@ public class SpawnTower : MonoBehaviour
 
         if (UpgradeInfoUI.instance != null)
         {
-            UpgradeInfoUI.instance.ShowInfo(this);
+            UpgradeInfoUI.instance.ShowInfo(
+                this
+            );
         }
 
         Debug.Log(
@@ -503,21 +641,17 @@ public class SpawnTower : MonoBehaviour
             " | Còn: " +
             GameUI.instance.gold +
             " | Lính: " +
-            activeSoldiers.Count +
-            " | HP: " +
-            soldierHp +
-            " | Damage: " +
-            soldierDamage +
-            " | Speed: " +
-            soldierSpeed
+            activeSoldiers.Count
         );
     }
 
     // =========================================================
-    // SPAWN THÊM LÍNH KHI NÂNG CẤP
+    // SPAWN THÊM LÍNH
     // =========================================================
 
-    void SpawnAdditionalSoldiers(int amount)
+    void SpawnAdditionalSoldiers(
+        int amount
+    )
     {
         int startIndex =
             activeSoldiers.Count;
@@ -531,57 +665,79 @@ public class SpawnTower : MonoBehaviour
     }
 
     // =========================================================
-    // CẬP NHẬT CHỈ SỐ LÍNH
+    // CẬP NHẬT CHỈ SỐ TẤT CẢ LÍNH
     // =========================================================
 
     void UpdateAllSoldierStats()
     {
-        foreach (var soldierGO in activeSoldiers)
+        foreach (
+            var soldierGO in activeSoldiers
+        )
         {
             if (soldierGO == null)
                 continue;
 
-            PlayerSoldier w =
+            PlayerSoldier warrior =
                 soldierGO.GetComponent<PlayerSoldier>();
 
-            MageSoldier m =
+            MageSoldier mage =
                 soldierGO.GetComponent<MageSoldier>();
 
-            ArcherSoldier a =
+            ArcherSoldier archer =
                 soldierGO.GetComponent<ArcherSoldier>();
 
-            if (w != null)
+            // =================================================
+            // ĐẤU SĨ
+            // =================================================
+
+            if (warrior != null)
             {
-                w.InitializeStats(
-                    soldierHp,
-                    soldierDamage,
+                warrior.InitializeStats(
+                    warriorHp,
+                    warriorDamage,
                     this
                 );
 
-                w.speed = soldierSpeed;
-                w.FullHeal();
+                warrior.speed =
+                    soldierSpeed;
+
+                warrior.FullHeal();
             }
-            else if (m != null)
+
+            // =================================================
+            // PHÁP SƯ
+            // =================================================
+
+            else if (mage != null)
             {
-                m.InitializeStats(
-                    soldierHp,
-                    soldierDamage,
+                mage.InitializeStats(
+                    mageHp,
+                    mageDamage,
                     this
                 );
 
-                m.speed = soldierSpeed;
-                m.FullHeal();
+                mage.speed =
+                    soldierSpeed;
+
+                mage.FullHeal();
             }
-            else if (a != null)
+
+            // =================================================
+            // CUNG THỦ
+            // =================================================
+
+            else if (archer != null)
             {
-                a.InitializeStats(
-                    soldierHp,
-                    soldierDamage,
+                archer.InitializeStats(
+                    archerHp,
+                    archerDamage,
                     this
                 );
 
-                a.speed = soldierSpeed;
-                a.FullHeal();
+                archer.speed =
+                    soldierSpeed;
+
+                archer.FullHeal();
             }
         }
     }
@@ -604,11 +760,15 @@ public class SpawnTower : MonoBehaviour
             );
         }
 
-        foreach (var soldierGO in activeSoldiers)
+        foreach (
+            var soldierGO in activeSoldiers
+        )
         {
             if (soldierGO != null)
             {
-                Destroy(soldierGO);
+                Destroy(
+                    soldierGO
+                );
             }
         }
 
@@ -619,7 +779,9 @@ public class SpawnTower : MonoBehaviour
             targetSpot.ClearSpot();
         }
 
-        Destroy(gameObject);
+        Destroy(
+            gameObject
+        );
     }
 
     // =========================================================
@@ -634,12 +796,15 @@ public class SpawnTower : MonoBehaviour
             return transform.position;
         }
 
-        float minDistance = Mathf.Infinity;
+        float minDistance =
+            Mathf.Infinity;
 
         Vector3 nearestPoint =
             transform.position;
 
-        foreach (Transform wp in Waypoints.points)
+        foreach (
+            Transform wp in Waypoints.points
+        )
         {
             if (wp == null)
                 continue;
@@ -652,8 +817,11 @@ public class SpawnTower : MonoBehaviour
 
             if (dist < minDistance)
             {
-                minDistance = dist;
-                nearestPoint = wp.position;
+                minDistance =
+                    dist;
+
+                nearestPoint =
+                    wp.position;
             }
         }
 
@@ -668,7 +836,8 @@ public class SpawnTower : MonoBehaviour
         Vector3 newPoint
     )
     {
-        rallyPoint = newPoint;
+        rallyPoint =
+            newPoint;
     }
 
     // =========================================================
@@ -677,7 +846,8 @@ public class SpawnTower : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.cyan;
+        Gizmos.color =
+            Color.cyan;
 
         Gizmos.DrawWireSphere(
             rallyPoint,

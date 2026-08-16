@@ -1,60 +1,110 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 public class BossEnemy : MonoBehaviour
 {
     [Header("--- CẤU HÌNH BOSS ---")]
     public string bossName = "Chúa Tể Orc";
-    public float speed = 2f;
-    public int maxHp = 200;
+
+    // =========================================================
+    // CHỈ SỐ CÂN BẰNG
+    // =========================================================
+
+    [Header("--- CHỈ SỐ CÂN BẰNG ---")]
+
+    // Boss chậm hơn Enemy thường
+    // nhưng HP cao hơn rất nhiều
+    public float speed = 1.6f;
+
+    // HP Boss
+    public int maxHp = 500;
     private int hp;
-    public int damage = 10;
+
+    // Damage vừa phải
+    public int damage = 6;
+
+    // Cứ 1.5 giây đánh 1 lần
     public float attackCooldown = 1.5f;
     private float lastAttackTime;
 
     [Header("Phạm vi phát hiện lính")]
-    public float checkRadius = 1.2f;
+    public float checkRadius = 1.4f;
+
+    [Header("Khoảng cách duy trì đánh")]
+    public float attackRange = 1.3f;
 
     private Transform targetWaypoint;
     private int waypointIndex = 0;
 
     private bool isEngaged = false;
     private bool isDead = false;
+
     private MonoBehaviour currentTargetSoldier;
 
     [Header("--- THANH MÁU BOSS (UI) ---")]
     public Slider healthSlider;
 
-    [Header("--- CẤU HÌNH PHẦN THƯỞNG ---")]
+    [Header("--- PHẦN THƯỞNG ---")]
     public GameObject coinPrefab;
+
+    // Boss chết được 10 vàng
     public int goldReward = 10;
 
-    [Header("--- HIỆU ỨNG TRẠNG THÁI ---")]
+    // =========================================================
+    // BURN
+    // =========================================================
+
+    [Header("--- HIỆU ỨNG ĐỐT ---")]
+
     private bool isBurning = false;
     private Coroutine burnCoroutine;
+
+    // =========================================================
+    // SLOW
+    // =========================================================
+
+    [Header("--- HIỆU ỨNG LÀM CHẬM ---")]
 
     private float originalSpeed;
     private bool isSlowed = false;
     private Coroutine slowCoroutine;
 
-    [Header("--- CƠ CHẾ NỔI GIẬN (RAGE PHASE) ---")]
+    // =========================================================
+    // RAGE
+    // =========================================================
+
+    [Header("--- RAGE PHASE ---")]
+
+    // Boss bắt đầu Rage khi còn 40% HP
     [Range(0.1f, 0.9f)]
-    public float rageThreshold = 0.5f;
+    public float rageThreshold = 0.4f;
+
     private bool isRaging = false;
-    public float rageSpeedMultiplier = 1.3f;
-    public float rageDamageMultiplier = 1.5f;
+
+    // Rage tăng tốc 20%
+    public float rageSpeedMultiplier = 1.2f;
+
+    // Rage tăng damage 20%
+    public float rageDamageMultiplier = 1.2f;
+
+    private int baseDamage;
+
+    // =========================================================
+    // COMPONENT
+    // =========================================================
 
     private Animator animator;
     private Collider2D col;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
 
-    // --- Waypoint tùy chỉnh cho Map3 ---
+    // =========================================================
+    // WAYPOINT MAP 3
+    // =========================================================
+
     [HideInInspector]
     public Transform[] customWaypoints;
-
 
     // =========================================================
     // START
@@ -62,26 +112,46 @@ public class BossEnemy : MonoBehaviour
 
     void Start()
     {
-        hp = maxHp;
-
-        originalSpeed = speed;
-
-        UpdateHealthUI();
-
-        GetNextWaypoint();
-
         animator = GetComponent<Animator>();
         col = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
+        // Boss không chịu trọng lực
         if (rb != null)
         {
             rb.bodyType = RigidbodyType2D.Kinematic;
             rb.gravityScale = 0f;
         }
-    }
 
+        // Khởi tạo HP
+        hp = maxHp;
+
+        // Lưu speed gốc
+        originalSpeed = speed;
+
+        // Lưu damage gốc
+        baseDamage = damage;
+
+        // Cập nhật thanh máu
+        UpdateHealthUI();
+
+        // Lấy waypoint đầu tiên
+        GetNextWaypoint();
+
+        Debug.Log(
+            "👑 BOSS SPAWN | " +
+            bossName +
+            " | HP: " +
+            maxHp +
+            " | Damage: " +
+            damage +
+            " | Speed: " +
+            speed +
+            " | AttackCooldown: " +
+            attackCooldown
+        );
+    }
 
     // =========================================================
     // UPDATE
@@ -92,29 +162,32 @@ public class BossEnemy : MonoBehaviour
         if (isDead)
             return;
 
+        // Kiểm tra Rage
         CheckRagePhase();
+
+        // =====================================================
+        // ĐANG ĐÁNH LÍNH
+        // =====================================================
 
         if (isEngaged)
         {
-            if (currentTargetSoldier != null)
-            {
-                float directionX =
-                    currentTargetSoldier.transform.position.x -
-                    transform.position.x;
-
-                FlipSprite(directionX);
-            }
-
             CheckSoldierAlive();
-
             return;
         }
 
+        // =====================================================
+        // TÌM LÍNH
+        // =====================================================
+
         CheckForSoldiersAhead();
 
+        // Nếu tìm thấy lính thì dừng
+        if (isEngaged)
+            return;
+
+        // Không có lính → tiếp tục đi
         MoveTowardsWaypoint();
     }
-
 
     // =========================================================
     // RAGE
@@ -122,31 +195,44 @@ public class BossEnemy : MonoBehaviour
 
     void CheckRagePhase()
     {
-        if (!isRaging &&
-            hp <= maxHp * rageThreshold)
+        // Đã Rage thì không Rage lần nữa
+        if (isRaging)
+            return;
+
+        // Còn 40% HP → Rage
+        if (hp <= maxHp * rageThreshold)
         {
             isRaging = true;
 
-            if (!isSlowed)
-            {
-                originalSpeed *= rageSpeedMultiplier;
-                speed = originalSpeed;
-            }
+            // Tăng tốc 20%
+            speed =
+                originalSpeed *
+                rageSpeedMultiplier;
 
+            // Tăng damage 20%
             damage =
                 Mathf.RoundToInt(
-                    damage * rageDamageMultiplier
+                    baseDamage *
+                    rageDamageMultiplier
                 );
 
             Debug.Log(
+                "🔥 " +
                 bossName +
-                " ĐÃ NỔI GIẬN! Tốc độ và sát thương tăng mạnh!"
+                " NỔI GIẬN! " +
+                "HP còn " +
+                hp +
+                "/" +
+                maxHp +
+                " | Damage: " +
+                damage +
+                " | Speed: " +
+                speed
             );
 
             SetAnimatorTrigger("Rage");
         }
     }
-
 
     // =========================================================
     // BURN
@@ -160,10 +246,14 @@ public class BossEnemy : MonoBehaviour
         if (isDead)
             return;
 
-        if (isBurning &&
-            burnCoroutine != null)
+        if (
+            isBurning &&
+            burnCoroutine != null
+        )
         {
-            StopCoroutine(burnCoroutine);
+            StopCoroutine(
+                burnCoroutine
+            );
         }
 
         burnCoroutine =
@@ -175,7 +265,6 @@ public class BossEnemy : MonoBehaviour
             );
     }
 
-
     IEnumerator BurnEffectRoutine(
         float dps,
         float duration
@@ -186,10 +275,15 @@ public class BossEnemy : MonoBehaviour
         float elapsed = 0f;
 
         int damagePerTick =
-            Mathf.RoundToInt(dps);
+            Mathf.Max(
+                1,
+                Mathf.RoundToInt(dps)
+            );
 
-        while (elapsed < duration &&
-               !isDead)
+        while (
+            elapsed < duration &&
+            !isDead
+        )
         {
             yield return new WaitForSeconds(1f);
 
@@ -198,19 +292,13 @@ public class BossEnemy : MonoBehaviour
             if (isDead)
                 break;
 
-            TakeDamage(damagePerTick);
-
-            Debug.Log(
-                bossName +
-                " bị thiêu đốt, nhận " +
-                damagePerTick +
-                " sát thương."
+            TakeDamage(
+                damagePerTick
             );
         }
 
         isBurning = false;
     }
-
 
     // =========================================================
     // SLOW
@@ -224,19 +312,12 @@ public class BossEnemy : MonoBehaviour
         if (isDead)
             return;
 
-        float baseSpd =
-            isRaging
-                ? originalSpeed / rageSpeedMultiplier
-                : originalSpeed;
-
-        if (!isSlowed)
-        {
-            originalSpeed = baseSpd;
-        }
-
+        // Nếu đang slow thì reset coroutine
         if (slowCoroutine != null)
         {
-            StopCoroutine(slowCoroutine);
+            StopCoroutine(
+                slowCoroutine
+            );
         }
 
         slowCoroutine =
@@ -248,7 +329,6 @@ public class BossEnemy : MonoBehaviour
             );
     }
 
-
     IEnumerator SlowEffectRoutine(
         float slowPercent,
         float duration
@@ -256,30 +336,34 @@ public class BossEnemy : MonoBehaviour
     {
         isSlowed = true;
 
-        speed =
-            (
-                isRaging
-                    ? originalSpeed * rageSpeedMultiplier
-                    : originalSpeed
-            ) * slowPercent;
+        float rageMultiplier =
+            isRaging
+                ? rageSpeedMultiplier
+                : 1f;
 
-        Debug.Log(
-            bossName +
-            " bị làm chậm!"
-        );
+        speed =
+            originalSpeed *
+            rageMultiplier *
+            slowPercent;
 
         yield return new WaitForSeconds(
             duration
         );
 
-        speed =
-            isRaging
-                ? originalSpeed * rageSpeedMultiplier
-                : originalSpeed;
+        if (!isDead)
+        {
+            float currentRageMultiplier =
+                isRaging
+                    ? rageSpeedMultiplier
+                    : 1f;
+
+            speed =
+                originalSpeed *
+                currentRageMultiplier;
+        }
 
         isSlowed = false;
     }
-
 
     // =========================================================
     // PHÁT HIỆN LÍNH
@@ -293,36 +377,293 @@ public class BossEnemy : MonoBehaviour
                 checkRadius
             );
 
-        foreach (var hit in hits)
+        PlayerSoldier warrior = null;
+        MageSoldier mage = null;
+        ArcherSoldier archer = null;
+
+        foreach (Collider2D hit in hits)
         {
-            PlayerSoldier warrior =
+            if (hit == null)
+                continue;
+
+            if (hit.transform == transform)
+                continue;
+
+            // =================================================
+            // ĐẤU SĨ
+            // =================================================
+
+            PlayerSoldier w =
                 hit.GetComponent<PlayerSoldier>();
 
-            MageSoldier mage =
+            if (w != null)
+            {
+                warrior = w;
+                continue;
+            }
+
+            // =================================================
+            // PHÁP SƯ
+            // =================================================
+
+            MageSoldier m =
                 hit.GetComponent<MageSoldier>();
 
-            ArcherSoldier archer =
+            if (m != null)
+            {
+                mage = m;
+                continue;
+            }
+
+            // =================================================
+            // CUNG THỦ
+            // =================================================
+
+            ArcherSoldier a =
                 hit.GetComponent<ArcherSoldier>();
 
-            if (warrior != null ||
-                mage != null ||
-                archer != null)
+            if (a != null)
             {
-                isEngaged = true;
-
-                currentTargetSoldier =
-                    hit.GetComponent<MonoBehaviour>();
-
-                SetAnimatorBool(
-                    "isRunning",
-                    false
-                );
-
-                break;
+                archer = a;
             }
+        }
+
+        // =====================================================
+        // ƯU TIÊN ĐẤU SĨ
+        // =====================================================
+
+        if (warrior != null)
+        {
+            EngageTarget(warrior);
+            return;
+        }
+
+        // =====================================================
+        // SAU ĐÓ PHÁP SƯ
+        // =====================================================
+
+        if (mage != null)
+        {
+            EngageTarget(mage);
+            return;
+        }
+
+        // =====================================================
+        // CUỐI CÙNG CUNG THỦ
+        // =====================================================
+
+        if (archer != null)
+        {
+            EngageTarget(archer);
         }
     }
 
+    // =========================================================
+    // BẮT ĐẦU ĐÁNH
+    // =========================================================
+
+    void EngageTarget(
+        MonoBehaviour target
+    )
+    {
+        if (target == null)
+            return;
+
+        currentTargetSoldier =
+            target;
+
+        isEngaged = true;
+
+        SetAnimatorBool(
+            "isRunning",
+            false
+        );
+
+        float directionX =
+            target.transform.position.x -
+            transform.position.x;
+
+        FlipSprite(directionX);
+    }
+
+    // =========================================================
+    // KIỂM TRA LÍNH
+    // =========================================================
+
+    void CheckSoldierAlive()
+    {
+        if (currentTargetSoldier == null)
+        {
+            ResumeMoving();
+            return;
+        }
+
+        if (
+            !currentTargetSoldier.gameObject
+                .activeInHierarchy
+        )
+        {
+            ResumeMoving();
+            return;
+        }
+
+        // =====================================================
+        // KIỂM TRA ĐÚNG LOẠI LÍNH
+        // =====================================================
+
+        bool validTarget = false;
+
+        if (
+            currentTargetSoldier
+            is PlayerSoldier
+        )
+        {
+            validTarget = true;
+        }
+
+        if (
+            currentTargetSoldier
+            is MageSoldier
+        )
+        {
+            validTarget = true;
+        }
+
+        if (
+            currentTargetSoldier
+            is ArcherSoldier
+        )
+        {
+            validTarget = true;
+        }
+
+        if (!validTarget)
+        {
+            ResumeMoving();
+            return;
+        }
+
+        // =====================================================
+        // KIỂM TRA KHOẢNG CÁCH
+        // =====================================================
+
+        float distance =
+            Vector2.Distance(
+                transform.position,
+                currentTargetSoldier
+                    .transform.position
+            );
+
+        // Lính chạy ra xa → Boss tiếp tục di chuyển
+        if (distance > attackRange)
+        {
+            ResumeMoving();
+            return;
+        }
+
+        // =====================================================
+        // QUAY VỀ PHÍA LÍNH
+        // =====================================================
+
+        float directionX =
+            currentTargetSoldier
+                .transform.position.x -
+            transform.position.x;
+
+        FlipSprite(directionX);
+
+        // =====================================================
+        // ĐÁNH
+        // =====================================================
+
+        if (
+            Time.time >=
+            lastAttackTime +
+            attackCooldown
+        )
+        {
+            AttackSoldier();
+
+            lastAttackTime =
+                Time.time;
+        }
+    }
+
+    // =========================================================
+    // TIẾP TỤC DI CHUYỂN
+    // =========================================================
+
+    void ResumeMoving()
+    {
+        currentTargetSoldier = null;
+
+        isEngaged = false;
+
+        SetAnimatorBool(
+            "isRunning",
+            true
+        );
+    }
+
+    // =========================================================
+    // ĐÁNH LÍNH
+    // =========================================================
+
+    void AttackSoldier()
+    {
+        if (currentTargetSoldier == null)
+            return;
+
+        SetAnimatorTrigger(
+            "Attack"
+        );
+
+        // =====================================================
+        // ĐẤU SĨ
+        // =====================================================
+
+        if (
+            currentTargetSoldier
+            is PlayerSoldier warrior
+        )
+        {
+            warrior.TakeDamage(
+                damage
+            );
+
+            return;
+        }
+
+        // =====================================================
+        // PHÁP SƯ
+        // =====================================================
+
+        if (
+            currentTargetSoldier
+            is MageSoldier mage
+        )
+        {
+            mage.TakeDamage(
+                damage
+            );
+
+            return;
+        }
+
+        // =====================================================
+        // CUNG THỦ
+        // =====================================================
+
+        if (
+            currentTargetSoldier
+            is ArcherSoldier archer
+        )
+        {
+            archer.TakeDamage(
+                damage
+            );
+        }
+    }
 
     // =========================================================
     // WAYPOINT
@@ -336,8 +677,10 @@ public class BossEnemy : MonoBehaviour
                 ? customWaypoints
                 : Waypoints.points;
 
-        if (currentWaypoints == null ||
-            currentWaypoints.Length == 0)
+        if (
+            currentWaypoints == null ||
+            currentWaypoints.Length == 0
+        )
         {
             Debug.LogError(
                 bossName +
@@ -347,20 +690,26 @@ public class BossEnemy : MonoBehaviour
             return;
         }
 
-        if (waypointIndex >=
-            currentWaypoints.Length)
+        if (
+            waypointIndex >=
+            currentWaypoints.Length
+        )
         {
             ReachDestination();
-
             return;
         }
 
         targetWaypoint =
-            currentWaypoints[waypointIndex];
+            currentWaypoints[
+                waypointIndex
+            ];
 
         waypointIndex++;
     }
 
+    // =========================================================
+    // DI CHUYỂN
+    // =========================================================
 
     void MoveTowardsWaypoint()
     {
@@ -378,7 +727,10 @@ public class BossEnemy : MonoBehaviour
             Space.World
         );
 
-        if (dir.x != 0)
+        if (
+            Mathf.Abs(dir.x) >
+            0.01f
+        )
         {
             FlipSprite(dir.x);
         }
@@ -388,18 +740,19 @@ public class BossEnemy : MonoBehaviour
             true
         );
 
-        if (Vector3.Distance(
+        if (
+            Vector3.Distance(
                 transform.position,
                 targetWaypoint.position
-            ) < 0.2f)
+            ) < 0.2f
+        )
         {
             GetNextWaypoint();
         }
     }
 
-
     // =========================================================
-    // BOSS ĐẾN CỔNG
+    // ĐẾN CASTLE
     // =========================================================
 
     void ReachDestination()
@@ -409,12 +762,12 @@ public class BossEnemy : MonoBehaviour
 
         if (ui != null)
         {
+            // Boss đập vào Castle gây 5 damage
             ui.TakeCastleDamage(5);
         }
 
         Destroy(gameObject);
     }
-
 
     // =========================================================
     // NHẬN DAMAGE
@@ -424,6 +777,12 @@ public class BossEnemy : MonoBehaviour
     {
         if (isDead)
             return;
+
+        amt =
+            Mathf.Max(
+                0,
+                amt
+            );
 
         hp -= amt;
 
@@ -435,26 +794,17 @@ public class BossEnemy : MonoBehaviour
 
         UpdateHealthUI();
 
-        Debug.Log(
-            bossName +
-            " nhận " +
-            amt +
-            " damage. HP còn: " +
-            hp +
-            "/" +
-            maxHp
-        );
-
         if (hp > 0)
         {
-            SetAnimatorTrigger("Hurt");
+            SetAnimatorTrigger(
+                "Hurt"
+            );
         }
         else
         {
             Die();
         }
     }
-
 
     // =========================================================
     // HEALTH UI
@@ -472,45 +822,32 @@ public class BossEnemy : MonoBehaviour
         }
     }
 
-
     // =========================================================
-    // BOSS CHẾT
+    // CHẾT
     // =========================================================
 
     void Die()
     {
-        // Tránh Die() bị gọi nhiều lần
         if (isDead)
             return;
 
         isDead = true;
 
-        Debug.Log(
-            "================================="
-        );
+        currentTargetSoldier = null;
+        isEngaged = false;
 
         Debug.Log(
-            "BOSS ĐÃ BỊ TIÊU DIỆT!"
+            "👑 BOSS ĐÃ BỊ TIÊU DIỆT!"
         );
-
-        Debug.Log(
-            "MAP 3 HOÀN THÀNH!"
-        );
-
-        Debug.Log(
-            "================================="
-        );
-
 
         // =====================================================
-        // TĂNG SỐ QUÁI ĐÃ GIẾT
+        // TĂNG SỐ QUÁI GIẾT
         // =====================================================
 
         if (GameUI.instance != null)
         {
             GameUI.instance.enemiesKilled++;
         }
-
 
         // =====================================================
         // TẮT COLLIDER
@@ -521,7 +858,6 @@ public class BossEnemy : MonoBehaviour
             col.enabled = false;
         }
 
-
         // =====================================================
         // TẮT PHYSICS
         // =====================================================
@@ -531,13 +867,13 @@ public class BossEnemy : MonoBehaviour
             rb.simulated = false;
         }
 
-
         // =====================================================
-        // ANIMATION CHẾT
+        // ANIMATION
         // =====================================================
 
-        SetAnimatorTrigger("Die");
-
+        SetAnimatorTrigger(
+            "Die"
+        );
 
         // =====================================================
         // TẮT THANH MÁU
@@ -545,12 +881,13 @@ public class BossEnemy : MonoBehaviour
 
         if (healthSlider != null)
         {
-            healthSlider.gameObject.SetActive(false);
+            healthSlider.gameObject.SetActive(
+                false
+            );
         }
 
-
         // =====================================================
-        // RƠI COIN
+        // COIN
         // =====================================================
 
         if (coinPrefab != null)
@@ -560,16 +897,16 @@ public class BossEnemy : MonoBehaviour
                 Instantiate(
                     coinPrefab,
                     transform.position +
-                    (Vector3)Random.insideUnitCircle *
+                    (Vector3)
+                    Random.insideUnitCircle *
                     0.5f,
                     Quaternion.identity
                 );
             }
         }
 
-
         // =====================================================
-        // CỘNG GOLD
+        // GOLD
         // =====================================================
 
         if (GameUI.instance != null)
@@ -579,90 +916,24 @@ public class BossEnemy : MonoBehaviour
             );
         }
 
-
         // =====================================================
-        // QUAN TRỌNG:
-        // BOSS CHẾT → THẮNG GAME
+        // THẮNG GAME
         // =====================================================
 
         if (GameUI.instance != null)
         {
             GameUI.instance.WinGame();
         }
-        else
-        {
-            Debug.LogError(
-                "BossEnemy: Không tìm thấy GameUI.instance!"
-            );
-        }
-
 
         // =====================================================
-        // HỦY BOSS SAU 2 GIÂY
+        // HỦY BOSS
         // =====================================================
 
         Destroy(
             gameObject,
-            2.0f
+            2f
         );
     }
-
-
-    // =========================================================
-    // KIỂM TRA LÍNH CÒN SỐNG
-    // =========================================================
-
-    void CheckSoldierAlive()
-    {
-        if (currentTargetSoldier == null)
-        {
-            isEngaged = false;
-
-            return;
-        }
-
-        if (Time.time >=
-            lastAttackTime +
-            attackCooldown)
-        {
-            AttackSoldier();
-
-            lastAttackTime =
-                Time.time;
-        }
-    }
-
-
-    // =========================================================
-    // BOSS ĐÁNH LÍNH
-    // =========================================================
-
-    void AttackSoldier()
-    {
-        if (currentTargetSoldier == null)
-            return;
-
-        SetAnimatorTrigger(
-            "Attack"
-        );
-
-        if (currentTargetSoldier
-            is PlayerSoldier w)
-        {
-            w.TakeDamage(damage);
-        }
-        else if (currentTargetSoldier
-            is MageSoldier m)
-        {
-            m.TakeDamage(damage);
-        }
-        else if (currentTargetSoldier
-            is ArcherSoldier a)
-        {
-            a.TakeDamage(damage);
-        }
-    }
-
 
     // =========================================================
     // FLIP
@@ -672,14 +943,16 @@ public class BossEnemy : MonoBehaviour
         float directionX
     )
     {
-        if (spriteRenderer != null &&
-            Mathf.Abs(directionX) > 0.01f)
+        if (
+            spriteRenderer != null &&
+            Mathf.Abs(directionX) >
+            0.01f
+        )
         {
             spriteRenderer.flipX =
                 directionX < 0;
         }
     }
-
 
     // =========================================================
     // ANIMATION TRIGGER
@@ -689,18 +962,21 @@ public class BossEnemy : MonoBehaviour
         string triggerName
     )
     {
-        if (animator != null &&
-            animator.runtimeAnimatorController != null)
+        if (
+            animator != null &&
+            animator.runtimeAnimatorController != null
+        )
         {
             foreach (
                 AnimatorControllerParameter param
                 in animator.parameters
             )
             {
-                if (param.name ==
-                    triggerName &&
+                if (
+                    param.name == triggerName &&
                     param.type ==
-                    AnimatorControllerParameterType.Trigger)
+                    AnimatorControllerParameterType.Trigger
+                )
                 {
                     animator.SetTrigger(
                         triggerName
@@ -712,7 +988,6 @@ public class BossEnemy : MonoBehaviour
         }
     }
 
-
     // =========================================================
     // ANIMATION BOOL
     // =========================================================
@@ -722,18 +997,21 @@ public class BossEnemy : MonoBehaviour
         bool value
     )
     {
-        if (animator != null &&
-            animator.runtimeAnimatorController != null)
+        if (
+            animator != null &&
+            animator.runtimeAnimatorController != null
+        )
         {
             foreach (
                 AnimatorControllerParameter param
                 in animator.parameters
             )
             {
-                if (param.name ==
-                    boolName &&
+                if (
+                    param.name == boolName &&
                     param.type ==
-                    AnimatorControllerParameterType.Bool)
+                    AnimatorControllerParameterType.Bool
+                )
                 {
                     animator.SetBool(
                         boolName,
@@ -746,19 +1024,28 @@ public class BossEnemy : MonoBehaviour
         }
     }
 
-
     // =========================================================
     // GIZMOS
     // =========================================================
 
     void OnDrawGizmosSelected()
     {
+        // Vùng phát hiện
         Gizmos.color =
             Color.red;
 
         Gizmos.DrawWireSphere(
             transform.position,
             checkRadius
+        );
+
+        // Vùng đánh
+        Gizmos.color =
+            Color.yellow;
+
+        Gizmos.DrawWireSphere(
+            transform.position,
+            attackRange
         );
     }
 }

@@ -3,190 +3,413 @@ using UnityEngine.UI;
 
 public class ArcherSoldier : MonoBehaviour
 {
-    private int maxHp;
-    private int hp;
-    private int damage;
-    private SpawnTower towerRef;
-    private Vector3 rallyPosition;
-
-    [Header("Cấu hình Tấn công Xạ thủ")]
+    [Header("Tấn công")]
     public float attackRange = 5f;
-    public float attackCooldown = 1f;
-    private float lastAttackTime;
+    public float attackCooldown = 1.2f;
 
     [Header("Tốc độ")]
     public float speed = 3f;
 
+    [Header("Đạn")]
     public GameObject arrowPrefab;
     public Transform shootPoint;
-    private Transform targetEnemy;
-    private Animator anim;
 
-    [Header("Thanh máu (UI Slider)")]
+    [Header("Thanh máu")]
     public Slider healthSlider;
 
-    void Awake()
-    {
-        anim = GetComponent<Animator>();
-    }
+    private int maxHp;
+    private int hp;
+    private int damage;
 
-    public void InitializeStats(int _hp, int _dmg, SpawnTower _tower)
+    private SpawnTower towerRef;
+    private Vector3 rallyPosition;
+
+    private Transform targetEnemy;
+    private Animator anim;
+    private SpriteRenderer spriteRenderer;
+
+    private float attackTimer = 0f;
+
+
+    // =========================================================
+    // KHỞI TẠO
+    // =========================================================
+
+    public void InitializeStats(
+        int _hp,
+        int _dmg,
+        SpawnTower _tower
+    )
     {
         maxHp = _hp;
         hp = _hp;
         damage = _dmg;
         towerRef = _tower;
+
         UpdateHealthUI();
     }
+
+
+    // =========================================================
+    // RALLY
+    // =========================================================
 
     public void SetRallyPosition(Vector3 pos)
     {
         rallyPosition = pos;
+
+        // Xạ thủ đứng cố định tại vị trí tập kết.
         transform.position = rallyPosition;
     }
 
+
+    // =========================================================
+    // START
+    // =========================================================
+
+    void Start()
+    {
+        anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (maxHp <= 0)
+        {
+            maxHp = 20;
+            hp = maxHp;
+        }
+
+        UpdateHealthUI();
+
+        attackTimer = 0f;
+
+        InvokeRepeating(
+            nameof(FindClosestEnemy),
+            0f,
+            0.15f
+        );
+    }
+
+
+    // =========================================================
+    // UPDATE
+    // =========================================================
+
     void Update()
     {
-        FindClosestEnemy();
+        // -----------------------------------------
+        // XÓA TARGET CHẾT
+        // -----------------------------------------
 
         if (targetEnemy != null)
         {
-            float distToEnemy = Vector3.Distance(transform.position, targetEnemy.position);
-            if (distToEnemy <= attackRange)
+            if (!targetEnemy.gameObject.activeInHierarchy)
             {
-                if (Time.time >= lastAttackTime + attackCooldown)
-                {
-                    ShootAtEnemy();
-                    lastAttackTime = Time.time;
-                }
+                targetEnemy = null;
             }
+        }
+
+
+        // -----------------------------------------
+        // XẠ THỦ LUÔN ĐỨNG YÊN
+        // -----------------------------------------
+
+        transform.position = rallyPosition;
+
+
+        // -----------------------------------------
+        // COOLDOWN
+        // -----------------------------------------
+
+        if (attackTimer > 0f)
+        {
+            attackTimer -= Time.deltaTime;
+        }
+
+
+        // -----------------------------------------
+        // KHÔNG CÓ TARGET
+        // -----------------------------------------
+
+        if (targetEnemy == null)
+        {
+            SetMovingAnimation(false);
+            return;
+        }
+
+
+        // -----------------------------------------
+        // KIỂM TRA KHOẢNG CÁCH
+        // -----------------------------------------
+
+        float distance =
+            Vector3.Distance(
+                transform.position,
+                targetEnemy.position
+            );
+
+
+        // -----------------------------------------
+        // TARGET RA NGOÀI TẦM
+        // -----------------------------------------
+
+        if (distance > attackRange)
+        {
+            SetMovingAnimation(false);
+            return;
+        }
+
+
+        // -----------------------------------------
+        // QUAY MẶT
+        // -----------------------------------------
+
+        Vector3 direction =
+            targetEnemy.position -
+            transform.position;
+
+        if (Mathf.Abs(direction.x) > 0.01f)
+        {
+            FlipSprite(direction.x);
+        }
+
+
+        // -----------------------------------------
+        // ĐÁNH
+        // -----------------------------------------
+
+        if (attackTimer <= 0f)
+        {
+            ShootAtEnemy();
+
+            attackTimer = attackCooldown;
         }
     }
 
+
+    // =========================================================
+    // TÌM ENEMY GẦN NHẤT
+    // =========================================================
+
     void FindClosestEnemy()
     {
-        float shortestDist = Mathf.Infinity;
+        float shortestDistance = Mathf.Infinity;
+
         Transform nearestTarget = null;
 
-        // =========================
-        // TÌM ENEMY
-        // =========================
+
+        // =====================================================
+        // ENEMY THƯỜNG
+        // =====================================================
 
         Enemy[] enemies =
-            Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+            FindObjectsByType<Enemy>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None
+            );
 
         foreach (Enemy enemy in enemies)
         {
-            if (enemy == null || !enemy.gameObject.activeInHierarchy)
+            if (enemy == null)
                 continue;
 
-            float distance = Vector3.Distance(
-                transform.position,
-                enemy.transform.position
-            );
+            if (!enemy.gameObject.activeInHierarchy)
+                continue;
 
-            if (distance < shortestDist)
+            float distance =
+                Vector3.Distance(
+                    transform.position,
+                    enemy.transform.position
+                );
+
+            if (distance <= attackRange &&
+                distance < shortestDistance)
             {
-                shortestDist = distance;
+                shortestDistance = distance;
                 nearestTarget = enemy.transform;
             }
         }
 
-        // =========================
-        // TÌM BOSS
-        // =========================
+
+        // =====================================================
+        // BOSS CŨ
+        // =====================================================
 
         Boss[] bosses =
-            Object.FindObjectsByType<Boss>(FindObjectsSortMode.None);
+            FindObjectsByType<Boss>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None
+            );
 
         foreach (Boss boss in bosses)
         {
-            if (boss == null || !boss.gameObject.activeInHierarchy)
+            if (boss == null)
                 continue;
 
-            float distance = Vector3.Distance(
-                transform.position,
-                boss.transform.position
-            );
+            if (!boss.gameObject.activeInHierarchy)
+                continue;
 
-            if (distance < shortestDist)
+            float distance =
+                Vector3.Distance(
+                    transform.position,
+                    boss.transform.position
+                );
+
+            if (distance <= attackRange &&
+                distance < shortestDistance)
             {
-                shortestDist = distance;
+                shortestDistance = distance;
                 nearestTarget = boss.transform;
             }
         }
 
-        // =========================
-        // TÌM BOSS MAP 3
-        // =========================
+
+        // =====================================================
+        // BOSS MAP 3
+        // =====================================================
 
         BossEnemy[] bossEnemies =
-            Object.FindObjectsByType<BossEnemy>(
+            FindObjectsByType<BossEnemy>(
+                FindObjectsInactive.Exclude,
                 FindObjectsSortMode.None
             );
 
         foreach (BossEnemy bossEnemy in bossEnemies)
         {
-            if (bossEnemy == null ||
-                !bossEnemy.gameObject.activeInHierarchy)
+            if (bossEnemy == null)
                 continue;
 
-            float distance = Vector3.Distance(
-                transform.position,
-                bossEnemy.transform.position
-            );
+            if (!bossEnemy.gameObject.activeInHierarchy)
+                continue;
 
-            if (distance < shortestDist)
+            float distance =
+                Vector3.Distance(
+                    transform.position,
+                    bossEnemy.transform.position
+                );
+
+            if (distance <= attackRange &&
+                distance < shortestDistance)
             {
-                shortestDist = distance;
+                shortestDistance = distance;
                 nearestTarget = bossEnemy.transform;
             }
         }
 
-        // =========================
-        // GÁN MỤC TIÊU
-        // =========================
 
-        if (nearestTarget != null && shortestDist <= attackRange)
-        {
-            targetEnemy = nearestTarget;
-        }
-        else
-        {
-            targetEnemy = null;
-        }
+        targetEnemy = nearestTarget;
     }
+
+
+    // =========================================================
+    // BẮN
+    // =========================================================
 
     void ShootAtEnemy()
     {
-        // Kích hoạt chính xác Trigger "AttackTrig" từ Animator của Xạ Thủ
+        if (targetEnemy == null)
+            return;
+
+
+        // Animation
         if (anim != null)
         {
             anim.SetTrigger("AttackTrigger");
         }
 
-        if (arrowPrefab != null && targetEnemy != null)
-        {
-            Vector3 spawnPos = shootPoint != null ? shootPoint.position : transform.position;
-            GameObject arrowObj = Instantiate(arrowPrefab, spawnPos, Quaternion.identity);
-            Arrow arrowScript = arrowObj.GetComponent<Arrow>();
 
-            if (arrowScript != null)
-            {
-                arrowScript.Seek(targetEnemy, damage);
-            }
+        // Không có arrow prefab
+        if (arrowPrefab == null)
+        {
+            Debug.LogWarning(
+                gameObject.name +
+                ": Chưa gán Arrow Prefab!"
+            );
+
+            return;
+        }
+
+
+        Vector3 spawnPosition =
+            shootPoint != null
+            ? shootPoint.position
+            : transform.position;
+
+
+        GameObject arrowObject =
+            Instantiate(
+                arrowPrefab,
+                spawnPosition,
+                Quaternion.identity
+            );
+
+
+        Arrow arrow =
+            arrowObject.GetComponent<Arrow>();
+
+
+        if (arrow != null)
+        {
+            arrow.Seek(
+                targetEnemy,
+                damage
+            );
+        }
+        else
+        {
+            Debug.LogWarning(
+                "Arrow Prefab không có script Arrow!"
+            );
         }
     }
 
-    public void TakeDamage(int amt)
+
+    // =========================================================
+    // ANIMATION
+    // =========================================================
+
+    void SetMovingAnimation(bool isMoving)
     {
-        hp -= amt;
+        if (anim != null)
+        {
+            // Xạ thủ không di chuyển.
+            anim.SetBool("isMoving", false);
+        }
+    }
+
+
+    // =========================================================
+    // FLIP
+    // =========================================================
+
+    void FlipSprite(float directionX)
+    {
+        if (spriteRenderer == null)
+            return;
+
+        if (Mathf.Abs(directionX) > 0.01f)
+        {
+            spriteRenderer.flipX =
+                directionX < 0;
+        }
+    }
+
+
+    // =========================================================
+    // NHẬN DAMAGE
+    // =========================================================
+
+    public void TakeDamage(int amount)
+    {
+        hp -= amount;
+
         UpdateHealthUI();
+
 
         if (anim != null)
         {
             anim.SetTrigger("HurtTrigger");
         }
+
 
         if (hp <= 0)
         {
@@ -194,20 +417,36 @@ public class ArcherSoldier : MonoBehaviour
         }
     }
 
-    void UpdateHealthUI()
-    {
-        if (healthSlider != null)
-        {
-            healthSlider.maxValue = maxHp;
-            healthSlider.value = hp;
-        }
-    }
+
+    // =========================================================
+    // HỒI ĐẦY MÁU
+    // =========================================================
 
     public void FullHeal()
     {
         hp = maxHp;
+
         UpdateHealthUI();
     }
+
+
+    // =========================================================
+    // HEALTH BAR
+    // =========================================================
+
+    void UpdateHealthUI()
+    {
+        if (healthSlider == null)
+            return;
+
+        healthSlider.maxValue = maxHp;
+        healthSlider.value = hp;
+    }
+
+
+    // =========================================================
+    // CHẾT
+    // =========================================================
 
     void Die()
     {
@@ -216,11 +455,16 @@ public class ArcherSoldier : MonoBehaviour
             anim.SetTrigger("DieTrigger");
         }
 
+
         if (towerRef != null)
         {
             towerRef.OnSoldierDied(this);
         }
 
-        Destroy(gameObject, 0.2f);
+
+        Destroy(
+            gameObject,
+            0.3f
+        );
     }
 }

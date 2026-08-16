@@ -586,9 +586,9 @@ MonoBehaviour:
   attackRate: 1
   detectRadius: 5
   attackRange: 0.8
-  maxHp: 10
+  maxHp: 50
   currentHp: 20
-  damage: 2
+  damage: 1
   healthBarSlider: {fileID: 8892002599313283772}
   rallyPosition: {x: 0, y: 0, z: 0}
   homeTower: {fileID: 0}
