@@ -13,6 +13,10 @@ public class PauseManager : MonoBehaviour
     public Slider sfxSlider;
     public AudioSource bgmAudioSource;
 
+    [Header("Cấu hình Scene")]
+    [Tooltip("Tên chính xác của Scene Menu chính")]
+    public string mainMenuSceneName = "MainMenu";
+
     private bool isPaused = false;
 
     void Start()
@@ -38,7 +42,7 @@ public class PauseManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (isPaused) ClosePauseMenu();
+            if (isPaused) ResumeGame();
             else OpenPauseMenu();
         }
     }
@@ -51,7 +55,8 @@ public class PauseManager : MonoBehaviour
         isPaused = true;
     }
 
-    public void ClosePauseMenu()
+    // Hàm gọi khi bấm nút "Tiếp Tục" hoặc phím Esc để quay lại game
+    public void ResumeGame()
     {
         if (pauseMenuUI != null) pauseMenuUI.SetActive(false);
         if (pauseButton != null) pauseButton.SetActive(true);
@@ -59,18 +64,17 @@ public class PauseManager : MonoBehaviour
         isPaused = false;
     }
 
-    // --- NÚT TIẾP TỤC NGOÀI MENU CHÍNH (Tải lại Map đã lưu hoặc Map tiếp theo) ---
-    public void ContinueGame(string levelName)
+    // Hàm gọi khi bấm nút "Thoát"
+    public void QuitToMenu()
     {
-        Time.timeScale = 1f;
-        // Hoặc bạn có thể dùng PlayerPrefs để lưu tên map gần nhất rồi LoadScene theo tên đó
-        SceneManager.LoadScene(levelName);
+        Time.timeScale = 1f; // Trả lại tốc độ thời gian bình thường trước khi chuyển Scene
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 
-    public void QuitToMenu(string menuSceneName)
+    public void RestartGame()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(menuSceneName);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void SetBGMVolume(float value)
@@ -83,11 +87,5 @@ public class PauseManager : MonoBehaviour
     {
         AudioListener.volume = value;
         PlayerPrefs.SetFloat("SFXVol", value);
-    }
-
-    public void RestartGame()
-    {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

@@ -3,26 +3,41 @@ using UnityEngine;
 public class FireballEffect : MonoBehaviour
 {
     [Header("Cấu hình Sát thương")]
-    public int directDamage = 10;          // Sát thương tức thời khi cầu lửa rơi xuống
-    public float burnDamagePerSecond = 5f; // Sát thương đốt mỗi giây
-    public float burnDuration = 3f;        // Thời gian hiệu ứng đốt kéo dài (giây)
-
-    public float destroyTime = 1f;         // Thời gian tự hủy sau khi chạy animation
+    public int directDamage = 10;
+    public float burnDamagePerSecond = 5f;
+    public float burnDuration = 3f;
+    public float destroyTime = 1f;
 
     void Start()
     {
-        // Tự động xóa đối tượng sau khi chạy xong hiệu ứng
         Destroy(gameObject, destroyTime);
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        // 1. Enemy thường
         Enemy enemy = collision.GetComponent<Enemy>();
         if (enemy != null)
         {
-            // Gây sát thương tức thì và sát thương đốt dựa trên giá trị chỉnh trong Inspector
             enemy.TakeDamage(directDamage);
             enemy.StartBurn(burnDamagePerSecond, burnDuration);
+            return;
+        }
+
+        // 2. BossEnemy (Boss dạng 1)
+        BossEnemy bossEnemy = collision.GetComponent<BossEnemy>();
+        if (bossEnemy != null)
+        {
+            bossEnemy.TakeDamage(directDamage);
+            bossEnemy.StartBurn(burnDamagePerSecond, burnDuration);
+            return;
+        }
+
+        // 3. Boss (Boss dạng 2)
+        Boss boss = collision.GetComponent<Boss>();
+        if (boss != null)
+        {
+            boss.TakeDamage(directDamage);
         }
     }
 }

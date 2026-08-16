@@ -3230,7 +3230,7 @@ MonoBehaviour:
   heroAvatars:
   - {fileID: 5687653970270083563, guid: 0e3ab60b49b55214c87a40c1dd47ef5b, type: 3}
   - {fileID: -6393209325982071594, guid: 0356ef922dd5ab44fb0e7b2087deb64b, type: 3}
-  - {fileID: -5710855599111037527, guid: 18e547da3e14afd4ea94dd649615398f, type: 3}
+  - {fileID: -5710855599111037527, guid: 1e825e9a95ad5e0409364e8097b2dde7, type: 3}
   heroNames:
   - "Ki\u1EBFm S\u0129"
   - "Cung Th\u1EE7"
