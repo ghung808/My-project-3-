@@ -541,10 +541,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7768c3451a018854fa4fa13e2b08bb22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boss
-  maxHp: 150
+  maxHp: 400
   moveSpeed: 2
   armor: 5
-  attackDamage: 10
+  attackDamage: 6
   attackCooldown: 2
   detectRadius: 4
   attackRange: 1.5

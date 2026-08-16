@@ -8,17 +8,16 @@ public class BossEnemy : MonoBehaviour
     public string bossName = "Chúa Tể Orc";
 
     // =========================================================
-    // CHỈ SỐ CÂN BẰNG
+    // CHỈ SỐ CÂN BẰNG - BOSS MAP 2
     // =========================================================
 
     [Header("--- CHỈ SỐ CÂN BẰNG ---")]
 
-    // Boss chậm hơn Enemy thường
-    // nhưng HP cao hơn rất nhiều
-    public float speed = 1.6f;
+    // Boss Map 2: tốc độ vừa phải
+    public float speed = 1.5f;
 
-    // HP Boss
-    public int maxHp = 500;
+    // Boss Map 2: 400 HP
+    public int maxHp = 400;
     private int hp;
 
     // Damage vừa phải
@@ -29,7 +28,7 @@ public class BossEnemy : MonoBehaviour
     private float lastAttackTime;
 
     [Header("Phạm vi phát hiện lính")]
-    public float checkRadius = 1.4f;
+    public float checkRadius = 1.5f;
 
     [Header("Khoảng cách duy trì đánh")]
     public float attackRange = 1.3f;
@@ -42,13 +41,21 @@ public class BossEnemy : MonoBehaviour
 
     private MonoBehaviour currentTargetSoldier;
 
+    // =========================================================
+    // THANH MÁU
+    // =========================================================
+
     [Header("--- THANH MÁU BOSS (UI) ---")]
     public Slider healthSlider;
+
+    // =========================================================
+    // PHẦN THƯỞNG
+    // =========================================================
 
     [Header("--- PHẦN THƯỞNG ---")]
     public GameObject coinPrefab;
 
-    // Boss chết được 10 vàng
+    // Boss Map 2 thưởng 10 vàng
     public int goldReward = 10;
 
     // =========================================================
@@ -76,7 +83,7 @@ public class BossEnemy : MonoBehaviour
 
     [Header("--- RAGE PHASE ---")]
 
-    // Boss bắt đầu Rage khi còn 40% HP
+    // Boss Rage khi còn 40% HP
     [Range(0.1f, 0.9f)]
     public float rageThreshold = 0.4f;
 
@@ -100,7 +107,7 @@ public class BossEnemy : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     // =========================================================
-    // WAYPOINT MAP 3
+    // WAYPOINT
     // =========================================================
 
     [HideInInspector]
@@ -140,7 +147,7 @@ public class BossEnemy : MonoBehaviour
         GetNextWaypoint();
 
         Debug.Log(
-            "👑 BOSS SPAWN | " +
+            "👑 BOSS MAP 2 SPAWN | " +
             bossName +
             " | HP: " +
             maxHp +
@@ -162,7 +169,6 @@ public class BossEnemy : MonoBehaviour
         if (isDead)
             return;
 
-        // Kiểm tra Rage
         CheckRagePhase();
 
         // =====================================================
@@ -181,11 +187,13 @@ public class BossEnemy : MonoBehaviour
 
         CheckForSoldiersAhead();
 
-        // Nếu tìm thấy lính thì dừng
         if (isEngaged)
             return;
 
-        // Không có lính → tiếp tục đi
+        // =====================================================
+        // KHÔNG CÓ LÍNH → TIẾP TỤC ĐI
+        // =====================================================
+
         MoveTowardsWaypoint();
     }
 
@@ -195,7 +203,6 @@ public class BossEnemy : MonoBehaviour
 
     void CheckRagePhase()
     {
-        // Đã Rage thì không Rage lần nữa
         if (isRaging)
             return;
 
@@ -312,7 +319,6 @@ public class BossEnemy : MonoBehaviour
         if (isDead)
             return;
 
-        // Nếu đang slow thì reset coroutine
         if (slowCoroutine != null)
         {
             StopCoroutine(
@@ -554,7 +560,6 @@ public class BossEnemy : MonoBehaviour
                     .transform.position
             );
 
-        // Lính chạy ra xa → Boss tiếp tục di chuyển
         if (distance > attackRange)
         {
             ResumeMoving();
@@ -762,7 +767,6 @@ public class BossEnemy : MonoBehaviour
 
         if (ui != null)
         {
-            // Boss đập vào Castle gây 5 damage
             ui.TakeCastleDamage(5);
         }
 
@@ -837,7 +841,7 @@ public class BossEnemy : MonoBehaviour
         isEngaged = false;
 
         Debug.Log(
-            "👑 BOSS ĐÃ BỊ TIÊU DIỆT!"
+            "👑 BOSS MAP 2 ĐÃ BỊ TIÊU DIỆT!"
         );
 
         // =====================================================
