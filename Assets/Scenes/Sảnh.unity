@@ -3209,6 +3209,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChallengeMenuController
   panelChonMap: {fileID: 1545398433}
+  btnMap2: {fileID: 1068977191}
+  btnMap3: {fileID: 495176418}
 --- !u!114 &1331851476
 MonoBehaviour:
   m_ObjectHideFlags: 0

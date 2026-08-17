@@ -19395,7 +19395,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightningSkillController
   lightningPrefab: {fileID: 5251691961546886910, guid: cc1417bae568a754ca2661fe49d4137d, type: 3}
-  cooldownTime: 3
+  cooldownTime: 7
   skillButton: {fileID: 949561082}
   cooldownOverlay: {fileID: 2080118043}
 --- !u!114 &1017842241
@@ -19429,7 +19429,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireballSkillController
   fireballPrefab: {fileID: 4467572936164554208, guid: 892bf4643a506cd418eeceb7e903ea89, type: 3}
-  cooldownTime: 3
+  cooldownTime: 4
   skillButton: {fileID: 2080118042}
   cooldownOverlay: {fileID: 2080118041}
 --- !u!82 &1017842243

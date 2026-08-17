@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a53ee21863dfe040bcb9e891a65c825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IceSpikeEffect
-  damage: 1
-  slowMultiplier: 0.5
+  damage: 5
+  slowMultiplier: 0.36
   slowDuration: 3
-  destroyTime: 1
+  destroyTime: 2

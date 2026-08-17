@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5057f426f45f18c45b3cb7c6fe1506c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fireball
-  directDamage: 1
-  burnDamagePerSecond: 1
-  burnDuration: 1
-  destroyTime: 1
+  directDamage: 2
+  burnDamagePerSecond: 2
+  burnDuration: 2
+  destroyTime: 2

@@ -194,5 +194,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de6bc153a3bd9344b4d7ed3c9c57ed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightningDamage
-  damage: 50
+  damage: 30
   lifetime: 1
